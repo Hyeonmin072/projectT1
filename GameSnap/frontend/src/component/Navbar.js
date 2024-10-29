@@ -13,9 +13,9 @@ function Navbar() {
             회원 로그인
           </a>
         </div>
-        <li><a href="#about" className="flex flex-col items-end space-y-2 hover:text-green-600 text-white font-bold ">About</a></li>
-        <li><a href="#projects" className="flex flex-col items-end space-y-2 hover:text-green-600 text-white font-bold">Projects</a></li>
-        <li><a href="#contact" className="flex flex-col items-end space-y-2 hover:text-green-600 text-white font-bold">Contact</a></li>
+        <li><a href="#about" className="flex flex-col items-end space-y-2 mt-1 hover:text-green-600 text-white font-bold ">About</a></li>
+        <li><a href="#projects" className="flex flex-col items-end space-y-2 mt-1 hover:text-green-600 text-white font-bold">Projects</a></li>
+        <li><a href="#contact" className="flex flex-col items-end space-y-2 mt-1 hover:text-green-600 text-white font-bold">Contact</a></li>
       </ul>
     </nav>
   );
