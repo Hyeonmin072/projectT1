@@ -102,7 +102,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="bg-black shadow-lg p-4 flex justify-between">
-        <div className="text-2xl font-bold text-white">GameSnap</div>
+        <div className="text-2xl py-2 font-bold text-white">GameSnap</div>
         <ul className="flex space-x-4">
           <div className="flex justify-end">
             <button
