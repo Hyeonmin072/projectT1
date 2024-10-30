@@ -41,7 +41,7 @@ const Navbar = () => {
           
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="p-2 hover:bg-gray-800 rounded-full"
+            className="p-2 hover:bg-green-800 rounded-full"
           >
             <Menu size={24} color="white" />
           </button>
@@ -76,6 +76,8 @@ const Navbar = () => {
         <LoginForm 
           onClose={() => setIsLoginOpen(false)}
           onLoginSuccess={handleLoginSuccess}
+          className="p-6 bg-white shadow-lg rounded-lg
+            transition-all duration-500"
         />
       )}
     </div>
