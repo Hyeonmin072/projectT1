@@ -1,6 +1,5 @@
 import React from 'react';
 import Navbar from './component/Navbar';
-import MainPage from './component/MainPage';
 import Contact from './component/Contact';
 
 function App() {

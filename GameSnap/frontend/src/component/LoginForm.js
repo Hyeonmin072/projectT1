@@ -76,21 +76,23 @@ const LoginForm = ({ onClose, onLoginSuccess }) => {
                   자동 로그인
                 </label>
               </div>
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-500">
+              <a href="#" className="text-sm text-green-500 hover:text-green-900">
                 비밀번호 찾기
               </a>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-900
+              transition-colors duration-700
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <a href='#UserPage.js'>로그인</a>
             </button>
 
             <div className="text-center text-sm text-gray-600">
               계정이 없으신가요?{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-500">
+              <a href="#" className="text-green-500 hover:text-green-900 font-bold">
                 회원가입
               </a>
             </div>
