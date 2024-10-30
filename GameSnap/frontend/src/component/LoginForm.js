@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-// LoginForm component included in the same file to avoid import issues
 const LoginForm = ({ onClose }) => {
   const [formData, setFormData] = useState({
     email: '',
@@ -95,29 +94,4 @@ const LoginForm = ({ onClose }) => {
   );
 };
 
-// Navbar component
-const Navbar = () => {
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-
-  return (
-    <>
-      <nav className="bg-black shadow-lg p-4 flex justify-between">
-        <div className="text-2xl font-bold text-white">GameSnap</div>
-        <ul className="flex space-x-4">
-          <div className="flex justify-end">
-            <button
-              onClick={() => setIsLoginOpen(true)}
-              className="px-6 py-3 bg-white text-black-600 font-semibold rounded-md hover:bg-green-700 hover:text-white"
-            >
-              회원 로그인
-            </button>
-          </div>
-        </ul>
-      </nav>
-
-      {isLoginOpen && <LoginForm onClose={() => setIsLoginOpen(false)} />}
-    </>
-  );
-};
-
-export default Navbar;
+export default LoginForm;
