@@ -1,7 +1,6 @@
-// src/components/Hero.js
 import React from 'react';
 
-function Hero() {
+function MainPage() {
   return (
     <section className="h-screen bg-white-600 text-white flex flex-col justify-center items-center text-center">
       <h1 className="text-4xl font-bold mb-4 text-black">Welcome to GameSnap</h1>
@@ -12,4 +11,4 @@ function Hero() {
   );
 }
 
-export default Hero;
+export default MainPage;
