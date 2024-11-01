@@ -1,16 +1,22 @@
-/* eslint-disable */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Menu } from 'lucide-react';
 import Sidebar from './Sidebar';
 import LoginForm from './LoginForm';
 import MainPage from './MainPage';
 import UserPage from './UserPage';
 import SearchBar from './Searchbar';
+import RegisterForm from './RegisterForm';  
 
 const Navbar = () => {  
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentForm, setCurrentForm] = useState('none');
+
+  const handleSwitchToRegister = useCallback(() => {
+    console.log('handleSwitchToRegister executed');
+    setCurrentForm('register');
+  }, []);
 
   const handleLoginSuccess = () => {
     console.log('로그인 성공!');
@@ -42,14 +48,51 @@ const Navbar = () => {
 
           {/* 우측 버튼들 */}
           <div className="flex items-center space-x-4 flex-shrink-0">
-            {!isLoggedIn && (
-              <button
-                onClick={() => setIsLoginOpen(true)}
-                className="px-6 py-3 bg-white text-black-600 font-semibold rounded-md hover:bg-green-700 hover:text-white"
-              >
-                회원 로그인
-              </button>
+          {!isLoggedIn && (  // isLoginOpen 대신 isLoggedIn으로 조건 변경
+            <button
+              onClick={() => {
+                setCurrentForm('login');
+                setIsLoginOpen(true);
+                console.log('Current form state changed to:', currentForm);
+                console.log('Navbar login clicked');
+              }}
+              className="px-6 py-3 bg-white text-black-600 font-semibold rounded-md hover:bg-green-700 hover:text-white"
+            >
+              회원 로그인
+            </button>
+)}
+
+          {/* 여기까지가 로그인 버튼 */}
+
+          {/* 여기부터 로그인 클릭 후 로직 */}
+          {currentForm === 'login' && (  // () 대신 && 사용
+            <LoginForm 
+              onClose={() => {
+                console.log('Login form closing');
+                setCurrentForm('none');
+              }}
+              onRegisterClick={() => {  // 여기를 함수로 수정
+                console.log('Switching to register form');
+                setCurrentForm('register');
+              }}
+            />
+          )}
+            {currentForm === 'register' && (  // () 대신 && 사용
+              <RegisterForm
+                onClose={() => {
+                  console.log('Register form closing');
+                  setCurrentForm('none');
+                }}
+                onRegisterSuccess={() => {
+                  console.log('Register success');
+                  setCurrentForm('login');
+                }}
+                onLoginClick={() => {  // 로그인으로 돌아가기 위한 함수
+                  setCurrentForm('login');
+                }}
+              />
             )}
+
             {isLoggedIn && (
               <div className="text-white px-6 py-3">
                 환영합니다!
@@ -57,6 +100,8 @@ const Navbar = () => {
               </div>
             )}
             
+            {/* 여기까지가 로그인 클릭 후 로직 */}
+
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="p-2 hover:bg-green-800 rounded-full"
@@ -93,14 +138,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {isLoginOpen && (
-        <LoginForm 
-          onClose={() => setIsLoginOpen(false)}
-          onLoginSuccess={handleLoginSuccess}
-        />
-      )}
     </div>
   );
 };
-
 export default Navbar;
