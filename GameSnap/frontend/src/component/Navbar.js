@@ -39,7 +39,15 @@ const Navbar = () => {
     <div className="h-screen overflow-hidden">
       <nav className="bg-black shadow-lg p-4 fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* 로고 */}
+
+          {/* 로고 이미지 (예정) */}
+          {/* <img 
+            src="GameSnap\frontend\src\assets\gamesnap.png" 
+            alt="GameSnap Logo"
+            className="h-8 w-8 mr-2" 
+          /> */}
+
+          {/* 로고 글 */}
           <div className="text-2xl font-bold text-white hover:text-green-600 flex-shrink-0">
             GameSnap
           </div>
