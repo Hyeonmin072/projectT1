@@ -1,4 +1,4 @@
-package com.gamesnap.backend.request;
+package com.gamesnap.backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserLoginRequest {
+public class MemberLoginDto {
     private String email;
     private String password;
 }
