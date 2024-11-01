@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { login } from './axios/LoginAxios';
 /* eslint-disable*/
 
 const LoginForm = ({ onClose, onLoginSuccess }) => {
@@ -7,6 +8,7 @@ const LoginForm = ({ onClose, onLoginSuccess }) => {
     email: '',
     password: ''
   });
+  const [error, setError] = useState(''); // Error state 추가
 
   useEffect(() => {
     // 마운트 시 페이드 인 효과
@@ -28,11 +30,33 @@ const LoginForm = ({ onClose, onLoginSuccess }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
-    onLoginSuccess();
-    onClose();
+    console.log(formData.email,formData.password);
+    try {
+      const response = await login(formData.email, formData.password);
+      
+      console.log('Login successful:', response.data);
+      onLoginSuccess(); // 성공 시 호출
+      onClose(); // 모달 닫기
+    } catch (error) {
+      if (error.response) {
+        // 요청이 이루어졌고, 서버가 상태 코드로 응답했으나 요청이 실패했을 때
+        console.error('Login error response:', error.response.data);
+      } else if (error.request) {
+        // 요청이 이루어졌으나 응답이 없었을 때
+        console.error('Login error request:', error.request);
+      } else {
+        // 오류가 발생한 요청을 설정하는 중에 발생한 문제
+        console.error('Login error message:', error.message);
+      }
+      setError('Login failed. Please check your credentials.'); // 오류 메시지 설정
+      console.error('Login error:', error);
+  
+      
+      
+      
+    }
   };
 
   return (
@@ -64,9 +88,9 @@ const LoginForm = ({ onClose, onLoginSuccess }) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <input
-                type="email"
+                type="text"
                 name="email"
-                value="test@example.com"
+                value={formData.email}
                 onChange={handleChange}
                 placeholder="이메일"
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -78,13 +102,19 @@ const LoginForm = ({ onClose, onLoginSuccess }) => {
               <input
                 type="password"
                 name="password"
-                value="test"
+                value={formData.password}
                 onChange={handleChange}
                 placeholder="비밀번호"
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
+
+            {error && ( // 에러 메시지 출력
+              <div className="text-red-500 text-sm text-center">
+                {error}
+              </div>
+            )}
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
