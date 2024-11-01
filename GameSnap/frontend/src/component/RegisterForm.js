@@ -34,7 +34,7 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {  // onL
     setIsVisible(false);
     setIsVisible(false);
     setTimeout(() => {
-      if (onLoginClick) onLoginClick();  // 애니메이션이 끝난 후 로그인 폼으로 전환
+      if (onLoginClick) onLoginClick(); 
     }, 500);
   };
 
