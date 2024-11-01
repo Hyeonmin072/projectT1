@@ -10,10 +10,10 @@ public class MeberGame {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "m_id")
+    @JoinColumn(name = "m_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "g_id")
+    @JoinColumn(name = "g_id")
     private Game game;
 }
