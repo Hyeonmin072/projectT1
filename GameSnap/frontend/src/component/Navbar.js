@@ -68,6 +68,7 @@ const Navbar = () => {
           {/* 여기까지가 로그인 버튼 */}
 
           {/* 여기부터 로그인 클릭 후 로직 */}
+
           {currentForm === 'login' && (  // () 대신 && 사용
             <LoginForm 
               onClose={() => {
@@ -101,14 +102,19 @@ const Navbar = () => {
               />
             )}
 
+            {/* 여기까지가 로그인 클릭 후 로직 */}
+
+
+            {/* 여기 부터 로그인 완료 후 로직 */}
             {isLoggedIn && (
               <div className="text-white px-6 py-3">
-                환영합니다!
+                환영합니다, {userData.name} 님
                 {/* (이 부분은 로그인 구현 후 유저 이름으로 변경) */}
               </div>
             )}
+            {/* 여기까지 완료 로직 */}
             
-            {/* 여기까지가 로그인 클릭 후 로직 */}
+
 
             <button
               onClick={() => setIsSidebarOpen(true)}
@@ -116,6 +122,7 @@ const Navbar = () => {
             >
               <Menu size={24} color="white" />
             </button>
+
           </div>
         </div>
       </nav>

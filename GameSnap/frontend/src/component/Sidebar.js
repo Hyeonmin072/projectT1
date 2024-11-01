@@ -1,4 +1,5 @@
 // Sidebar.js
+/* eslint-disable */
 import React from 'react';
 import { X, Home, User, Settings, HelpCircle, LogOut } from 'lucide-react';
 
