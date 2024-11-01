@@ -1,4 +1,4 @@
-package com.gamesnap.backend.Entity;
+package com.gamesnap.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

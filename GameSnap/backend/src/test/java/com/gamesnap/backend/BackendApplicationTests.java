@@ -1,7 +1,6 @@
 package com.gamesnap.backend;
 
-import com.gamesnap.backend.Entity.Member;
-import com.gamesnap.backend.Repository.UserRepository;
+import com.gamesnap.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

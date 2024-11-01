@@ -1,8 +1,8 @@
 package com.gamesnap.backend.controller;
 
 
-import com.gamesnap.backend.Request.UserLoginRequest;
-import com.gamesnap.backend.Service.UserLoginService;
+import com.gamesnap.backend.request.UserLoginRequest;
+import com.gamesnap.backend.service.UserLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,6 +15,7 @@ public class MemberLoginController {
 
     @Autowired
     private UserLoginService userLoginService;
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserLoginRequest userLoginRequest) {
         String email = userLoginRequest.getEmail();

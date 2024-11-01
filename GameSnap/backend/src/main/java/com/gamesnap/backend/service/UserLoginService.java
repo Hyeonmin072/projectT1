@@ -1,7 +1,7 @@
-package com.gamesnap.backend.Service;
+package com.gamesnap.backend.service;
 
-import com.gamesnap.backend.Entity.Member;
-import com.gamesnap.backend.Repository.UserRepository;
+import com.gamesnap.backend.entity.Member;
+import com.gamesnap.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

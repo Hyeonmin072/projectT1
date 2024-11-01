@@ -1,4 +1,4 @@
-package com.gamesnap.backend.Request;
+package com.gamesnap.backend.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
