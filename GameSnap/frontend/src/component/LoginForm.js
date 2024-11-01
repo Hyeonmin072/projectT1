@@ -50,8 +50,8 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
     console.log('Register button clicked in LoginForm');
     setIsVisible(false);
     setTimeout(() => {
-      onRegisterClick?.();  // props로 전달받은 함수 호출
-    }, 300);
+    onRegisterClick?.();  // props로 전달받은 함수 호출
+  }, 300);
   };
 
   // 로그인 제출 핸들러
@@ -121,6 +121,7 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
           onClick={handleClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
                    transition-colors duration-200"
+                   
         >
           ✕
         </button>
