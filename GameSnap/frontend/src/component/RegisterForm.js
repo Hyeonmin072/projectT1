@@ -173,7 +173,7 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {  // onL
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="전화번호 (예: 010-1234-5678)"
+                placeholder="전화번호 (EX: 010-1234-5678)"
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
