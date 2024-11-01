@@ -1,6 +1,6 @@
 package com.gamesnap.backend;
 
-import com.gamesnap.backend.repository.UserRepository;
+import com.gamesnap.backend.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class BackendApplicationTests {
 
     @Autowired
-    private UserRepository userRepository;
+    private MemberRepository userRepository;
 //	@Test
 //	void contextLoads() {
 //	}
