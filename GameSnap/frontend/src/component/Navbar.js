@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useCallback } from 'react';
 import { Menu } from 'lucide-react';
 import Sidebar from './Sidebar';
@@ -27,7 +28,9 @@ const Navbar = () => {
   const handleLogout = () => {
     console.log('로그아웃');
     setIsLoggedIn(false);
-    setIsSidebarOpen(false); // 사이드바도 함께 닫기
+    setIsSidebarOpen(false);
+    
+    // 사이드바도 함께 닫기
     // 필요한 경우 여기에 추가적인 로그아웃 로직을 구현하세요
     // 예: 토큰 제거, 서버에 로그아웃 요청 등
   };
@@ -70,10 +73,12 @@ const Navbar = () => {
               onClose={() => {
                 console.log('Login form closing');
                 setCurrentForm('none');
+                console.log('Current form state changed to:', currentForm);
               }}
               onRegisterClick={() => {  // 여기를 함수로 수정
                 console.log('Switching to register form');
                 setCurrentForm('register');
+                console.log('Current form state changed to:', currentForm);
               }}
             />
           )}
@@ -82,13 +87,16 @@ const Navbar = () => {
                 onClose={() => {
                   console.log('Register form closing');
                   setCurrentForm('none');
+                  console.log('Current form state changed to:', currentForm);
                 }}
                 onRegisterSuccess={() => {
                   console.log('Register success');
                   setCurrentForm('login');
+                  console.log('Current form state changed to:', currentForm);
                 }}
                 onLoginClick={() => {  // 로그인으로 돌아가기 위한 함수
                   setCurrentForm('login');
+                  console.log('Current form state changed to:', currentForm);
                 }}
               />
             )}
