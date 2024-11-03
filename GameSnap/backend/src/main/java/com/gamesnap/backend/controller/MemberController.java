@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @PostMapping("/check-name")
-    public ResponseEntity<String> chkeckName(@RequestBody String name){
+    public ResponseEntity<String> checkName(@RequestBody String name){
         return memberService.nameCheck(name);
     }
 
