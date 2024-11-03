@@ -102,7 +102,7 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* 배경 오버레이 */}
       <div 
         className={`fixed inset-0 bg-black transition-opacity duration-300 ${

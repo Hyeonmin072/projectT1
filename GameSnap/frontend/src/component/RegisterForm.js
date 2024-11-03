@@ -140,21 +140,23 @@ useEffect(() => {
 
   return (
     <div className={`
-      fixed inset-0 flex items-center justify-center p-4 z-100 
+      fixed inset-0 flex items-center justify-center z-[999]
       transition-opacity duration-500 
       ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
 
     <div 
-      className={`fixed inset-0 bg-black transition-opacity duration-500 
+      className={`fixed inset-0 bg-black transition-opacity duration-500 z-[998]
         ${isVisible ? 'bg-opacity-50' : 'bg-opacity-0'}`}
       onClick={handleClose}
     />
 
     <div className={`
-        bg-white rounded-lg w-full max-w-md relative
-        transform transition-all duration-300 z-60
+        relative w-full max-w-lg mx- z-[1000]
+        bg-white rounded-lg shadow-xl
+        transform transition-all duration-300
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-      `}>
+      `}
+      >
         <button
           onClick={handleClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
