@@ -32,6 +32,9 @@ public class Member {
     @Column(name = "m_content")
     private String content;
 
+    @Column(name = "m_tel")
+    private String tel;
+
     @Column(name = "m_createdate")
     private LocalDate createdate;
 
