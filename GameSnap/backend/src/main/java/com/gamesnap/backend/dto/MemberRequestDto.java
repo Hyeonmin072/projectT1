@@ -7,11 +7,16 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class MemberRequestDto {
     private String email;
     private String password;
-    private String tel;
     private String name;
+    private String tel;
+    public MemberRequestDto(String email, String password,String name, String tel){
+        this.email=email;
+        this.password=password;
+        this.name=name;
+        this.tel=tel;
+    }
 }
