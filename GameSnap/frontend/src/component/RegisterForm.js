@@ -62,7 +62,7 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
       return false;
     }
 
-    if (!formData.phone.match(/^\d{3}-\d{3,4}-\d{4}$/)) {
+    if (!formData.tel.match(/^\d{3}-\d{3,4}-\d{4}$/)) {
       setError('올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)');
       return false;
     }

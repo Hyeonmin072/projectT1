@@ -34,9 +34,9 @@ public class MemberController {
     public ResponseEntity<String> register(@RequestBody  MemberRequestDto memberRequestDto){
         String email = memberRequestDto.getEmail();
         String password = memberRequestDto.getPassword();
-        String tel = memberRequestDto.getTel();
         String name = memberRequestDto.getName();
-        Member member = new Member(name, email, password, tel);
+        String tel = memberRequestDto.getTel();
+        Member member = new Member(email, password, name, tel);
 
         return memberService.register(member);
     }
