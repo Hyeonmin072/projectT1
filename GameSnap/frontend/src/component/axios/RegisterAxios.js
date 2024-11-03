@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:1111';
 // 회원가입 요청 함수
 export const register = async (userData) => {
   try {
-    const response = await axios.post(`${API_URL}/api/auth/register`, {
+    const response = await axios.post(`${API_URL}/register`, {
       email: userData.email,
       password: userData.password,
       name: userData.name,
@@ -27,7 +27,7 @@ export const register = async (userData) => {
 // 이메일 중복 확인 함수
 export const checkEmailDuplicate = async (email) => {
   try {
-    const response = await axios.post(`${API_URL}/api/auth/check-email`, {
+    const response = await axios.post(`${API_URL}/check-email`, {
       email: email
     });
     return response.data;
@@ -39,7 +39,7 @@ export const checkEmailDuplicate = async (email) => {
 // 전화번호 중복 확인 함수
 export const checkPhoneDuplicate = async (phone) => {
   try {
-    const response = await axios.post(`${API_URL}/api/auth/check-phone`, {
+    const response = await axios.post(`${API_URL}/check-phone`, {
       phone: phone
     });
     return response.data;
@@ -48,15 +48,15 @@ export const checkPhoneDuplicate = async (phone) => {
   }
 };
 
-// 회원가입 검증 코드 확인 함수 (이메일 인증 등이 필요한 경우)
-export const verifyRegistration = async (email, code) => {
-  try {
-    const response = await axios.post(`${API_URL}/api/auth/verify`, {
-      email: email,
-      code: code
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+// // 회원가입 검증 코드 확인 함수 (이메일 인증 등이 필요한 경우)
+// export const verifyRegistration = async (email, code) => {
+//   try {
+//     const response = await axios.post(`${API_URL}/verify`, {
+//       email: email,
+//       code: code
+//     });
+//     return response.data;
+//   } catch (error) {
+//     throw error;
+//   }
+// };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { register } from './axios/RegisterAxios';
 
-const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {  // onLoginClick prop 추가
+const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => { 
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
