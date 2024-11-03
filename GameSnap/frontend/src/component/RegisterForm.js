@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { register } from './axios/RegisterAxios';
+import checkNameDuplicate, { register } from './axios/RegisterAxios';
 
 const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => { 
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
+    
     email: '',
     password: '',
     passwordConfirm: '',
@@ -11,6 +12,8 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     tel: ''
   });
   const [error, setError] = useState('');
+  const [isDuplicateChecked, setIsDuplicateChecked] = useState(false);  // 중복 확인 상태 
+  const [nameMessage, setNameMessage] = useState('');  // 결과 메시지 상태
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);
@@ -90,6 +93,31 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     }
   };
 
+  const handleNameCheck = async () => {
+    console.log('중복 확인 버튼 클릭됨');
+
+    if (!formData.name) {
+      setIsDuplicateChecked(false);
+      setNameMessage('닉네임을 입력해주세요.');
+      return;
+    }
+  
+    try {
+      const response = await checkNameDuplicate(formData.name);
+      if (response.available) {  // 백엔드 응답 형식에 따라 조정 필요
+        setIsDuplicateChecked(true);
+        setNameMessage('사용 가능한 닉네임입니다.');
+      } else {
+        setIsDuplicateChecked(false);
+        setNameMessage('이미 사용 중인 닉네임입니다.');
+      }
+    } catch (error) {
+      setIsDuplicateChecked(false);
+      setNameMessage('중복 확인 중 오류가 발생했습니다.');
+      console.error('Name check error:', error);
+    }
+  };
+
   return (
     <div className={`
       fixed inset-0 flex items-center justify-center p-4 z-100 
@@ -155,28 +183,59 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
               />
             </div>
 
-            <div className="flex gap-2">  {/* flex와 간격 추가 */}
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="닉네임"
-                className="w-[70%] px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              />
-              <button
-                type="button"
-                name="name_check"
-                value={formData.name_check}
-                onChange={handleChange}
-                className="w-[30%] bg-white-600 text-black py-2 px-4 rounded-lg hover:bg-gray-300 border border-gray-500
-                transition-colors duration-300"
-                required
-              >
-                중복 확인  
-              </button>
-              
+
+            <div className='relative'>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  name="name"
+                  onChange={handleChange}
+                  placeholder="닉네임"
+                  className="w-[70%] px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+                <button
+                  type="button"
+                  name="name_check"
+                  value={formData.name_check}
+                  onClick={handleNameCheck}
+                  className={`w-[30%] py-2 px-4 rounded-lg border border-gray-500
+                    transition-colors duration-300 ${
+                      isDuplicateChecked 
+                      ? 'bg-green-100 hover:bg-green-200 text-green-800' 
+                      : 'bg-white hover:bg-gray-300 text-black'
+                  }`}
+                >
+                  중복 확인  
+                </button>
+                <div className="
+                  absolute -top-12 right-0 px-3 py-2 rounded-lg text-sm
+                  after:content-['']
+                  after:absolute
+                  after:bottom-[-6px]
+                  after:right-10
+                  after:border-[6px]
+                  after:border-t-current
+                  after:border-r-transparent
+                  after:border-b-transparent
+                  after:border-l-transparent
+                  shadow-lg
+                  bg-white
+                  z-10">
+                  {nameMessage && (
+                    <p className={`text-sm mt-1 ${
+                      isDuplicateChecked 
+                        ? 'text-green-600' 
+                        : formData.name 
+                          ? 'text-red-600'
+                          : 'text-gray-600'
+                    }`}
+                    >
+                      {nameMessage}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div>

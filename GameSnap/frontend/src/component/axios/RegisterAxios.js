@@ -48,6 +48,18 @@ export const checkPhoneDuplicate = async (phone) => {
   }
 };
 
+// 닉네임 중복 확인 함수
+export const checkNameDuplicate = async (name) => {
+  try {
+    const response = await axios.post(`${API_URL}/check-name`, {
+      name: name
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // // 회원가입 검증 코드 확인 함수 (이메일 인증 등이 필요한 경우)
 // export const verifyRegistration = async (email, code) => {
 //   try {
@@ -60,3 +72,4 @@ export const checkPhoneDuplicate = async (phone) => {
 //     throw error;
 //   }
 // };
+export default checkNameDuplicate;
