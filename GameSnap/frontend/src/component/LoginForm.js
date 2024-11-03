@@ -47,7 +47,7 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
 
   // 회원가입 전환 핸들러
   const handleRegisterClick = () => {
-    console.log('Register button clicked in LoginForm');
+    console.log('로그인 폼에서 회원가입 폼 클릭됨');
     setIsVisible(false);
     setTimeout(() => {
     onRegisterClick?.();  // props로 전달받은 함수 호출
@@ -88,6 +88,7 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
       console.error('Login error:', error);
       
       // 에러 메시지 설정
+      
       if (error.response?.data?.message) {
         setError(error.response.data.message);
       } else if (error.response?.status === 401) {
