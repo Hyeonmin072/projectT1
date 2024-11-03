@@ -5,19 +5,18 @@ import com.gamesnap.backend.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
 
 
 @Service
+@Transactional
 public class MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
-    public List<Member> getUser(){
-        return memberRepository.findAll();
-    }
 
     public ResponseEntity<String> login(String email, String password) {
         //로그인 로직, 회원이 가입 되어있는지 확인
