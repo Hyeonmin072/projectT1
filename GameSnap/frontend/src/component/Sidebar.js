@@ -1,4 +1,5 @@
 // Sidebar.js
+/* eslint-disable */
 import React from 'react';
 import { X, Home, User, Settings, HelpCircle, LogOut } from 'lucide-react';
 
@@ -13,7 +14,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
       {/* 오버레이 */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30"
+          className="fixed inset-0 bg-black bg-opacity-50 z-30" 
           onClick={onClose}
         />
       )}
