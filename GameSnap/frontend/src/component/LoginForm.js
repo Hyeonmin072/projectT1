@@ -19,7 +19,7 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
 
   // props 디버깅을 위한 useEffect
   useEffect(() => {
-    console.log('LoginForm props:', {
+    console.log('로그인 폼 프롭스 체크:', {
       hasOnClose: !!onClose,
       hasOnLoginSuccess: !!onLoginSuccess,
       hasOnRegisterClick: !!onRegisterClick

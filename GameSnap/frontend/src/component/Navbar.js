@@ -64,7 +64,8 @@ const Navbar = () => {
               onClick={() => {
                 setCurrentForm('login');
                 setIsLoginOpen(true);
-                console.log('폼 스테이트 변경:', currentForm);
+                console.log(currentForm, '에서 폼 스테이트 변경 요청');
+
                 console.log('Navbar 로그인 버튼 클릭');
               }}
               className="px-6 py-3 bg-white text-black-600 font-semibold rounded-md hover:bg-green-700 hover:text-white"
@@ -82,12 +83,12 @@ const Navbar = () => {
               onClose={() => {
                 console.log('회원가입 폼 닫음');
                 setCurrentForm('none');
-                console.log('폼 스테이트 변경:', currentForm);
               }}
               onRegisterClick={() => {  // 여기를 함수로 수정
                 console.log('회원 가입 폼으로 스위칭');
                 setCurrentForm('register');
-                console.log('폼 스테이트 변경:', currentForm);
+                console.log(currentForm, '에서 폼 스테이트 변경 요청');
+
               }}
             />
           )}
@@ -96,16 +97,17 @@ const Navbar = () => {
                 onClose={() => {
                   console.log('Register form closing');
                   setCurrentForm('none');
-                  console.log('폼 스테이트 변경:', currentForm);
+                  console.log(currentForm, '에서 폼 스테이트 변경 요청');
+
                 }}
                 onRegisterSuccess={() => {
                   console.log('Register success');
                   setCurrentForm('login');
-                  console.log('폼 스테이트 변경:', currentForm);
+                  console.log(currentForm, '에서 폼 스테이트 변경 요청');
                 }}
                 onLoginClick={() => {  // 로그인으로 돌아가기 위한 함수
                   setCurrentForm('login');
-                  console.log('폼 스테이트 변경:', currentForm);
+                  console.log(currentForm, '에서 폼 스테이트 변경 요청');
                 }}
               />
             )}
