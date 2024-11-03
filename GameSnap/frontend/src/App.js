@@ -7,9 +7,10 @@ function App() {
 
   return (
 
-    <div className="font-sans bg-gray-100 text-gray-900">
+    <div className="min-h-screen bg-gray-100 text-gray-900">
       <Navbar/>
-      <PageContainer />
+      {/* <PageContainer /> */}
+      {/* 이거 뭐지 ? */}
       <Contact />
     </div>
   );

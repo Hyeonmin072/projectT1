@@ -77,6 +77,51 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
     setError('');
 
     try {
+      // 임시 로그인 로직
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과를 위한 지연
+  
+      // 테스트 계정 확인
+      if (formData.email === 'test@test.com' && formData.password === 'test123') {
+        const mockResponse = {
+          data: {
+            token: 'fake-jwt-token-12345',
+            user: {
+              id: 1,
+              email: 'test@test.com',
+              name: '테스트 유저',
+              role: 'user'
+            }
+          }
+        };
+  
+        console.log('Login successful:', mockResponse.data);
+        
+        // 로그인 성공 정보를 localStorage에 저장
+        localStorage.setItem('token', mockResponse.data.token);
+        localStorage.setItem('user', JSON.stringify(mockResponse.data.user));
+        
+        // 성공 시 처리
+        setIsVisible(false);
+        setTimeout(() => {
+          onLoginSuccess?.(mockResponse.data);
+          onClose?.();
+          console.log('tempLogin successful:', mockResponse.data);
+        }, 300);
+      } else {
+        throw new Error('인증 실패');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      
+      // 에러 메시지 설정
+      setError('이메일 또는 비밀번호가 올바르지 않습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+    
+  
+
+    try {
       const response = await login(formData.email, formData.password);
       console.log('Login successful:', response.data);
       
