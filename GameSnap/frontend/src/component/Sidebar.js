@@ -1,7 +1,7 @@
 // Sidebar.js
 /* eslint-disable */
 import React from 'react';
-import { X, Home, User, Settings, HelpCircle, LogOut } from 'lucide-react';
+import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose, onLogout }) => {
   const handleLogout = () => {
@@ -42,18 +42,21 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               홈
             </a>
             <a href="#" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <SquareMenu className="mr-3" size={20} />
+              게시판
+            </a>
+            <a href="#" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <MessagesSquare className="mr-3" size={20} />
+              채팅
+            </a>
+            <a href="#" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <User className="mr-3" size={20} />
               프로필
             </a>
-            <a href="#" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <Settings className="mr-3" size={20} />
-              설정
-            </a>
-            <a href="#" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <HelpCircle className="mr-3" size={20} />
-              도움말
-            </a>
           </nav>
+
+
+
 
           <div className="border-t">
             <button 

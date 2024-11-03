@@ -155,16 +155,28 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
               />
             </div>
 
-            <div>
+            <div className="flex gap-2">  {/* flex와 간격 추가 */}
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="이름"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="닉네임"
+                className="w-[70%] px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
+              <button
+                type="button"
+                name="name_check"
+                value={formData.name_check}
+                onChange={handleChange}
+                className="w-[30%] bg-white-600 text-black py-2 px-4 rounded-lg hover:bg-gray-300 border border-gray-500
+                transition-colors duration-300"
+                required
+              >
+                중복 확인  
+              </button>
+              
             </div>
 
             <div>
