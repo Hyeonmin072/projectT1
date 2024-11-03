@@ -3,7 +3,9 @@ package com.gamesnap.backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,12 +33,12 @@ public class Member {
     private String content;
 
     @Column(name = "m_createdate")
-    private LocalDateTime createdate;
+    private LocalDate createdate;
 
     @Column(name = "m_tel")
     private String tel;
 
-    protected Member() {
+    public Member() {
     }
 
     public Member(Integer id, String name, String email, String password, String tel) {
@@ -45,5 +47,6 @@ public class Member {
         this.email = email;
         this.password = password;
         this.tel = tel;
+        this.createdate = LocalDate.now();
     }
 }
