@@ -35,9 +35,6 @@ public class Member {
     @Column(name = "m_createdate")
     private LocalDate createdate;
 
-    @Column(name = "m_tel")
-    private String tel;
-
     public Member() {
     }
 
