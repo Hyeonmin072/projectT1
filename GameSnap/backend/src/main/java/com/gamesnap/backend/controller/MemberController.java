@@ -2,6 +2,7 @@ package com.gamesnap.backend.controller;
 
 
 import com.gamesnap.backend.dto.MemberRequestDto;
+import com.gamesnap.backend.entity.Member;
 import com.gamesnap.backend.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,9 @@ public class MemberController {
         String password = memberRequestDto.getPassword();
         String tel = memberRequestDto.getTel();
         String name = memberRequestDto.getName();
+        Member member = new Member(email, password, tel, name);
 
-        return memberService.register(email,password,tel,name);
+        return memberService.register(member);
     }
 
     @PostMapping("/check-name")

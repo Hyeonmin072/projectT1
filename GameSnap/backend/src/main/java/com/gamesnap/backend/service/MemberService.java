@@ -31,17 +31,11 @@ public class MemberService {
         }
     }
 
-    public ResponseEntity<String> register(String email, String password, String tel, String name){
+    public ResponseEntity<String> register(Member member) {
 
-        int result = isEmailAndNameChecked(email,name);
+        int result = isEmailAndNameChecked(member.getEmail(),member.getName());
 
         if(result == 1){
-            Member member = new Member();
-            member.setEmail(email);
-            member.setPassword(password);
-            member.setTel(tel);
-            member.setName(name);
-
             this.memberRepository.save(member);
             return ResponseEntity.ok("회원가입 완료");
         }else if(result == -1){

@@ -41,8 +41,7 @@ public class Member {
     public Member() {
     }
 
-    public Member(Integer id, String name, String email, String password, String tel) {
-        this.id = id;
+    public Member(String name, String email, String password, String tel) {
         this.name = name;
         this.email = email;
         this.password = password;
