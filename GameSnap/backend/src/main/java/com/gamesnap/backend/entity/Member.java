@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 public class Member {
 
     @Id
@@ -38,9 +37,6 @@ public class Member {
 
     @Column(name = "m_createdate")
     private LocalDate createdate;
-
-    @Column(name = "m_tel")
-    private String tel;
 
     public Member() {
     }
