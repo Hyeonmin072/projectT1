@@ -16,6 +16,9 @@ public class Member {
     @Column(name = "m_id")
     private Integer id;
 
+    @Column(name = "m_name")
+    private String name;
+
     @Column(name = "m_email")
     private String email;
 
@@ -34,4 +37,17 @@ public class Member {
     @Column(name = "m_createdate")
     private LocalDateTime createdate;
 
+    @Column(name = "m_tel")
+    private String tel;
+
+    protected Member() {
+    }
+
+    public Member(Integer id, String name, String email, String password, String tel) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.tel = tel;
+    }
 }
