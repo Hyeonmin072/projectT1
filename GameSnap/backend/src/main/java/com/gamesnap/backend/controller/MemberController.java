@@ -1,7 +1,7 @@
 package com.gamesnap.backend.controller;
 
 
-import com.gamesnap.backend.dto.MemberLoginDto;
+import com.gamesnap.backend.dto.MemberRequestDto;
 import com.gamesnap.backend.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +17,33 @@ public class MemberController {
     private MemberService memberService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody MemberLoginDto memberLoginDto) {
+    public ResponseEntity<String> login(@RequestBody MemberRequestDto memberRequestDto) {
 
-        String email = memberLoginDto.getEmail();
-        String password = memberLoginDto.getPassword();
+        String email = memberRequestDto.getEmail();
+        String password = memberRequestDto.getPassword();
         System.out.println("Received email: " + email);
         System.out.println("Received password: " + password);
 
         return memberService.login(email, password);
 
     }
+
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody  MemberRequestDto memberRequestDto){
+        String email = memberRequestDto.getEmail();
+        String password = memberRequestDto.getPassword();
+        String tel = memberRequestDto.getTel();
+        String name = memberRequestDto.getName();
+
+        return memberService.register(email,password,tel,name);
+    }
+
+    @PostMapping("/check-name")
+    public ResponseEntity<String> chkeckName(@RequestBody String name){
+        return memberService.nameCheck(name);
+    }
+
 
     @GetMapping("/")
     public String home(){
