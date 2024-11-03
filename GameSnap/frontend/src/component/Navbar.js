@@ -48,7 +48,8 @@ const Navbar = () => {
           /> */}
 
           {/* 로고 글 */}
-          <div className="text-2xl font-bold text-white hover:text-green-600 flex-shrink-0">
+          <div className="text-2xl font-bold text-white hover:text-green-600 flex-shrink-0
+          transition-colors duration-700">
             GameSnap
           </div>
 

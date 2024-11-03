@@ -150,7 +150,7 @@ useEffect(() => {
     {/* 이쯤까지 */}
 
     <div className={`
-        relative w-full max-w-lg mx- z-[1000]
+        relative w-full max-w-lg z-[1000]
         bg-white rounded-lg shadow-xl
         transform transition-all duration-300
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
