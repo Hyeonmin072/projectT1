@@ -8,7 +8,7 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     password: '',
     passwordConfirm: '',
     name: '',
-    phone: ''
+    tel: ''
   });
   const [error, setError] = useState('');
 
@@ -170,8 +170,8 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
             <div>
               <input
                 type="tel"
-                name="phone"
-                value={formData.phone}
+                name="tel"
+                value={formData.tel}
                 onChange={handleChange}
                 placeholder="전화번호 (EX: 010-1234-5678)"
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
