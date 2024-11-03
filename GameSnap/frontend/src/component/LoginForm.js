@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { login } from './axios/LoginAxios';
 
+
 const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   // 상태 관리
   const [isVisible, setIsVisible] = useState(false);
@@ -10,6 +11,7 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+  
 
   // 초기 마운트 시 애니메이션
   useEffect(() => {
