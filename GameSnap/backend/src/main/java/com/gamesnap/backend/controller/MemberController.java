@@ -1,15 +1,16 @@
 package com.gamesnap.backend.controller;
 
 
-import com.gamesnap.backend.dto.MemberRequestDto;
-import com.gamesnap.backend.entity.Member;
-import com.gamesnap.backend.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import com.gamesnap.backend.dto.MemberRequestDto;
+import com.gamesnap.backend.entity.Member;
+import com.gamesnap.backend.service.MemberService;
 
 @Controller
 public class MemberController {
@@ -51,4 +52,16 @@ public class MemberController {
     public String home(){
         return "redirect:/index";
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<String> getProfile(@RequestBody MemberRequestDto memberRequestDto) {
+        String id = MemberRequestDto.getId();
+
+        if (id != null) {
+            return ResponseEntity.ok(id); // 프로필이 존재할 경우 200 OK 응답
+        } else {
+            return ResponseEntity.notFound().build(); // 프로필이 없을 경우 404 Not Found 응답
+        }
+    }
+    
 }
