@@ -36,7 +36,7 @@ public class MemberController {
         String password = memberRequestDto.getPassword();
         String tel = memberRequestDto.getTel();
         String name = memberRequestDto.getName();
-        Member member = new Member(email, password, tel, name);
+        Member member = new Member(name, email, password, tel);
 
         return memberService.register(member);
     }
