@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -21,63 +19,40 @@ public class MemberService {
     private MemberRepository memberRepository;
 
     public ResponseEntity<String> login(String email, String password) {
-        //로그인 로직, 회원이 가입 되어있는지 확인
-        boolean result = isMemberJoined(email,password);
+        Optional<Member> result = memberRepository.findByEmail(email);//로그인 시, 회원이 가입이 되어 있는지 확인
 
-        if (result) {
-            return ResponseEntity.ok("Login successful");
-        } else {
-            return ResponseEntity.status(401).body("Login failed");
+        if (result.isEmpty()) { //이 이메일로 가입한 회원 없음, 로그인 실패!
+            return ResponseEntity.status(401).body("로그인 실패");
+        }
+
+        Member member = result.get(); //멤버를 꺼냄
+
+        if (member.getPassword().equals(password)) { //입력받은 패스워드가 이메일로 찾은 회원의 이메일과 같으면 성공
+            return ResponseEntity.ok("로그인 성공");
+        } else { // 아니면 실패
+            return ResponseEntity.status(401).body("로그인 실패");
         }
     }
 
     public ResponseEntity<String> register(Member member) {
 
-        int result = isEmailAndNameChecked(member.getEmail(),member.getName());
+        Optional<Member> result = memberRepository.findByEmail(member.getEmail());
 
-        if(result == 1){
+        if(result.isEmpty()){ // 비어 있을 때 = 이 이메일로 가입한 회원이 없으므로 가입 가능
             this.memberRepository.save(member);
-            return ResponseEntity.ok("회원가입 완료");
-        }else if(result == -1){
-            return ResponseEntity.status(401).body("이미 존재하는 이름과, 닉네임입니다.");
-        }else if(result == 2){
-            return ResponseEntity.status(401).body("이미 존재하는 이름 입니다.");
-        }else {
-            return ResponseEntity.status(401).body("이미 존재하는 이메일 입니다.");
+            return ResponseEntity.ok("회원가입 완료!");
+        } else { // 안 비어 있을 때 = 이 이메일로 가입한 회원이 이미 있음
+            return ResponseEntity.status(401).body("이미 존재하는 이메일입니다.");
         }
-
     }
 
     public ResponseEntity<String> nameCheck(String name){
-        Member member = memberRepository.findByName(name);
-        if(member == null){
+        Optional<Member> result = memberRepository.findByName(name);
+
+        if(result.isEmpty()){ // 중복되는 닉네임이 없으므로 사용가능
             return ResponseEntity.ok(name);
-        }else{
+        } else { // 닉네임이 중복됨
             return ResponseEntity.status(401).body("이미 존재하는 이름입니다.");
         }
-    }
-
-    public boolean isMemberJoined(String email, String password) {
-        // 사용자 조회 및 비밀번호 확인 로직
-        Member member = memberRepository.findByEmail(email);
-        return member != null && member.getPassword().equals(password);
-
-    }
-
-    int isEmailAndNameChecked(String email,String name){
-
-        Member emailCheck = memberRepository.findByEmail(email);
-        Member nameCheck = memberRepository.findByName(name);
-        if(emailCheck == null && nameCheck == null){
-            return 1;   //이메일 ,이름이 없을경우
-        }else if (nameCheck != null && emailCheck != null){
-          return -1; // 이메일, 이름 둘 다 있을경우
-        } else if(nameCheck != null){
-            return 2; // 이름이 있을경우
-        }else {
-            return 3; // 이메일 있을경우
-        }
-
-
     }
 }
