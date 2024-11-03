@@ -139,16 +139,15 @@ useEffect(() => {
   };
 
   return (
-    <div className={`
-      fixed inset-0 flex items-center justify-center z-[999]
-      transition-opacity duration-500 
-      ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
 
-    <div 
-      className={`fixed inset-0 bg-black transition-opacity duration-500 z-[998]
-        ${isVisible ? 'bg-opacity-50' : 'bg-opacity-0'}`}
-      onClick={handleClose}
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+    {/* 배경 오버레이 */}
+      <div 
+        className={`fixed inset-0 bg-black transition-opacity duration-300 ${
+          isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
+        }`}
     />
+    {/* 이쯤까지 */}
 
     <div className={`
         relative w-full max-w-lg mx- z-[1000]
