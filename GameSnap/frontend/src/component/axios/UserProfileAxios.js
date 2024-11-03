@@ -1,33 +1,33 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const UserProfile = ({ userId }) => {
+const UserProfile = ({ userid }) => {
     const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const fetchProfileData = async () => {
         try {
-            const response = await axios.get(`/gamesnap/profile/${userId}`);
+            const response = await axios.get(`/gamesnap/profile/${userid}`);
             setProfile(response.data);
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching profile data:', error);
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchProfileData();
-    }, [userId]); // userId가 변경될 때마다 다시 데이터 요청
+    }, [userid]); // userId가 변경될 때마다 다시 데이터 요청
 
     return (
         <div>
-            {profile ? (
-                <div>
-                    <h1>{profile.name}</h1>
-                    <p>Email: {profile.email}</p>
-                    <input type="tel" name="phone">전화번호 : </input>
-                    <input type="password" name="pw">비밀번호 : </input>
-                </div>
-            ) : (
+            {loading ? (
                 <p>Loading...</p>
+            ) : (
+                <div>
+                    <p></p>
+                </div>
             )}
         </div>
     );
