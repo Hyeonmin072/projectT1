@@ -19,8 +19,9 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<Member> login(@RequestBody MemberRequestDto memberRequestDto) {
 
         String email = memberRequestDto.getEmail();
         String password = memberRequestDto.getPassword();
@@ -34,13 +35,22 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody  MemberRequestDto memberRequestDto){
+
         String email = memberRequestDto.getEmail();
         String password = memberRequestDto.getPassword();
         String name = memberRequestDto.getName();
         String tel = memberRequestDto.getTel();
         Member member = new Member(email, password, name, tel);
 
-        return memberService.register(member);
+        String registerMessage = memberService.register(member);
+        if(registerMessage != null){
+            return ResponseEntity.status(401).body(registerMessage);
+        }
+
+
+        return ResponseEntity.ok("회원가입 에 성공하셨습니다!");
+
+
     }
 
     @PostMapping("/check-name")
