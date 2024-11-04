@@ -64,7 +64,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-4 flex-shrink-0">
   {/* 로그인/프로필 버튼 컨테이너 */}
   <div className="relative h-12 w-40">
-    <div className={`absolute w-full transition-all duration-500 ease-in-out transform
+    <div className={`absolute w-full transition-all duration-1000 ease-in-out transform
       ${!isLoggedIn 
         ? 'translate-x-0 opacity-100' 
         : '-translate-x-full opacity-0 pointer-events-none'
