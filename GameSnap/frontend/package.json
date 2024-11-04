@@ -1,11 +1,12 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "your-project-name",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "framer-motion": "^11.11.11",
     "lucide-react": "^0.454.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -41,7 +42,5 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14"
   },
-  "name": "your-project-name",
-  "version": "1.0.0",
   "proxy": "http://localhost:8080"
 }
