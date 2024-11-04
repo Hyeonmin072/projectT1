@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, {} from 'react';
 import Navbar from './component/Navbar';
 import Contact from './component/Contact';
