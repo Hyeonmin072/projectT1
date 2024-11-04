@@ -59,49 +59,65 @@ const Navbar = () => {
           </div>
 
           {/* 우측 버튼들 */}
-          <div className="flex items-center space-x-4 flex-shrink-0">
-            {!isLoggedIn ? (
-              <button
-                onClick={() => {
-                  setCurrentForm('login');
-                  setIsLoginOpen(true);
-                }}
-                className="px-6 py-3 bg-white text-black-600 font-semibold rounded-md hover:bg-green-700 hover:text-white
-                transition-all duration-200"
-              >
-                회원 로그인
-              </button>
-            ) : (
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 px-4 py-3 bg-green-600 text-white rounded-md hover:bg-green-700
-                  transition-all duration-200"
-                >
-                  <User size={20} />
-                  <span>{userData?.name || '사용자'}</span>
-                </button>
 
-                {/* 사용자 메뉴 드롭다운 */}
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                    <button
-                      onClick={() => {/* 프로필 페이지로 이동 */}}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      프로필
-                    </button>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                    >
-                      <LogOut size={16} className="mr-2" />
-                      로그아웃
-                    </button>
-                  </div>
-                )}
+          
+          <div className="flex items-center space-x-4 flex-shrink-0">
+  {/* 로그인/프로필 버튼 컨테이너 */}
+  <div className="relative h-12 w-40">
+    <div className={`absolute w-full transition-all duration-500 ease-in-out transform
+      ${!isLoggedIn 
+        ? 'translate-x-0 opacity-100' 
+        : '-translate-x-full opacity-0 pointer-events-none'
+      }`}
+    >
+      <button
+        onClick={() => {
+          setCurrentForm('login');
+          setIsLoginOpen(true);
+        }}
+        className="w-full px-6 py-3 bg-white text-black-600 font-semibold rounded-md 
+        hover:bg-green-700 hover:text-white transition-all duration-200"
+      >
+        회원 로그인
+      </button>
+        </div>
+
+        <div className={`absolute w-full transition-all duration-1000 ease-in-out transform
+          ${isLoggedIn 
+            ? 'translate-x-0 opacity-100'
+            : 'translate-x-full opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className="relative">
+            <button
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              className="w-full flex items-center justify-center space-x-2 px-4 py-3 
+              bg-green-600 text-white rounded-md hover:bg-green-900 transition-all duration-400"
+            >
+              <User size={20} />
+              <span>{userData?.name || '사용자'}</span>
+            </button>
+
+            {showUserMenu && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <button
+                  onClick={() => {/* 프로필 페이지로 이동 */}}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  프로필
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                >
+                  <LogOut size={16} className="mr-2" />
+                  로그아웃
+                </button>
               </div>
             )}
+          </div>
+        </div>
+    </div>
 
             {/* 로그인/회원가입 모달 */}
             {currentForm === 'login' && (
@@ -120,18 +136,26 @@ const Navbar = () => {
               />
             )}
 
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="p-2 hover:bg-green-800 rounded-full transition-colors duration-200"
-            >
-              <Menu size={24} color="white" />
-            </button>
+            <div className={`
+              transform transition-all duration-500 ease-in-out
+              ${isLoggedIn ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0 pointer-events-none'}
+              `}>
+
+                {isLoggedIn && (
+                <button
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="p-2 hover:bg-green-800 rounded-full transition-colors duration-200"
+                >
+                  <Menu size={24} color="white" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </nav>
 
       <Sidebar 
-        isOpen={isSidebarOpen} 
+        isOpen={isSidebarOpen && isLoggedIn} 
         onClose={() => setIsSidebarOpen(false)}
         onLogout={handleLogout}
         isLoggedIn={isLoggedIn}
