@@ -42,12 +42,6 @@ const Navbar = () => {
     console.log('Navbar - localStorage user:', localStorage.getItem('user'));
   }, [userData]);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      console.log('Navbar - 저장된 사용자 정보:', JSON.parse(storedUser));
-    }
-  }, []);
   
   return (
     <div className="h-screen overflow-hidden">

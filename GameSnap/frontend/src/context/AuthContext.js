@@ -4,7 +4,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState();
   const [isSliding, setIsSliding] = useState(false);
 
   const value = {
