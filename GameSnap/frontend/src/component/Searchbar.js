@@ -26,7 +26,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="relative max-w-xl w-full">
+    <div className="relative max-w-xl w-[500px]">
       <div className={`
         flex items-center bg-white bg-opacity-10 rounded-full
         transition-all duration-300

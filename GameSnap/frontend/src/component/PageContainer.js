@@ -15,12 +15,12 @@ const PageContainer = () => {
     };
   
     return (
-      <div className="relative w-full h-screen"> {/* overflow-hidden 제거 */}
+      <div className="relative w-full h-screen">
         <div
           className={`flex transition-transform duration-300 ease-in-out w-[200%] h-full
             ${isTransitioning ? '-translate-x-1/2' : 'translate-x-0'}`}
         >
-          <div className="w-full h-full flex-shrink-0 bg-gray-100"> {/* bg-gray-100 추가 */}
+          <div className="w-full h-full flex-shrink-0 bg-gray-100">
             <MainPage />
             {!isAuthenticated && (
               <div className="fixed inset-0 z-50">

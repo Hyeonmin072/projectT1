@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { login } from './axios/LoginAxios';
-
+import { useAuth } from '../context/AuthContext';
+import { login, testServerConnection } from './axios/LoginAxios';
 
 const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   // 상태 관리
+  const { setIsLoggedIn, setUserData, setIsSliding } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -11,6 +12,17 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+
+  // useEffect(() => {
+  //   const testConnection = async () => {
+  //     const isConnected = await testServerConnection();
+  //     if (!isConnected) {
+  //       console.error('서버 연결 실패');
+  //       setError('서버와의 연결이 원활하지 않습니다.');
+  //     }
+  //   };
+  //   testConnection();
+  // }, []);
   
 
   // 초기 마운트 시 애니메이션
@@ -94,12 +106,32 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
           }
         };
   
+
+        console.log('로그인 응답 데이터:', mockResponse.data);
+        console.log('유저 데이터 설정 전:', mockResponse.data.user);
+
         console.log('Login successful:', mockResponse.data);
         
         // 로그인 성공 정보를 localStorage에 저장
         localStorage.setItem('token', mockResponse.data.token);
         localStorage.setItem('user', JSON.stringify(mockResponse.data.user));
         
+        setIsSliding(true);
+        setIsVisible(false);
+
+        // 상태 업데이트 전에 애니메이션 대기
+        setTimeout(() => {
+          setIsLoggedIn(true);
+          setUserData(mockResponse.data.user);
+          onLoginSuccess?.(mockResponse.data);
+          onClose?.();
+          
+          // 애니메이션 완료
+          setTimeout(() => {
+            setIsSliding(false);
+          }, 500);
+        }, 300);
+
         // 성공 시 처리
         setIsVisible(false);
         setTimeout(() => {
@@ -152,9 +184,9 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* 배경 오버레이 */}
       <div 
-        className={`fixed inset-0 bg-black transition-opacity duration-300 ${
-          isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
-        }`}
+        className={`fixed inset-0 bg-black transition-opacity duration-300 
+          ${isVisible ? 'bg-opacity-50' : 'bg-opacity-0'}
+          `}
         onClick={handleClose}
       />
 
