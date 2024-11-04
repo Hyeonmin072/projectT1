@@ -10,6 +10,8 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     name: '',
     tel: ''
   });
+
+  
   const [showTooltip, setShowTooltip] = useState(false);
   const [error, setError] = useState('');
   const [isDuplicateChecked, setIsDuplicateChecked] = useState(false);  // 중복 확인 상태 
@@ -80,6 +82,7 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     return true;
   };
 
+  
   const handleUnlockName = () => {
     setIsNameLocked(false);
     setIsDuplicateChecked(false);
@@ -126,8 +129,10 @@ useEffect(() => {
     };
   }, [showTooltip]);
   
+  
+
   const handleNameCheck = async () => {
-    console.log('중복 확인 버튼 클릭됨');
+    console.log('중복 확인 버튼 클릭됨'); 
     
     if (!formData.name) {
       setIsDuplicateChecked(false);
@@ -254,7 +259,7 @@ useEffect(() => {
                       onClick={handleUnlockName}
                       className="absolute -right-10 top-1/2 transform -translate-y-1/2 
                               text-gray-500 hover:text-gray-700 bg-transparent p-1 
-                              rounded-full hover:bg-green-400 transition-colors"
+                              rounded-full hover:bg-green-400 tran  sition-colors"
                     >
                       ✎
                     </button>
@@ -346,10 +351,15 @@ useEffect(() => {
 
             <button
               type="submit"
-              className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-900
-                transition-colors duration-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              disabled={!isDuplicateChecked}
+              className={`w-full py-2 px-4 rounded-lg
+                transition-colors duration-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                ${isDuplicateChecked 
+                  ? 'bg-green-600 hover:bg-green-900 text-white cursor-pointer' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
             >
-              가입하기
+              {isDuplicateChecked ? '가입하기' : '닉네임 중복 확인 필요'}
             </button>
 
             <div className="text-center text-sm text-gray-600">
