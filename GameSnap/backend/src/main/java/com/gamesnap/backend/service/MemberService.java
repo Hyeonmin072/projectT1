@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -46,13 +48,18 @@ public class MemberService {
         }
     }
 
-    public ResponseEntity<String> nameCheck(String name){
+    public ResponseEntity<Map<String, Object>> nameCheck(String name) {
         Optional<Member> result = memberRepository.findByName(name);
 
-        if(result.isEmpty()){ // 중복되는 닉네임이 없으므로 사용가능
-            return ResponseEntity.ok(name);
+        Map<String, Object> response = new HashMap<>();
+        if (result.isEmpty()) { // 중복되는 닉네임이 없으므로 사용 가능
+            response.put("available", true);
+            response.put("message", "사용 가능한 닉네임입니다.");
         } else { // 닉네임이 중복됨
-            return ResponseEntity.status(401).body("이미 존재하는 이름입니다.");
+            response.put("available", false);
+            response.put("message", "이미 존재하는 이름입니다.");
         }
+        return ResponseEntity.ok(response);
     }
+
 }

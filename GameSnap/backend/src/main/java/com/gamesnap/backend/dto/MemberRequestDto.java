@@ -19,4 +19,8 @@ public class MemberRequestDto {
         this.name=name;
         this.tel=tel;
     }
+
+    public MemberRequestDto(String name){
+        this.name=name;
+    }
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Map;
+
 @Controller
 public class MemberController {
 
@@ -42,7 +44,8 @@ public class MemberController {
     }
 
     @PostMapping("/check-name")
-    public ResponseEntity<String> checkName(@RequestBody String name){
+    public ResponseEntity<Map<String, Object>> checkName(@RequestBody MemberRequestDto memberRequestDto) {
+        String name = memberRequestDto.getName();
         return memberService.nameCheck(name);
     }
 

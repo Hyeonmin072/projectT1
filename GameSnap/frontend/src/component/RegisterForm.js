@@ -111,7 +111,7 @@ useEffect(() => {
   
   const handleNameCheck = async () => {
     console.log('중복 확인 버튼 클릭됨');
-  
+    
     if (!formData.name) {
       setIsDuplicateChecked(false);
       setNameMessage('닉네임을 입력해주세요.');
@@ -121,23 +121,31 @@ useEffect(() => {
   
     try {
       const response = await checkNameDuplicate(formData.name);
-      if (response.available) {
-        setIsDuplicateChecked(true);
-        setNameMessage('사용 가능한 닉네임입니다.');
-      } else {
-        setIsDuplicateChecked(false);
-        setNameMessage('이미 사용 중인 닉네임입니다.');
-      }
-      setShowTooltip(true);  // useEffect에서 타이머 처리
+      console.log("Response from checkNameDuplicate:", response); // 확인을 위한 로그 추가
   
+      // 실제 데이터를 확인합니다.
+      if (response && response.available !== undefined) {
+        if (response.available) { // 사용 가능한 닉네임
+          setIsDuplicateChecked(true);
+          setNameMessage(response.message); // '사용 가능한 닉네임입니다.'
+        } else { // 닉네임 중복
+          setIsDuplicateChecked(false);
+          setNameMessage(response.message); // '이미 존재하는 이름입니다.'
+        }
+        setShowTooltip(true); // useEffect에서 타이머 처리
+      } else {
+        console.error("Invalid response format:", response);
+        setIsDuplicateChecked(false);
+        setNameMessage("응답 형식이 올바르지 않습니다.");
+        setShowTooltip(true);
+      }
     } catch (error) {
       setIsDuplicateChecked(false);
-      setNameMessage('중복 확인 중 오류가 발생했습니다.');
-      setShowTooltip(true);  // useEffect에서 타이머 처리
-      console.error('Name check error:', error);
+      setNameMessage("중복 확인 중 오류가 발생했습니다.");
+      setShowTooltip(true); // useEffect에서 타이머 처리
+      console.error("Name check error:", error);
     }
   };
-
   return (
 
     <div className="fixed inset-0 flex items-center justify-center z-50">
