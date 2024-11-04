@@ -71,29 +71,31 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   // 로그인 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+      
     // 기본 유효성 검사
     if (!formData.email || !formData.password) {
       setError('이메일과 비밀번호를 입력해주세요.');
       return;
     }
-
+  
     // 이메일 형식 검사
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('올바른 이메일 형식이 아닙니다.');
       return;
     }
-
+  
     setIsLoading(true);
     setError('');
-
+  
     try {
-      // 임시 로그인 로직
-      await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과를 위한 지연
+      let response;
   
       // 테스트 계정 확인
       if (formData.email === 'test@test.com' && formData.password === 'test123') {
+        // 테스트 계정 로직
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과
+        
         const mockResponse = {
           data: {
             token: 'fake-jwt-token-12345',
@@ -106,67 +108,56 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
           }
         };
   
-
         console.log('로그인 응답 데이터:', mockResponse.data);
         console.log('유저 데이터 설정 전:', mockResponse.data.user);
-
-        console.log('Login successful:', mockResponse.data);
         
-        // 로그인 성공 정보를 localStorage에 저장
+        // localStorage 저장
         localStorage.setItem('token', mockResponse.data.token);
         localStorage.setItem('user', JSON.stringify(mockResponse.data.user));
         
         setIsSliding(true);
         setIsVisible(false);
-
-        // 상태 업데이트 전에 애니메이션 대기
+  
+        // 상태 업데이트
         setTimeout(() => {
           setIsLoggedIn(true);
           setUserData(mockResponse.data.user);
           onLoginSuccess?.(mockResponse.data);
           onClose?.();
           
-          // 애니메이션 완료
           setTimeout(() => {
             setIsSliding(false);
           }, 500);
         }, 300);
-
-        // 성공 시 처리
-        setIsVisible(false);
-        setTimeout(() => {
-          onLoginSuccess?.(mockResponse.data);
-          onClose?.();
-          console.log('tempLogin successful:', mockResponse.data);
-        }, 300);
-      } else {
-        throw new Error('인증 실패');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      
-      // 에러 메시지 설정
-      setError('이메일 또는 비밀번호가 올바르지 않습니다.');
-    } finally {
-      setIsLoading(false);
-    }
-    
   
-
-    try {
-      const response = await login(formData.email, formData.password);
-      console.log('Login successful:', response.data);
-      
-      // 성공 시 처리
-      setIsVisible(false);
-      setTimeout(() => {
-        onLoginSuccess?.(response.data);
-        onClose?.();
-      }, 300);
+      } else {
+        // 실제 서버 로그인 시도
+        response = await login(formData.email, formData.password);
+        console.log('Login successful:', response.data);
+        
+        // 서버 로그인 성공 처리
+        setIsVisible(false);
+        
+        // localStorage 저장
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        setIsSliding(true);
+  
+        setTimeout(() => {
+          setIsLoggedIn(true);
+          setUserData(response.data.user);
+          onLoginSuccess?.(response.data);
+          onClose?.();
+          
+          setTimeout(() => {
+            setIsSliding(false);
+          }, 500);
+        }, 300);
+      }
+  
     } catch (error) {
       console.error('Login error:', error);
-      
-      // 에러 메시지 설정
       
       if (error.response?.data?.message) {
         setError(error.response.data.message);
