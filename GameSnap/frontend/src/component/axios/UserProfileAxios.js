@@ -1,36 +1,34 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 
-const UserProfile = ({ userid }) => {
-    const [profile, setProfile] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    const fetchProfileData = async () => {
-        try {
-            const response = await axios.get(`/gamesnap/profile/${userid}`);
-            setProfile(response.data);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching profile data:', error);
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchProfileData();
-    }, [userid]); // userId가 변경될 때마다 다시 데이터 요청
-
-    return (
-        <div>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <div>
-                    <p></p>
-                </div>
-            )}
-        </div>
-    );
+// 사용자 프로필 가져오기
+export const getProfile = async (userid) => {
+    try {
+        const response = await axios.get('/gamesnap/profile/${userid}');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching profile data:', error);
+        return null; // 오류 발생 시 null 반환
+    }
 };
 
-export default UserProfile;
+// 사용자 프로필 업데이트
+export const updateProfile = async (userInfo) => {
+    try {
+        const response = await axios.put('/gamesnap/profile/${userInfo.userid}', userInfo);
+        return response.data; // 성공 시 응답 데이터 반환
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        return { success: false }; // 오류 발생 시 실패 객체 반환
+    }
+};
+
+// 비밀번호 변경
+export const updatePassword = async (newPassword) => {
+    try {
+        const response = await axios.put('/gamesnap/profile/password', { password: newPassword });
+        return response.data; // 성공 시 응답 데이터 반환
+    } catch (error) {
+        console.error('Error updating password:', error);
+        return { success: false }; // 오류 발생 시 실패 객체 반환
+    }
+};

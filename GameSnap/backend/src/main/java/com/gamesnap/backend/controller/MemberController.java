@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.gamesnap.backend.dto.MemberRequestDto;
 import com.gamesnap.backend.entity.Member;
+import com.gamesnap.backend.profile.Passwordupdate;
+import com.gamesnap.backend.profile.Userprofile;
 import com.gamesnap.backend.service.MemberService;
 
 @Controller
@@ -54,14 +56,23 @@ public class MemberController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<String> getProfile(@RequestBody MemberRequestDto memberRequestDto) {
-        String id = MemberRequestDto.getId();
-
-        if (id != null) {
-            return ResponseEntity.ok(id); // 프로필이 존재할 경우 200 OK 응답
-        } else {
-            return ResponseEntity.notFound().build(); // 프로필이 없을 경우 404 Not Found 응답
-        }
+    public ResponseEntity<Userprofile> getProfile() {
+        Userprofile userprofile = new Userprofile("홍길동", "010-1234-5678", "example@example.com", "Action");
+        return ResponseEntity.ok(userprofile);
+    }
+    
+    @PostMapping("/update")
+    public ResponseEntity<Userprofile> updateProfile(@RequestBody Userprofile updatUserprofile) {
+        // 프로필 업데이트 로직
+        
+        return ResponseEntity.ok(updatUserprofile);
+    }
+    
+    @PostMapping("/updatePW")
+    public ResponseEntity<String> updatedPW(@RequestBody Passwordupdate ps) {
+        // 비밀번호 변경 로직
+        
+        return ResponseEntity.ok("비밀번호 변경이 완료되었습니다.");
     }
     
 }

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getProfile, updateProfile, updatePassword } from './axios/UserProfileAxios';
 
-const User = () => {
+const Profile = () => {
   // 유저 프로필 상태 정의
   const [userInfo, setUserInfo] = useState({
     userid: '',
@@ -12,8 +13,21 @@ const User = () => {
     notifications: true,
   });
 
+
   // 편집 모드 상태
   const [isEditing, setIsEditing] = useState(false);
+  const [isPasswordEditing, setIsPasswordEditing] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+
+  //유저프로필 데이터 로드
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      const porfileData = await getProfile(userInfo.userid);
+      setUserInfo(porfileData);
+    };
+
+    loadUserProfile();
+  }, []);
 
   // 입력 값 변경 처리 함수
   const handleChange = (e) => {
@@ -32,13 +46,30 @@ const User = () => {
     });
   };
 
-  // 프로필 저장 처리
-  const handleSave = (e) => {
+  // 프로필 저장 
+  const handleSave = async (e) => {
     e.preventDefault();
-    // 저장 로직 추가 가능 (예: API 호출)
-    console.log("User Info saved:", userInfo);
-    setIsEditing(false);
+    const result = await updateProfile(userInfo);
+    if(result.success) {
+      console.log("Profile updated :" , userInfo);
+      setIsEditing(false);
+    } else {
+      console.log("Failed to update profile.");  
+    }
   };
+
+  // 비밀번호 저장
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    const result = await updatePassword(newPassword);
+    if(result.success){
+      console.log("Password updated successfully");
+      setNewPassword("");
+      setIsPasswordEditing(false);
+    } else{
+      console.log("Failed to update password");
+    }
+  }
 
   return (
     <div style={styles.container}>
@@ -102,16 +133,22 @@ const User = () => {
         </div>
         <div style={styles.field}>
           <label>비밀번호:</label>
-          {isEditing ? (
-            <input
-              type="password"
-              name="password"
-              value={userInfo.password}
-              onChange={handleChange}
-              required
-            />
+          {isPasswordEditing ? (
+            <form onSubmit={handlePasswordChange}>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder = "새 비밀번호 입력"
+                required
+              />
+              <button  type="submit">변경</button>
+            </form>
           ) : (
-            <span>*****</span> // 비밀번호는 보안상 표시하지 않음
+            <>
+            <span>*****</span> {/* 비밀번호는 보안상 표시하지 않음*/}
+            <button onClick={() => setIsPasswordEditing(true)}>비밀번호 변경</button>
+            </>
           )}
         </div>
         <div style={styles.field}>
@@ -180,4 +217,6 @@ const styles = {
   },
 };
 
-export default User;
+
+
+export default Profile;
