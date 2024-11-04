@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { login, testServerConnection } from './axios/LoginAxios';
+import { login } from './axios/LoginAxios';
 
 const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   // 상태 관리
@@ -12,18 +12,6 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
-
-  // useEffect(() => {
-  //   const testConnection = async () => {
-  //     const isConnected = await testServerConnection();
-  //     if (!isConnected) {
-  //       console.error('서버 연결 실패');
-  //       setError('서버와의 연결이 원활하지 않습니다.');
-  //     }
-  //   };
-  //   testConnection();
-  // }, []);
-  
 
   // 초기 마운트 시 애니메이션
   useEffect(() => {

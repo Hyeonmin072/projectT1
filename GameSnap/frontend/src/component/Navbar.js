@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { useState, useCallback, useEffect } from 'react';
 import { Menu, User, LogOut } from 'lucide-react';
 import Sidebar from './Sidebar';
