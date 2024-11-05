@@ -6,11 +6,15 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:1111';
 // 회원가입 요청 함수
 export const register = async (userData) => {
   try {
+    console.log("Tel value:", userData.tel);
+    console.log("email value:", userData.email);
+    console.log("password value:", userData.password);
+    console.log("name value:", userData.name);
     const response = await axios.post(`${API_URL}/register`, {
       email: userData.email,
       password: userData.password,
       name: userData.name,
-      phone: userData.phone
+      tel: userData.tel
     });
 
     // 회원가입 성공 시 처리
@@ -51,9 +55,11 @@ export const checkPhoneDuplicate = async (phone) => {
 // 닉네임 중복 확인 함수
 export const checkNameDuplicate = async (name) => {
   try {
+    console.log("nameValue :",name)
     const response = await axios.post(`${API_URL}/check-name`, {
       name: name
     });
+    console.log("Axios Response:", response.data);
     return response.data;
   } catch (error) {
     throw error;

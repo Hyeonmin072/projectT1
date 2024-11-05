@@ -1,18 +1,22 @@
-/* eslint-disable */
-import React, { useState, useCallback } from 'react';
-import { Menu } from 'lucide-react';
+/*eslint-disable*/
+import React, { useState, useCallback, useEffect } from 'react';
+import { Menu, User, LogOut } from 'lucide-react';
 import Sidebar from './Sidebar';
 import LoginForm from './LoginForm';
 import MainPage from './MainPage';
 import UserPage from './UserPage';
 import SearchBar from './Searchbar';
 import RegisterForm from './RegisterForm';  
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {  
+  const { isLoggedIn, setIsLoggedIn, userData, isSliding } = useAuth();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentForm, setCurrentForm] = useState('none');
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  
+  
 
   const handleSwitchToRegister = useCallback(() => {
     console.log('레지스터 스위칭 핸들 실행');
@@ -29,26 +33,24 @@ const Navbar = () => {
     console.log('로그아웃');
     setIsLoggedIn(false);
     setIsSidebarOpen(false);
-    
-    // 사이드바도 함께 닫기
-    // 필요한 경우 여기에 추가적인 로그아웃 로직을 구현하세요
-    // 예: 토큰 제거, 서버에 로그아웃 요청 등
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setShowUserMenu(false);
   };
 
+  useEffect(() => {
+    console.log('Navbar - userData 변경됨:', userData);
+    console.log('Navbar - localStorage user:', localStorage.getItem('user'));
+  }, [userData]);
+
+  
   return (
     <div className="h-screen overflow-hidden">
       <nav className="bg-black shadow-lg p-4 fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-
-          {/* 로고 이미지 (예정) */}
-          {/* <img 
-            src="GameSnap\frontend\src\assets\gamesnap.png" 
-            alt="GameSnap Logo"
-            className="h-8 w-8 mr-2" 
-          /> */}
-
-          {/* 로고 글 */}
-          <div className="text-2xl font-bold text-white hover:text-green-600 flex-shrink-0">
+          {/* 로고 */}
+          <div className="text-2xl font-bold text-white hover:text-green-600 flex-shrink-0
+          transition-colors duration-700">
             GameSnap
           </div>
 
@@ -58,87 +60,103 @@ const Navbar = () => {
           </div>
 
           {/* 우측 버튼들 */}
+
+          
           <div className="flex items-center space-x-4 flex-shrink-0">
-          {!isLoggedIn && (  // isLoginOpen 대신 isLoggedIn으로 조건 변경
+  {/* 로그인/프로필 버튼 컨테이너 */}
+  <div className="relative h-12 w-40">
+    <div className={`absolute w-full transition-all duration-1000 ease-in-out transform
+      ${!isLoggedIn 
+        ? 'translate-x-0 opacity-100' 
+        : '-translate-x-full opacity-0 pointer-events-none'
+      }`}
+    >
+      <button
+        onClick={() => {
+          setCurrentForm('login');
+          setIsLoginOpen(true);
+        }}
+        className="w-full px-6 py-3 bg-white text-black-600 font-semibold rounded-md 
+        hover:bg-green-700 hover:text-white transition-all duration-200"
+      >
+        회원 로그인
+      </button>
+        </div>
+
+        <div className={`absolute w-full transition-all duration-1000 ease-in-out transform
+          ${isLoggedIn 
+            ? 'translate-x-0 opacity-100'
+            : 'translate-x-full opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className="relative">
             <button
-              onClick={() => {
-                setCurrentForm('login');
-                setIsLoginOpen(true);
-                console.log(currentForm, '에서 폼 스테이트 변경 요청');
-
-                console.log('Navbar 로그인 버튼 클릭');
-              }}
-              className="px-6 py-3 bg-white text-black-600 font-semibold rounded-md hover:bg-green-700 hover:text-white"
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              className="w-full flex items-center justify-center space-x-2 px-4 py-3 
+              bg-green-600 text-white rounded-md hover:bg-green-900 transition-all duration-400"
             >
-              회원 로그인
+              <User size={20} />
+              <span>{userData?.name || '사용자'}</span>
             </button>
-)}
 
-          {/* 여기까지가 로그인 버튼 */}
+            {showUserMenu && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <button
+                  onClick={() => {/* 프로필 페이지로 이동 */}}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  프로필
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                >
+                  <LogOut size={16} className="mr-2" />
+                  로그아웃
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+    </div>
 
-          {/* 여기부터 로그인 클릭 후 로직 */}
-
-          {currentForm === 'login' && (  // () 대신 && 사용
-            <LoginForm 
-              onClose={() => {
-                console.log('회원가입 폼 닫음');
-                setCurrentForm('none');
-              }}
-              onRegisterClick={() => {  // 여기를 함수로 수정
-                console.log('회원 가입 폼으로 스위칭');
-                setCurrentForm('register');
-                console.log(currentForm, '에서 폼 스테이트 변경 요청');
-
-              }}
-            />
-          )}
-            {currentForm === 'register' && (  // () 대신 && 사용
+            {/* 로그인/회원가입 모달 */}
+            {currentForm === 'login' && (
+              <LoginForm 
+                onClose={() => setCurrentForm('none')}
+                onRegisterClick={() => setCurrentForm('register')}
+                onLoginSuccess={handleLoginSuccess}
+              />
+            )}
+            
+            {currentForm === 'register' && (
               <RegisterForm
-                onClose={() => {
-                  console.log('Register form closing');
-                  setCurrentForm('none');
-                  console.log(currentForm, '에서 폼 스테이트 변경 요청');
-
-                }}
-                onRegisterSuccess={() => {
-                  console.log('Register success');
-                  setCurrentForm('login');
-                  console.log(currentForm, '에서 폼 스테이트 변경 요청');
-                }}
-                onLoginClick={() => {  // 로그인으로 돌아가기 위한 함수
-                  setCurrentForm('login');
-                  console.log(currentForm, '에서 폼 스테이트 변경 요청');
-                }}
+                onClose={() => setCurrentForm('none')}
+                onRegisterSuccess={() => setCurrentForm('login')}
+                onLoginClick={() => setCurrentForm('login')}
               />
             )}
 
-            {/* 여기까지가 로그인 클릭 후 로직 */}
+            <div className={`
+              transform transition-all duration-500 ease-in-out
+              ${isLoggedIn ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0 pointer-events-none'}
+              `}>
 
-
-            {/* 여기 부터 로그인 완료 후 로직 */}
-            {isLoggedIn && (
-              <div className="text-white px-6 py-3">
-                환영합니다, {userData.name} 님
-                {/* (이 부분은 로그인 구현 후 유저 이름으로 변경) */}
-              </div>
-            )}
-            {/* 여기까지 완료 로직 */}
-            
-
-
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="p-2 hover:bg-green-800 rounded-full"
-            >
-              <Menu size={24} color="white" />
-            </button>
-
+                {isLoggedIn && (
+                <button
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="p-2 hover:bg-green-800 rounded-full transition-colors duration-200"
+                >
+                  <Menu size={24} color="white" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </nav>
 
       <Sidebar 
-        isOpen={isSidebarOpen} 
+        isOpen={isSidebarOpen && isLoggedIn} 
         onClose={() => setIsSidebarOpen(false)}
         onLogout={handleLogout}
         isLoggedIn={isLoggedIn}
@@ -162,8 +180,8 @@ const Navbar = () => {
           <UserPage />
         </div>
       </div>
-
     </div>
   );
 };
+
 export default Navbar;

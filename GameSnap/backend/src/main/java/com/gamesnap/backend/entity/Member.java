@@ -42,10 +42,10 @@ public class Member {
     public Member() {
     }
 
-    public Member(String name, String email, String password, String tel) {
-        this.name = name;
+    public Member(String email, String password, String name, String tel) {
         this.email = email;
         this.password = password;
+        this.name = name;
         this.tel = tel;
         this.createdate = LocalDate.now();
     }

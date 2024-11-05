@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { login } from './axios/LoginAxios';
 
 const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   // 상태 관리
+  const { setIsLoggedIn, setUserData, setIsSliding } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -57,37 +59,76 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   // 로그인 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+        
     // 기본 유효성 검사
     if (!formData.email || !formData.password) {
       setError('이메일과 비밀번호를 입력해주세요.');
       return;
     }
-
+  
     // 이메일 형식 검사
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('올바른 이메일 형식이 아닙니다.');
       return;
     }
-
+  
     setIsLoading(true);
     setError('');
-
+  
     try {
-      const response = await login(formData.email, formData.password);
-      console.log('Login successful:', response.data);
+      let response;
+  
+      // 테스트 계정 확인
+      if (formData.email === 'test@test.com' && formData.password === 'test123') {
+        // 테스트 계정 로직
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과
+        
+        // 테스트 계정용 mock 응답
+        response = {
+          data: {
+            token: 'fake-jwt-token-12345',
+            id: 1,
+            email: 'test@test.com',
+            name: '테스트 유저'
+          }
+        };
+      } else {
+        // 실제 서버 로그인 시도
+        response = await login(formData.email, formData.password);
+      }
+  
+      console.log('로그인 응답 데이터:', response.data);
+  
+      // 서버 응답 데이터 구조 변환
+      const userData = {
+        id: response.data.id,
+        email: response.data.email,
+        name: response.data.name,
+        role: 'user'
+      };
+  
+      // localStorage 저장
+      localStorage.setItem('token', response.data.token || '');
+      localStorage.setItem('user', JSON.stringify(userData));
       
-      // 성공 시 처리
+      setIsSliding(true);
       setIsVisible(false);
+  
+      // 상태 업데이트
       setTimeout(() => {
+        setIsLoggedIn(true);
+        setUserData(userData);  // 변환된 데이터로 통일
         onLoginSuccess?.(response.data);
         onClose?.();
+        
+        setTimeout(() => {
+          setIsSliding(false);
+        }, 500);
       }, 300);
+  
     } catch (error) {
       console.error('Login error:', error);
-      
-      // 에러 메시지 설정
       
       if (error.response?.data?.message) {
         setError(error.response.data.message);
@@ -100,14 +141,13 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
       setIsLoading(false);
     }
   };
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* 배경 오버레이 */}
       <div 
-        className={`fixed inset-0 bg-black transition-opacity duration-300 ${
-          isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
-        }`}
+        className={`fixed inset-0 bg-black transition-opacity duration-300 
+          ${isVisible ? 'bg-opacity-50' : 'bg-opacity-0'}
+          `}
         onClick={handleClose}
       />
 

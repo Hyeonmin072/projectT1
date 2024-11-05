@@ -10,10 +10,14 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     name: '',
     tel: ''
   });
+
+  
   const [showTooltip, setShowTooltip] = useState(false);
   const [error, setError] = useState('');
   const [isDuplicateChecked, setIsDuplicateChecked] = useState(false);  // 중복 확인 상태 
   const [nameMessage, setNameMessage] = useState('');  // 결과 메시지 상태
+  const [isNameLocked, setIsNameLocked] = useState(false); //닉네임 잠금
+
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 50);
@@ -27,15 +31,23 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'name' && isNameLocked) { //잠겨있는 경우 입력 무시
+      return;
+    }
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+    if (name === 'name') { // 닉ㄴ네임 입력 시 중복 확인 상태 초기화 조건
+      setIsDuplicateChecked(false);
+      setIsNameLocked(false);
+    }
   };
 
   const handleLoginClick = () => {
     setIsVisible(false);
     setIsVisible(false);
+    console.log('로그인 창으로 돌아가는 버튼 클릭됨');
     setTimeout(() => {
       if (onLoginClick) onLoginClick(); 
     }, 500);
@@ -62,12 +74,20 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
       return false;
     }
 
-    if (!formData.phone.match(/^\d{3}-\d{3,4}-\d{4}$/)) {
+    if (!formData.tel.match(/^\d{3}-\d{3,4}-\d{4}$/)) {
       setError('올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)');
       return false;
     }
 
     return true;
+  };
+
+  
+  const handleUnlockName = () => {
+    setIsNameLocked(false);
+    setIsDuplicateChecked(false);
+    console.log('닉네임 잠금 해제');
+    setNameMessage('');
   };
 
   const handleSubmit = async (e) => {
@@ -76,18 +96,18 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
 
     try {
       const response = await register(formData);
-      console.log('Register successful:', response.data);
+      console.log('회원 가입 성공:', response.data);
       onRegisterSuccess?.();
       onClose();
     } catch (error) {
       if (error.response) {
-        console.error('Register error response:', error.response.data);
+        console.error('회원 가입 실패:', error.response.data);
         setError(error.response.data.message || '회원가입에 실패했습니다.');
       } else if (error.request) {
-        console.error('Register error request:', error.request);
+        console.error('서버 통신 에러:', error.request);
         setError('서버와의 통신에 실패했습니다.');
       } else {
-        console.error('Register error message:', error.message);
+        console.error('회원 가입 오류:', error.message);
         setError('회원가입 중 오류가 발생했습니다.');
       }
     }
@@ -109,9 +129,11 @@ useEffect(() => {
     };
   }, [showTooltip]);
   
-  const handleNameCheck = async () => {
-    console.log('중복 확인 버튼 클릭됨');
   
+
+  const handleNameCheck = async () => {
+    console.log('중복 확인 버튼 클릭됨'); 
+    
     if (!formData.name) {
       setIsDuplicateChecked(false);
       setNameMessage('닉네임을 입력해주세요.');
@@ -121,40 +143,50 @@ useEffect(() => {
   
     try {
       const response = await checkNameDuplicate(formData.name);
-      if (response.available) {
-        setIsDuplicateChecked(true);
-        setNameMessage('사용 가능한 닉네임입니다.');
-      } else {
-        setIsDuplicateChecked(false);
-        setNameMessage('이미 사용 중인 닉네임입니다.');
-      }
-      setShowTooltip(true);  // useEffect에서 타이머 처리
+      console.log("Response from checkNameDuplicate:", response); // 확인을 위한 로그 추가
   
+      // 실제 데이터를 확인합니다.
+      if (response && response.available !== undefined) {
+        if (response.available) { // 사용 가능한 닉네임
+          setIsDuplicateChecked(true);
+          setNameMessage(response.message); // '사용 가능한 닉네임입니다.'
+          setIsNameLocked(true); //닉네임 잠금
+        } else { // 닉네임 중복
+          setIsDuplicateChecked(false);
+          setNameMessage(response.message); // '이미 존재하는 이름입니다.'
+        }
+        setShowTooltip(true); // useEffect에서 타이머 처리
+      } else {
+        console.error("올바르지 않은 형식:", response);
+        setIsDuplicateChecked(false);
+        setNameMessage("응답 형식이 올바르지 않습니다.");
+        setShowTooltip(true);
+      }
     } catch (error) {
       setIsDuplicateChecked(false);
-      setNameMessage('중복 확인 중 오류가 발생했습니다.');
-      setShowTooltip(true);  // useEffect에서 타이머 처리
-      console.error('Name check error:', error);
+      setNameMessage("중복 확인 중 오류가 발생했습니다.");
+      setShowTooltip(true); // useEffect에서 타이머 처리
+      console.error("중복확인 에러:", error);
     }
   };
-
   return (
-    <div className={`
-      fixed inset-0 flex items-center justify-center p-4 z-100 
-      transition-opacity duration-500 
-      ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
 
-    <div 
-      className={`fixed inset-0 bg-black transition-opacity duration-500 
-        ${isVisible ? 'bg-opacity-50' : 'bg-opacity-0'}`}
-      onClick={handleClose}
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+    {/* 배경 오버레이 */}
+      <div 
+        className={`fixed inset-0 bg-black transition-opacity duration-300 ${
+          isVisible ? 'bg-opacity-50' : 'bg-opacity-0'
+        }`}
     />
+    {/* 이쯤까지 */}
 
     <div className={`
-        bg-white rounded-lg w-full max-w-md relative
-        transform transition-all duration-300 z-60
+        relative w-full max-w-lg z-[1000]
+        bg-white rounded-lg shadow-xl
+        transform transition-all duration-300
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-      `}>
+      `}
+      >
         <button
           onClick={handleClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
@@ -205,27 +237,48 @@ useEffect(() => {
 
 
             <div className='relative'>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name} 
-                  onChange={handleChange}
-                  placeholder="닉네임"
-                  className="w-[70%] px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
+            <div className="flex gap-2">
+                <div className="relative flex items-center w-[70%]">
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name} 
+                    onChange={handleChange}
+                    placeholder="닉네임"
+                    disabled={isNameLocked}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                      ${isNameLocked ? 
+                        'bg-gray-100 cursor-not-allowed opacity-70 border-gray-300' : 
+                        'bg-white'
+                      }`}
+                    required
+                  />
+                  {isNameLocked && (
+                    <button
+                      type="button"
+                      onClick={handleUnlockName}
+                      className="absolute -right-10 top-1/2 transform -translate-y-1/2 
+                              text-gray-500 hover:text-gray-700 bg-transparent p-1 
+                              rounded-full hover:bg-green-400 tran  sition-colors"
+                    >
+                      ✎
+                    </button>
+                  )}
+                </div>
                 <button
                   type="button"
                   onClick={handleNameCheck}
-                  className={`w-[30%] py-2 px-4 rounded-lg border border-gray-500
-                    transition-colors duration-300 ${
-                      isDuplicateChecked 
-                      ? 'bg-green-100 hover:bg-green-200 text-green-800' 
-                      : 'bg-white hover:bg-gray-300 text-black'
-                  }`}
+                  disabled={isNameLocked}
+                  className={`w-[30%] py-2 px-4 rounded-lg border 
+                    transition-colors duration-300 
+                    ${isDuplicateChecked 
+                      ? 'bg-green-100 text-green-800 border-green-500' 
+                      : isNameLocked
+                        ? 'bg-gray-100 text-gray-500 cursor-not-allowed opacity-70 border-gray-300'
+                        : 'bg-white hover:bg-gray-300 text-black border-gray-500'
+                    }`}
                 >
-                  중복 확인  
+                  {isDuplicateChecked ? '확인 완료' : '중복 확인'}
                 </button>
               </div>
 
@@ -298,10 +351,15 @@ useEffect(() => {
 
             <button
               type="submit"
-              className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-900
-                transition-colors duration-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              disabled={!isDuplicateChecked}
+              className={`w-full py-2 px-4 rounded-lg
+                transition-colors duration-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                ${isDuplicateChecked 
+                  ? 'bg-green-600 hover:bg-green-900 text-white cursor-pointer' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
             >
-              가입하기
+              {isDuplicateChecked ? '가입하기' : '닉네임 중복 확인 필요'}
             </button>
 
             <div className="text-center text-sm text-gray-600">
