@@ -63,7 +63,7 @@ public class Logger implements Filter {
 
         String responseBody = new String(res.getContentAsByteArray(), StandardCharsets.UTF_8);
 
-        log.info("<<<<<<<<<< uri: {}, status: {}, headers: {}, body: {}",
+        log.info("<<<<<<<<<< Status: {}, HeaderNames: {}, headers: {}, body: {}",
                 res.getStatus(), res.getHeaderNames(), headers, responseBody);
 
     }

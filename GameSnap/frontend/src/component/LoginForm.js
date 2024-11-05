@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { login, testServerConnection } from './axios/LoginAxios';
+import { login } from './axios/LoginAxios';
 
 const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   // 상태 관리
@@ -12,18 +12,6 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
-
-  // useEffect(() => {
-  //   const testConnection = async () => {
-  //     const isConnected = await testServerConnection();
-  //     if (!isConnected) {
-  //       console.error('서버 연결 실패');
-  //       setError('서버와의 연결이 원활하지 않습니다.');
-  //     }
-  //   };
-  //   testConnection();
-  // }, []);
-  
 
   // 초기 마운트 시 애니메이션
   useEffect(() => {
@@ -71,7 +59,7 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   // 로그인 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
-      
+        
     // 기본 유효성 검사
     if (!formData.email || !formData.password) {
       setError('이메일과 비밀번호를 입력해주세요.');
@@ -96,65 +84,48 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
         // 테스트 계정 로직
         await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과
         
-        const mockResponse = {
+        // 테스트 계정용 mock 응답
+        response = {
           data: {
             token: 'fake-jwt-token-12345',
-            user: {
-              id: 1,
-              email: 'test@test.com',
-              name: '테스트 유저',
-              role: 'user'
-            }
+            id: 1,
+            email: 'test@test.com',
+            name: '테스트 유저'
           }
         };
-  
-        console.log('로그인 응답 데이터:', mockResponse.data);
-        console.log('유저 데이터 설정 전:', mockResponse.data.user);
-        
-        // localStorage 저장
-        localStorage.setItem('token', mockResponse.data.token);
-        localStorage.setItem('user', JSON.stringify(mockResponse.data.user));
-        
-        setIsSliding(true);
-        setIsVisible(false);
-  
-        // 상태 업데이트
-        setTimeout(() => {
-          setIsLoggedIn(true);
-          setUserData(mockResponse.data.user);
-          onLoginSuccess?.(mockResponse.data);
-          onClose?.();
-          
-          setTimeout(() => {
-            setIsSliding(false);
-          }, 500);
-        }, 300);
-  
       } else {
         // 실제 서버 로그인 시도
         response = await login(formData.email, formData.password);
-        console.log('Login successful:', response.data);
-        
-        // 서버 로그인 성공 처리
-        setIsVisible(false);
-        
-        // localStorage 저장
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
-        setIsSliding(true);
-  
-        setTimeout(() => {
-          setIsLoggedIn(true);
-          setUserData(response.data.user);
-          onLoginSuccess?.(response.data);
-          onClose?.();
-          
-          setTimeout(() => {
-            setIsSliding(false);
-          }, 500);
-        }, 300);
       }
+  
+      console.log('로그인 응답 데이터:', response.data);
+  
+      // 서버 응답 데이터 구조 변환
+      const userData = {
+        id: response.data.id,
+        email: response.data.email,
+        name: response.data.name,
+        role: 'user'
+      };
+  
+      // localStorage 저장
+      localStorage.setItem('token', response.data.token || '');
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      setIsSliding(true);
+      setIsVisible(false);
+  
+      // 상태 업데이트
+      setTimeout(() => {
+        setIsLoggedIn(true);
+        setUserData(userData);  // 변환된 데이터로 통일
+        onLoginSuccess?.(response.data);
+        onClose?.();
+        
+        setTimeout(() => {
+          setIsSliding(false);
+        }, 500);
+      }, 300);
   
     } catch (error) {
       console.error('Login error:', error);
@@ -170,7 +141,6 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* 배경 오버레이 */}
