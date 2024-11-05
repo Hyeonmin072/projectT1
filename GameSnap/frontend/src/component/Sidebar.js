@@ -1,12 +1,24 @@
 // Sidebar.js
 /* eslint-disable */
-import React from 'react';
+import React, {useState} from 'react';
 import { X, User, Home, Settings, MessagesSquare, LogOut, SquareMenu } from 'lucide-react';
+import Profile from './Profile';
 
 const Sidebar = ({ isOpen, onClose, onLogout }) => {
   const handleLogout = () => {
     onLogout(); // 로그아웃 함수 호출
     onClose(); // 사이드바 닫기
+  };
+
+  const [showProfile, setShowProfile] = useState(false); // 프로필 화면 상태
+
+  const handleProfileClick = (e) => {
+    e.preventDefault(); // 링크 클릭 시 기본 동작 방지
+    setShowProfile(true); // 프로필 화면 열기
+  };
+
+  const handleCloseProfile = () => {
+    setShowProfile(false); // 프로필 화면 닫기
   };
 
   return (
@@ -49,14 +61,13 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               <MessagesSquare className="mr-3" size={20} />
               채팅
             </a>
-            <a href="/profile" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <User className="mr-3" size={20} />
-              프로필
-            </a>
+            <div>
+              <a href="/profile" onClick={handleProfileClick} className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                <User className="mr-3" size={20} />
+                프로필
+              </a>
+            </div>
           </nav>
-
-
-
 
           <div className="border-t">
             <button 
@@ -69,6 +80,10 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
           </div>
         </div>
       </div>
+
+      {/* 프로필 화면 */}
+      {showProfile && <Profile userId="사용자_ID_여기에_입력" onClose={handleCloseProfile} />}
+
     </>
   );
 };
