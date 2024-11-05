@@ -5,7 +5,7 @@ function Contact() {
   return (
     <section id="contact" className="py-20 px-4 text-center bg-gray-800 text-white">
       <h2 className="text-3xl font-bold mb-6">This is footer</h2>
-      <p className="mb-4">여기에 푸터 내용을 등록하기</p>
+      <p className="mb-4">Project KTJT</p>
       <a href="mailto:example@example.com" className="text-blue-400 underline">example@example.com</a>
     </section>
   );
