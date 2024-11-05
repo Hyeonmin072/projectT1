@@ -10,7 +10,7 @@ function App() {
       <div className="font-sans bg-gray-100 text-gray-900">
         <Navbar/>
         <Contact />
-        <Profile />
+        <Profile userid={userid} />
       </div>
   );
 }

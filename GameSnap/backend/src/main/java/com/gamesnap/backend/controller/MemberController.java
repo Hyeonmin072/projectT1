@@ -56,7 +56,7 @@ public class MemberController {
         return "redirect:/index";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/home")
     public ResponseEntity<Member> registerMember(@RequestBody MemberRequestDto memberRequestDto) {
     Member newUser = new Member(
         memberRequestDto.getName(),
