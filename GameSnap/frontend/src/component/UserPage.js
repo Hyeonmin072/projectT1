@@ -32,7 +32,7 @@ const UserPage = () => {
             {/* 동영상 플레이어 컨테이너 */}
             <div className="relative flex-1 bg-black aspect-video rounded-lg overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-white">여기에 동영상이 재생됩니다</p>
+                <p className="text-white">동영상 플레이어</p>
               </div>
             </div>
 
