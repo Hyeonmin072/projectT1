@@ -7,6 +7,7 @@ import Profile from './Profile';
 
 const Sidebar = ({ isOpen, onClose, onLogout }) => {
   const handleLogout = () => {
+    console.log('Sidebar : 로그아웃 호출');
     onLogout(); // 로그아웃 함수 호출
     onClose(); // 사이드바 닫기
   };

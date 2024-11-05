@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
 
 const PageTransition = ({ children }) => {
+
+
+  // 페이지 전환 애니메이션 조정 값
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}

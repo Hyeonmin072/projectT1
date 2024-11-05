@@ -2,13 +2,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import Navbar from './component/Navbar';  // component -> components
-import Contact from './component/Contact';  // component -> components
-import MainPage from './page/MainPage';  // component -> components
-import UserPage from './page/UserPage';  // component -> components
+import Navbar from './component/Navbar';  
+import Footer from './component/Footer';  
+import MainPage from './page/MainPage'; 
+import UserPage from './page/UserPage';  
 import { AuthProvider } from './context/AuthContext';
-import FreeBoardList from './page/FreeBoardList';  // component -> components
-import FreeBoardWrite from './page/FreeBoardWrite';  // component -> components
+import FreeBoardList from './page/FreeBoardList';  
+import FreeBoardWrite from './page/FreeBoardWrite'; 
 
 // AnimatePresence를 사용하기 위한 래퍼 컴포넌트
 function AnimatedRoutes() {
@@ -19,10 +19,11 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<MainPage />} />
         <Route path="/user" element={<UserPage />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route path="/contact" element={<Footer />} />
         <Route path="/board" element={<FreeBoardList />} />
         <Route path="/board/write" element={<FreeBoardWrite />} />
       </Routes>
+      <Footer />
     </AnimatePresence>
   );
 }

@@ -13,6 +13,7 @@ const UserPage = () => {
   const handleLike = () => {
     setIsLiked(!isLiked);
     setLikes(isLiked ? likes - 1 : likes + 1);
+    console.log('좋아요 클릭');
   };
 
   const handleAddComment = (e) => {
@@ -21,6 +22,7 @@ const UserPage = () => {
       setComments([...comments, { text: newComment, author: '사용자', time: new Date() }]);
       setNewComment('');
     }
+    console.log('댓글 작성 클릭');
   };
 
   return (
@@ -29,9 +31,9 @@ const UserPage = () => {
         <div className="max-w-[3000px] mx-auto pt-4 px-6">
           
           {/* 메인 콘텐츠 컨테이너 */}
-          <div className="flex gap-6">
+          <div className="flex gap-6 items-start justify-center">
             {/* 동영상과 버튼을 감싸는 컨테이너 */}
-            <div className={`flex gap-4 ${showComments ? 'w-2/3' : 'w-full'} transition-all duration-300`}>
+            <div className={`flex gap-4 ${showComments ? 'w-5/6' : 'w-full'} transition-all duration-300`}>
               {/* 동영상 플레이어 컨테이너 */}
               <div className="relative flex-1 bg-black aspect-video rounded-lg overflow-hidden">
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -64,7 +66,11 @@ const UserPage = () => {
                 
                 <div className="flex flex-col items-center gap-2">
                   <button
-                    onClick={() => setShowComments(!showComments)}
+                    onClick={() => {
+                      console.log('댓글 버튼 클릭');
+                      console.log('현재 showComments 상태 : ' ,showComments);
+                      setShowComments(!showComments)}
+                    }
                     className={`flex flex-col items-center ${showComments ? 'text-blue-500' : 'text-gray-600'} hover:opacity-75 transition-colors`}
                   >
                     <MessageCircle className={`w-8 h-8 ${showComments ? 'fill-current' : ''}`} />
