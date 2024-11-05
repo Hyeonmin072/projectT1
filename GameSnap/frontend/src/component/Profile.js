@@ -4,6 +4,7 @@ import { getProfile } from '../axios/UserProfileAxios';
 const Profile = ({ userId, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isHidden] = useState(true);
 
   console.log("프로필 출력 완료");
   // 유저 프로필 상태 정의
@@ -67,9 +68,12 @@ const Profile = ({ userId, onClose }) => {
         <h2 className="text-xl font-bold text-center mb-6">프로필</h2>
 
         <div className="space-y-4">
-          <div className="flex justify-between">
-            <label className="font-semibold">아이디:</label>
-            <span>{userInfo.userid}</span>
+          <div>
+             {/* 아이디를 숨기기 */}
+              <div className={`flex justify-between ${isHidden ? 'hidden' : ''}`}>
+                <label className="font-semibold">아이디:</label>
+                <span>{userInfo.userid}</span>
+              </div>
           </div>
           <div className="flex justify-between">
             <label className="font-semibold">이름:</label>
