@@ -1,28 +1,20 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import About from './pages/About';
-import Services from './pages/Services';
-import Contact from './pages/Contact';
+/* eslint-disable */
+
+import React, {} from 'react';
+import Navbar from './component/Navbar';
+import Contact from './component/Contact';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
-  return (
-    <Router>
-      <Header />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
-      </main>
-      <Footer />
-    </Router>
-  );
-}
 
+  return (
+
+    <AuthProvider>
+      <div className="min-h-screen bg-gray-100 text-gray-900">
+        <Navbar/>
+        <Contact />
+    </div>
+    </AuthProvider>
+  )
+}
 export default App;

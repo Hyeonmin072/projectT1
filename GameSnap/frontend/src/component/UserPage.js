@@ -23,7 +23,7 @@ const UserPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-5xl mx-auto pt-4">
+      <div className="max-w-9xl mx-auto pt-4 px-4">
         
         {/* 메인 콘텐츠 컨테이너 */}
         <div className="flex gap-6">
@@ -32,7 +32,7 @@ const UserPage = () => {
             {/* 동영상 플레이어 컨테이너 */}
             <div className="relative flex-1 bg-black aspect-video rounded-lg overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-white">동영상 플레이어</p>
+                <p className="text-white"></p>
               </div>
             </div>
 
