@@ -2,17 +2,18 @@ package com.gamesnap.backend.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gamesnap.backend.dto.MemberRequestDto;
 import com.gamesnap.backend.entity.Member;
-import com.gamesnap.backend.profile.Passwordupdate;
-import com.gamesnap.backend.profile.Userprofile;
 import com.gamesnap.backend.service.MemberService;
+
 
 @Controller
 public class MemberController {
@@ -55,24 +56,26 @@ public class MemberController {
         return "redirect:/index";
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<Member> registerMember(@RequestBody MemberRequestDto memberRequestDto) {
+    Member newUser = new Member(
+        memberRequestDto.getName(),
+        memberRequestDto.getTel(),
+        memberRequestDto.getEmail(),
+        "Action" // 기본 값 혹은 선택된 장르
+    );
+    memberService.save(newUser); // 저장 로직
+    return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    }
+
     @GetMapping("/profile")
-    public ResponseEntity<Userprofile> getProfile() {
-        Userprofile userprofile = new Userprofile("홍길동", "010-1234-5678", "example@example.com", "Action");
-        return ResponseEntity.ok(userprofile);
-    }
-    
-    @PostMapping("/update")
-    public ResponseEntity<Userprofile> updateProfile(@RequestBody Userprofile updatUserprofile) {
-        // 프로필 업데이트 로직
-        
-        return ResponseEntity.ok(updatUserprofile);
-    }
-    
-    @PostMapping("/updatePW")
-    public ResponseEntity<String> updatedPW(@RequestBody Passwordupdate ps) {
-        // 비밀번호 변경 로직
-        
-        return ResponseEntity.ok("비밀번호 변경이 완료되었습니다.");
-    }
+    public ResponseEntity<Member> getProfile(@RequestParam Integer memberId) {
+        Member userProfile = memberService.findId(memberId);
+        if (userProfile != null) {
+            return ResponseEntity.ok(userProfile);
+        } else {
+            return ResponseEntity.notFound().build(); // 회원을 찾을 수 없는 경우
+        }
+    }    
     
 }

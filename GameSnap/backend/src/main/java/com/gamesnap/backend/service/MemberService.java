@@ -55,4 +55,14 @@ public class MemberService {
             return ResponseEntity.status(401).body("이미 존재하는 이름입니다.");
         }
     }
+
+    // 회원 정보 저장 메소드
+    public Member save(Member member) {
+        return memberRepository.save(member);
+    }
+
+    // 회원 정보 조회 메소드
+    public Member findId(Integer memberId) {
+        return memberRepository.findById(memberId).orElse(null); // Optional 처리
+    }
 }

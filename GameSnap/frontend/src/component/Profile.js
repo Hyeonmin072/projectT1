@@ -2,221 +2,82 @@ import React, { useEffect, useState } from "react";
 import { getProfile, updateProfile, updatePassword } from './axios/UserProfileAxios';
 
 const Profile = () => {
+  console.log("프로필 출력 완료");
   // 유저 프로필 상태 정의
   const [userInfo, setUserInfo] = useState({
     userid: '',
     username: '',
     email: '',
     phone: '',
-    password: "",
-    preferredGenre: "No", // 기본 선호 장르
+    preferredGenre: "", // 기본 선호 장르
     notifications: true,
   });
 
-
-  // 편집 모드 상태
-  const [isEditing, setIsEditing] = useState(false);
-  const [isPasswordEditing, setIsPasswordEditing] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-
-  //유저프로필 데이터 로드
-  useEffect(() => {
+  // 유저프로필 데이터 로드
+  /*useEffect(() => {
     const loadUserProfile = async () => {
-      const porfileData = await getProfile(userInfo.userid);
-      setUserInfo(porfileData);
+      try {
+        const response = await getProfile(userInfo); // API 요청
+        setUserInfo(response.data);
+      } catch (error) {
+        console.error("Failed to load profile:", error);
+      }
     };
 
     loadUserProfile();
-  }, []);
+  }, [userInfo]);*/
 
-  // 입력 값 변경 처리 함수
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+
+  // 예시: 컴포넌트가 마운트될 때만 실행하는 useEffect
+  useEffect(() => {
+    // userInfo 상태를 업데이트하는 로직
     setUserInfo({
-      ...userInfo,
-      [name]: value,
+      userid: '1234567890',
+      username: '홍길동',
+      email: 'example@example.com',
+      phone: '010-1234-5678',
+      password: "1234",
+      preferredGenre: "No",
+      notifications: true,
     });
-  };
+  }, [userInfo]);
 
-  // 알림 설정 토글
-  const toggleNotifications = () => {
-    setUserInfo({
-      ...userInfo,
-      notifications: !userInfo.notifications,
-    });
-  };
-
-  // 프로필 저장 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    const result = await updateProfile(userInfo);
-    if(result.success) {
-      console.log("Profile updated :" , userInfo);
-      setIsEditing(false);
-    } else {
-      console.log("Failed to update profile.");  
-    }
-  };
-
-  // 비밀번호 저장
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-    const result = await updatePassword(newPassword);
-    if(result.success){
-      console.log("Password updated successfully");
-      setNewPassword("");
-      setIsPasswordEditing(false);
-    } else{
-      console.log("Failed to update password");
-    }
+  // 로딩 상태 처리
+  if (!userInfo || !userInfo.userid) {
+    return <p>Loading...</p>;
   }
 
   return (
-    <div style={styles.container}>
-      <h2>프로필</h2>
-      <form onSubmit={handleSave}>
-        <div style={styles.field}>
-          <label>아이디:</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="userid"
-              value={userInfo.userid}
-              onChange={handleChange}
-              required
-            />
-          ) : (
-            <span>{userInfo.userid}</span>
-          )}
-        </div>
-        <div style={styles.field}>
-          <label>이름:</label>
-          {isEditing ? (
-            <input
-              type="text"
-              name="username"
-              value={userInfo.username}
-              onChange={handleChange}
-              required
-            />
-          ) : (
-            <span>{userInfo.username}</span>
-          )}
-        </div>
-        <div style={styles.field}>
-          <label>이메일:</label>
-          {isEditing ? (
-            <input
-              type="email"
-              name="email"
-              value={userInfo.email}
-              onChange={handleChange}
-              required
-            />
-          ) : (
-            <span>{userInfo.email}</span>
-          )}
-        </div>
-        <div style={styles.field}>
-          <label>전화번호:</label>
-          {isEditing ? (
-            <input
-              type="tel"
-              name="phone"
-              value={userInfo.phone}
-              onChange={handleChange}
-              required
-            />
-          ) : (
-            <span>{userInfo.phone}</span>
-          )}
-        </div>
-        <div style={styles.field}>
-          <label>비밀번호:</label>
-          {isPasswordEditing ? (
-            <form onSubmit={handlePasswordChange}>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder = "새 비밀번호 입력"
-                required
-              />
-              <button  type="submit">변경</button>
-            </form>
-          ) : (
-            <>
-            <span>*****</span> {/* 비밀번호는 보안상 표시하지 않음*/}
-            <button onClick={() => setIsPasswordEditing(true)}>비밀번호 변경</button>
-            </>
-          )}
-        </div>
-        <div style={styles.field}>
-          <label>선호 장르:</label>
-          {isEditing ? (
-            <select
-              name="preferredGenre"
-              value={userInfo.preferredGenre}
-              onChange={handleChange}
-            >
-              <option value="NO">NO</option>
-              <option value="RPG">RPG</option>
-              <option value="ACTION">ACTION</option>
-              <option value="STRATEGY">STRATEGY</option>
-              <option value="SPORTS">SPORTS</option>
-              <option value="SIMULATION">SIMULATION</option>
-              <option value="CASUAL">CASUAL</option>
-              <option value="MOBA">MOBA</option>
-              <option value="RACING">RACING</option>
-              <option value="PUZZLE">PUZZLE</option>
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+  <h2 className="text-2xl font-semibold text-gray-900 text-center mb-4">프로필</h2>
+  <div className="flex justify-between items-center border-b pb-2 mb-4">
+    <label className="text-gray-600">아이디:</label>
+    <span className="text-gray-900">**********</span> {/* 숨기기 위해 표시하지 않음 */}
+  </div>
+  <div className="flex justify-between items-center border-b pb-2 mb-4">
+    <label className="text-gray-600">이름:</label>
+    <span className="text-gray-900">{userInfo.username}</span>
+  </div>
+  <div className="flex justify-between items-center border-b pb-2 mb-4">
+    <label className="text-gray-600">이메일:</label>
+    <span className="text-gray-900">{userInfo.email}</span>
+  </div>
+  <div className="flex justify-between items-center border-b pb-2 mb-4">
+    <label className="text-gray-600">전화번호:</label>
+    <span className="text-gray-900">{userInfo.phone}</span>
+  </div>
+  <div className="flex justify-between items-center border-b pb-2 mb-4">
+    <label className="text-gray-600">선호 장르:</label>
+    <span className="text-gray-900">{userInfo.preferredGenre}</span>
+  </div>
+  <div className="flex justify-between items-center">
+    <label className="text-gray-600">알림 설정:</label>
+    <span className="text-gray-900">{userInfo.notifications ? "On" : "Off"}</span>
+  </div>
+</div>
 
-            </select>
-          ) : (
-            <span>{userInfo.preferredGenre}</span>
-          )}
-        </div>
-        <div style={styles.field}>
-          <label>Enable Notifications:</label>
-          <button type="button" onClick={toggleNotifications}>
-            {userInfo.notifications ? "On" : "Off"}
-          </button>
-        </div>
-        <div style={styles.actions}>
-          {isEditing ? (
-            <button type="submit">저장</button>
-          ) : (
-            <button type="button" onClick={() => setIsEditing(true)}>
-              프로필 수정 완료
-            </button>
-          )}
-        </div>
-      </form>
-    </div>
   );
 };
-
-// 스타일 객체
-const styles = {
-  container: {
-    padding: '20px',
-    maxWidth: '400px',
-    margin: '0 auto',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-  },
-  field: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '10px 0',
-  },
-  actions: {
-    marginTop: '20px',
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-};
-
 
 
 export default Profile;
