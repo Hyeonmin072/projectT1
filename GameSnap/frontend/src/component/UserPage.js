@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, MessageCircle, Share2 } from 'lucide-react';
+import testVideo from '../assets/testvideo.mp4';
 
 const UserPage = () => {
   const [isLiked, setIsLiked] = useState(false);
@@ -23,7 +24,7 @@ const UserPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-9xl mx-auto pt-4 px-4">
+      <div className="max-w-[3000px] mx-auto pt-4 px-6">
         
         {/* 메인 콘텐츠 컨테이너 */}
         <div className="flex gap-6">
@@ -32,7 +33,18 @@ const UserPage = () => {
             {/* 동영상 플레이어 컨테이너 */}
             <div className="relative flex-1 bg-black aspect-video rounded-lg overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-white"></p>
+                <div>
+                  <video 
+                    className="w-full h-full object-contain"
+                    controls
+                    autoPlay
+                    muted  // 자동 재생을 위해 필요
+                    loop
+                    >
+                    <source src={testVideo} type="video/mp4" />
+                    동영상을 재생할 수 없습니다.
+                  </video>
+                </div>
               </div>
             </div>
 
