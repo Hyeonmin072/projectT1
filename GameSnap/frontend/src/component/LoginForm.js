@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { login } from './axios/LoginAxios';
+import { login } from '../axios/LoginAxios';
 
 const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   // 상태 관리

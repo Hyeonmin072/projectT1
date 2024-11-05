@@ -2,6 +2,7 @@
 /* eslint-disable */
 import React from 'react';
 import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, onClose, onLogout }) => {
   const handleLogout = () => {
@@ -37,22 +38,22 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
           </div>
 
           <nav className="space-y-2 flex-grow">
-            <a href="#" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            <Link to="/" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <Home className="mr-3" size={20} />
               홈
-            </a>
-            <a href="#" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            </Link>
+            <Link to="/board" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <SquareMenu className="mr-3" size={20} />
               게시판
-            </a>
-            <a href="#" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            </Link>
+            <Link to="/" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <MessagesSquare className="mr-3" size={20} />
               채팅
-            </a>
-            <a href="#" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            </Link>
+            <Link to="/" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <User className="mr-3" size={20} />
               프로필
-            </a>
+            </Link>
           </nav>
 
 

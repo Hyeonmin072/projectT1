@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import checkNameDuplicate, { register } from './axios/RegisterAxios';
+import checkNameDuplicate, { register } from '../axios/RegisterAxios';
 
 const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => { 
   const [isVisible, setIsVisible] = useState(false);
