@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 
 public class MemberRequestDto {
+    private String id;
     private String email;
     private String password;
     private String name;

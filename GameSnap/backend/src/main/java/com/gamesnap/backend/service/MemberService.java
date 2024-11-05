@@ -1,16 +1,16 @@
 package com.gamesnap.backend.service;
 
-import com.gamesnap.backend.entity.Member;
-import com.gamesnap.backend.repository.MemberRepository;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import com.gamesnap.backend.entity.Member;
+import com.gamesnap.backend.repository.MemberRepository;
 
 
 @Service
@@ -84,4 +84,14 @@ public class MemberService {
         return ResponseEntity.ok(response);
     }
 
+
+    // 회원 정보 저장 메소드
+    public Member save(Member member) {
+        return memberRepository.save(member);
+    }
+
+    // 회원 정보 조회 메소드
+    public Member findId(Integer memberId) {
+        return memberRepository.findById(memberId).orElse(null); // Optional 처리
+    }
 }
