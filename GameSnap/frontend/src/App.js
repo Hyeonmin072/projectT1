@@ -15,17 +15,15 @@ function AnimatedRoutes() {
   const location = useLocation();
   
   return (
-    <AnimatePresence mode="wait"> {/* 페이지 전환 애니메이션 */}
-
-      <Routes location={location} key={location.pathname}> {/* 페이지 라우팅 */}
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
         <Route path="/" element={<MainPage />} />
         <Route path="/user" element={<UserPage />} />
         <Route path="/contact" element={<Footer />} />
         <Route path="/board" element={<FreeBoardList />} />
         <Route path="/board/write" element={<FreeBoardWrite />} />
       </Routes>
-      <Footer /> {/* 푸터 고정 */}
-      
+      <Footer />
     </AnimatePresence>
   );
 }
