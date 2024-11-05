@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getProfile } from '../axios/UserProfileAxios';
 
+
 const Profile = ({ userId, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

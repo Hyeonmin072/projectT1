@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:1111',  // 마지막 슬래시 제거
+  baseURL: 'http://localhost:1111',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
