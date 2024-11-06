@@ -71,7 +71,7 @@ const UserPage = () => {
                       console.log('현재 showComments 상태 : ' ,showComments);
                       setShowComments(!showComments)}
                     }
-                    className={`flex flex-col items-center ${showComments ? 'text-blue-500' : 'text-gray-600'} hover:opacity-75 transition-colors`}
+                    className={`flex flex-col items-center ${showComments ? 'text-green-500' : 'text-gray-600'} hover:opacity-75 transition-colors`}
                   >
                     <MessageCircle className={`w-8 h-8 ${showComments ? 'fill-current' : ''}`} />
                     <span className="text-sm">{comments.length}</span>
@@ -121,11 +121,11 @@ const UserPage = () => {
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="댓글을 입력하세요..."
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                      className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-900 transition-colors"
                     >
                       작성
                     </button>

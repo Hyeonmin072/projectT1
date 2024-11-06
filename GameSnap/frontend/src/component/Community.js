@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Search, UserPlus, MessagesSquare } from 'lucide-react';
 
-const Community = ({ onClose }) => {
+const Community = ({ isOpen, onClose }) => {
   const [friends, setFriends] = useState([
     { id: 1, name: "김철수", status: "온라인", lastSeen: "방금 전" },
     { id: 2, name: "이영희", status: "오프라인", lastSeen: "1시간 전" },
@@ -20,13 +20,17 @@ const Community = ({ onClose }) => {
   return (
     <>
       {/* 오버레이 */}
-      <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-40"
-        onClick={onClose}
-      />
+      {isOpen && (
+        <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={onClose}
+        />
+        )}
 
       {/* 모달 */}
-      <div className="fixed inset-y-0 right-0 w-80 bg-white shadow-lg z-50 overflow-y-auto">
+      <div className={`fixed inset-y-0 right-0 w-80 bg-white shadow-lg z-50 overflow-y-auto 
+                        transform transition-transform duration-700 ease-in-out
+                        ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-4">
           {/* 헤더 */}
           <div className="flex justify-between items-center mb-4">
@@ -85,7 +89,7 @@ const Community = ({ onClose }) => {
           </div>
 
           {/* 친구 추가 버튼 */}
-          <button className="flex items-center justify-center w-full mt-4 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+          <button className="flex items-center justify-center w-full mt-4 p-3 bg-green-500 text-white rounded-lg hover:bg-green-800 transition-colors">
             <UserPlus size={20} className="mr-2" />
             친구 추가하기
           </button>

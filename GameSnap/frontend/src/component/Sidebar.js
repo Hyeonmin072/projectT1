@@ -15,6 +15,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
     onClose(); // 사이드바 닫기
   };
 
+
   //커뮤니티 스테이트
   const [showCommunity, setShowCommunity] = useState(false);
   
@@ -107,7 +108,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
       {/* 프로필 화면 */}
       {showProfile && <Profile userId="사용자_ID_여기에_입력" onClose={handleCloseProfile} />}
 
-      {showCommunity && <Community onClose={handleCloseCommunity} />}
+      <Community isOpen={showCommunity} onClose={handleCloseCommunity} />
 
     </>
   );

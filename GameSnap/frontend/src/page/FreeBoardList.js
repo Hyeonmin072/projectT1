@@ -42,7 +42,7 @@ function FreeBoardList() {
                 <input
                   type="text"
                   placeholder="검색어를 입력하세요"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -50,7 +50,7 @@ function FreeBoardList() {
               </div>
               <Link
                 to="/board/write"
-                className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-800 transition-colors"
               >
                 <Plus size={20} className="mr-2" />
                 글쓰기
@@ -97,7 +97,7 @@ function FreeBoardList() {
               {/* 페이지네이션 */}
               <div className="px-6 py-4 border-t flex justify-center">
                 <nav className="flex space-x-2">
-                  <button className="px-3 py-1 border rounded hover:bg-gray-50">
+                  <button className="px-3 py-1 border rounded hover:bg-gray-300">
                     이전
                   </button>
                   {[1, 2, 3, 4, 5].map((page) => (
@@ -105,14 +105,14 @@ function FreeBoardList() {
                       key={page}
                       className={`px-3 py-1 border rounded 
                         ${page === 1 
-                          ? 'bg-blue-500 text-white' 
+                          ? 'bg-green-500 text-white' 
                           : 'hover:bg-gray-50'
                         }`}
                     >
                       {page}
                     </button>
                   ))}
-                  <button className="px-3 py-1 border rounded hover:bg-gray-50">
+                  <button className="px-3 py-1 border rounded hover:bg-gray-300">
                     다음
                   </button>
                 </nav>
