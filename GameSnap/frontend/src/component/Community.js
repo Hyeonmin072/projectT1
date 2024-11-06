@@ -174,32 +174,42 @@ const Community = ({ isOpen, onClose }) => {
               </div>
 
               {/* 검색 결과 */}
-              <div className="space-y-2">
-                {searchResults.map(user => (
-                  <div key={user.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full" />
-                      <div>
-                        <div className="font-medium">{user.name}</div>
-                        <div className="text-sm text-gray-500">{user.status}</div>
-                      </div>
+              <div 
+                className={`space-y-2 overflow-hidden transition-all duration-500 ease-in-out
+                    ${searchResults.length > 0 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+                >
+                        {searchResults.map(user => (
+                            <div 
+                            key={user.id} 
+                            className={`flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg
+                                transform transition-all duration-500 ease-in-out
+                                ${searchResults.length > 0 ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                            >
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gray-200 rounded-full" />
+                                <div>
+                                <div className="font-medium">{user.name}</div>
+                                <div className="text-sm text-gray-500">{user.status}</div>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => handleAddFriend(user)}
+                                className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600
+                                transition-all duration-300 ease-in-out 
+                                hover:scale-105 active:scale-95"
+                            >
+                                추가
+                            </button>
+                            </div>
+                        ))}
+                        </div>
+                            </div>
+                        </div>
+                        )}
+                        </div>
                     </div>
-                    <button
-                      onClick={() => handleAddFriend(user)}
-                      className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600"
-                    >
-                      추가
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-        </div>
-      </div>
-    </>
-  );
-};
+                    </>
+                );
+                };
 
 export default Community;
