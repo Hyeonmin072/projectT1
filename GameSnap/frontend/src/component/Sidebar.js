@@ -1,7 +1,7 @@
 // Sidebar.js
 /* eslint-disable */
 import React, {useState} from 'react';
-import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, } from 'lucide-react';
+import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Profile from './Profile';
 
@@ -66,6 +66,10 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
             <Link to="/profile" onClick={handleProfileClick} className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <User className="mr-3" size={20} />
               프로필
+            </Link>
+            <Link to="/" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <Users className="mr-3" size={20} />
+              커뮤니티
             </Link>
           </nav>
 
