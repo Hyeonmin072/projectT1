@@ -77,7 +77,7 @@ function FreeBoardList() {
                     </span>
                     <Link 
                       to={`/board/${post.id}`}
-                      className="col-span-6 text-gray-800 hover:text-blue-500"
+                      className="col-span-6 text-gray-800 hover:text-green-500"
                     >
                       {post.title}
                     </Link>
