@@ -12,10 +12,35 @@ const Community = ({ isOpen, onClose }) => {
   ]);
   const [searchTerm, setSearchTerm] = useState("");
 
+
+// 친구 추가 모달 상태
+  const [showAddFriend, setShowAddFriend] = useState(false);
+  const [searchNickname, setSearchNickname] = useState("");
+  const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장할 상태
+
   // 검색 필터링
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // 친구 검색 함수 (임시 데이터)
+  const handleSearch = () => {
+    // 실제로는 API 호출이 들어갈 자리
+    const mockResults = [
+      { id: 4, name: searchNickname+ "더미 데이터1", status: "온라인(더미)" },
+      { id: 5, name: searchNickname + "더미 데이터2", status: "오프라인(더미)" },
+    ];
+    setSearchResults(mockResults);
+  };
+
+  // 친구 추가 함수
+  const handleAddFriend = (user) => {
+    setFriends(prev => [...prev, { ...user, lastSeen: "방금 전" }]);
+    setSearchResults([]);
+    setSearchNickname("");
+    setShowAddFriend(false);
+  };
+
 
   return (
     <>
@@ -89,10 +114,88 @@ const Community = ({ isOpen, onClose }) => {
           </div>
 
           {/* 친구 추가 버튼 */}
-          <button className="flex items-center justify-center w-full mt-4 p-3 bg-green-500 text-white rounded-lg hover:bg-green-800 transition-colors">
-            <UserPlus size={20} className="mr-2" />
-            친구 추가하기
-          </button>
+          <button 
+          onClick={() => setShowAddFriend(true)} 
+          className="flex items-center justify-center w-full mt-4 p-3 bg-green-500 text-white rounded-lg 
+                        hover:bg-green-800 transition-all duration-300 ease-in-out 
+                        transform hover:scale-105 active:scale-95 
+                        hover:shadow-lg active:shadow-md"
+            >
+          <UserPlus size={20} className="mr-2" />
+          친구 추가하기
+        </button>
+
+        {/* 친구 추가 모달 */}
+        {showAddFriend && (
+            <div 
+                className="fixed inset-0 bg-black bg-opacity-50 z-60 flex items-center justify-center modal-overlay"
+                onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                    setShowAddFriend(false);
+                    setSearchNickname("");
+                    setSearchResults([]);
+                }
+                }}
+            >
+    <div 
+      className="bg-white rounded-lg p-6 w-96 
+        animate-in fade-in duration-500 
+        slide-in-from-top-4 
+        transform transition-all"
+    >
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">친구 찾기</h3>
+        <button 
+          onClick={() => {
+            setShowAddFriend(false);
+            setSearchNickname("");
+            setSearchResults([]);
+          }}
+          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+              <div className="flex gap-2 mb-4">
+                <input
+                  type="text"
+                  placeholder="닉네임"
+                  value={searchNickname}
+                  onChange={(e) => setSearchNickname(e.target.value)}
+                  className="flex-1 p-2 border rounded-lg"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                >
+                  검색
+                </button>
+              </div>
+
+              {/* 검색 결과 */}
+              <div className="space-y-2">
+                {searchResults.map(user => (
+                  <div key={user.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gray-200 rounded-full" />
+                      <div>
+                        <div className="font-medium">{user.name}</div>
+                        <div className="text-sm text-gray-500">{user.status}</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleAddFriend(user)}
+                      className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                    >
+                      추가
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
         </div>
       </div>
     </>

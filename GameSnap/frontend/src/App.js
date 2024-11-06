@@ -12,7 +12,8 @@ import FreeBoardWrite from './page/FreeBoardWrite';
 
 // AnimatePresence를 사용하기 위한 래퍼 컴포넌트
 function AnimatedRoutes() {
-  const location = useLocation();
+  
+    const location = useLocation();
   
   return (
     <AnimatePresence mode="wait" initial={false}>
