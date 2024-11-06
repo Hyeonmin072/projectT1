@@ -23,7 +23,7 @@ const Community = ({ isOpen, onClose }) => {
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 친구 검색 함수 (임시 데이터)
+  // 친구 검색 함수 (임시 데이터) : 구현 하나도 안되어있음
   const handleSearch = () => {
     // 실제로는 API 호출이 들어갈 자리
     const mockResults = [
@@ -33,7 +33,7 @@ const Community = ({ isOpen, onClose }) => {
     setSearchResults(mockResults);
   };
 
-  // 친구 추가 함수
+  // 친구 추가 함수 : 기능 덜 구현되어 있음 (시간 별 lastSeen 표시 필요)
   const handleAddFriend = (user) => {
     setFriends(prev => [...prev, { ...user, lastSeen: "방금 전" }]);
     setSearchResults([]);
@@ -72,7 +72,7 @@ const Community = ({ isOpen, onClose }) => {
           <div className="relative mb-4">
             <input
               type="text"
-              placeholder="친구 검색..."
+              placeholder="검색"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full p-2 pl-10 border rounded-lg"
