@@ -4,6 +4,9 @@ import React, {useState} from 'react';
 import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Profile from './Profile';
+import Community from './Community';
+
+
 
 const Sidebar = ({ isOpen, onClose, onLogout }) => {
   const handleLogout = () => {
@@ -11,6 +14,22 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
     onLogout(); // 로그아웃 함수 호출
     onClose(); // 사이드바 닫기
   };
+
+  //커뮤니티 스테이트
+  const [showCommunity, setShowCommunity] = useState(false);
+  
+  //커뮤니티 클릭 핸들러
+  const handleCommunityClick = (e) => {
+    e.preventDefault();
+    setShowCommunity(true);
+  };
+
+  //커뮤니티 닫기 핸들러
+  const handleCloseCommunity = () => {
+    setShowCommunity(false);
+  };
+  
+
 
   const [showProfile, setShowProfile] = useState(false); // 프로필 화면 상태
 
@@ -67,7 +86,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               <User className="mr-3" size={20} />
               프로필
             </Link>
-            <Link to="/" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            <Link to="/" onClick={handleCommunityClick} className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <Users className="mr-3" size={20} />
               커뮤니티
             </Link>
@@ -87,6 +106,8 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
 
       {/* 프로필 화면 */}
       {showProfile && <Profile userId="사용자_ID_여기에_입력" onClose={handleCloseProfile} />}
+
+      {showCommunity && <Community onClose={handleCloseCommunity} />}
 
     </>
   );
