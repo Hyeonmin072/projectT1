@@ -1,10 +1,12 @@
 package com.gamesnap.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 public class Message {
     @Id @GeneratedValue
     @Column(name = "ms_id")
@@ -27,4 +29,15 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "msr_id")
     private MessageRoom messageRoom;
+
+    protected Message() {
+    }
+
+    public Message(String content, LocalDateTime createdate, Member sendMember, Member receiveMember, MessageRoom messageRoom) {
+        this.content = content;
+        this.createdate = LocalDateTime.now();
+        this.sendMember = sendMember;
+        this.receiveMember = receiveMember;
+        this.messageRoom = messageRoom;
+    }
 }
