@@ -26,4 +26,9 @@ public class VideoComment {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "m_id")
     Member member;
+
+    protected VideoComment() {
+    }
+
+
 }

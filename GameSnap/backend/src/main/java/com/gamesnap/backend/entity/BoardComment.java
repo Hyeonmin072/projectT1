@@ -3,7 +3,7 @@ package com.gamesnap.backend.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class BoarComment {
+public class BoardComment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "bc_id")
@@ -22,4 +22,14 @@ public class BoarComment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "m_id")
     private Member member;
+
+    protected BoardComment() {
+    }
+
+    public BoardComment(String comment, String createDate, Board board, Member member) {
+        this.comment = comment;
+        this.createDate = createDate;
+        this.board = board;
+        this.member = member;
+    }
 }

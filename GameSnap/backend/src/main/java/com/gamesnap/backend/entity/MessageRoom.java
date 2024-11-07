@@ -1,8 +1,10 @@
 package com.gamesnap.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class MessageRoom {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -11,4 +13,11 @@ public class MessageRoom {
 
     @Column(name = "msr_name")
     private String name;
+
+    protected MessageRoom() {
+    }
+
+    public MessageRoom(String name) {
+        this.name = name;
+    }
 }
