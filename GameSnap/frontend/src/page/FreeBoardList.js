@@ -57,6 +57,16 @@ function FreeBoardList() {
               </Link>
             </div>
 
+            <div className='gap-5'>
+              <button className="border bg-gray">게임1</button>
+              <button className="border">게임2</button>
+              <button className="border">게임3</button>
+              <button className="border">게임4</button>
+              <button className="border">게임5</button>
+              <button className="border">게임6</button>
+              <button className="border">게임7</button>
+            </div>
+
             {/* 게시글 목록 */}
             <div className="bg-white rounded-lg shadow">
               <div className="divide-y">
