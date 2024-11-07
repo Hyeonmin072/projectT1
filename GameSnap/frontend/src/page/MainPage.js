@@ -3,6 +3,7 @@
 import React from 'react';
 import PageTransition from '../component/PageTransition';
 
+
 const MainPage = () => {
   return (
     <PageTransition>
