@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Profile from './Profile';
+import Profile from '../profile/MainProfile';
 import Community from './Community';
 
 
