@@ -16,7 +16,7 @@ public class Game {
 
     @Column(name = "g_name")
     private String name;
-a
+
     protected Game() {
     }
 
