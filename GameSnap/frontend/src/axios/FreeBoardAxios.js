@@ -2,16 +2,17 @@
 import axios from 'axios';
 
 // 기본 URL 설정
-const BASE_URL = 'http://localhost:1111/api'; // 백엔드 서버 URL
+const BASE_URL = 'http://localhost:1111'; // 백엔드 서버 URL
 
 const FreeBoardAxios = {
   // 게임 목록 가져오기
   async getGames() {
     try {
-      const response = await axios.get(`${BASE_URL}/games`);
+      const response = await axios.get(`${BASE_URL}/game`);
+      console.log('게임 목록 : ', response.data);
       return response.data;
     } catch (error) {
-      console.error('게임 목록 조회 실패:', error);
+      console.error('게임 목록 조회 실패 : ', error);
       throw error;
     }
   },
@@ -19,9 +20,10 @@ const FreeBoardAxios = {
   // 게시글 목록 가져오기
   async getPosts(gameGenre) {
     try {
-      const response = await axios.get(`${BASE_URL}/posts`, {
+      const response = await axios.get(`${BASE_URL}/board`, {
         params: { gameGenre }
       });
+      console.log('게시글 목록 : ', response.data);
       return response.data;
     } catch (error) {
       console.error('게시글 목록 조회 실패:', error);
