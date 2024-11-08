@@ -1,5 +1,6 @@
 package com.gamesnap.backend.service;
 
+import com.gamesnap.backend.dto.BoardDetailDto;
 import com.gamesnap.backend.dto.BoardResponseDto;
 import com.gamesnap.backend.entity.Board;
 import com.gamesnap.backend.entity.Game;
@@ -44,5 +45,24 @@ public class BoardService {
             return boardResponseDtos;
         }
         return List.of();
+    }
+
+    public BoardDetailDto boardDetail(Integer boardId) {
+        Optional<Board> findResult = boardRepository.findById(boardId);
+        if (findResult.isPresent()) {
+            Board findBoard = findResult.get();
+            BoardDetailDto boardDetailDto = new BoardDetailDto(
+                    findBoard.getId(),
+                    findBoard.getTitle(),
+                    findBoard.getContent(),
+                    findBoard.getCreateDate(),
+                    findBoard.getMember().getName(),
+                    findBoard.getView(),
+                    findBoard.getLike(),
+                    findBoard.getGame().getName(),
+                    findBoard.getComments());
+            return boardDetailDto;
+        }
+        return null;
     }
 }

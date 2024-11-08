@@ -44,10 +44,11 @@ function FreeBoardPage() {
   useEffect(() => {
     if (post) {
       console.log('현재 게시글 데이터:', {
-        id: post.b_id,
-        title: post.b_title,
-        content: post.b_content,
-        createDate: post.b_createddate,
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        createDate: post.createDate,
+        memberName: post.memberName
       });
     }
   }, [post]);
@@ -76,11 +77,11 @@ function FreeBoardPage() {
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-2xl font-bold">{post?.b_title}</h1>
+              <h1 className="text-2xl font-bold">{post?.title}</h1>
               <div className="flex items-center gap-4">
-                <span className="text-gray-600">작성자: {post?.author}</span>
+                <span className="text-gray-600">작성자: {post?.memberName}</span>
                 <span className="text-gray-600">
-                    작성일: {post?.b_createDate}
+                    작성일: {post?.createDate}
                 </span>
               </div>
             </div>
@@ -88,7 +89,7 @@ function FreeBoardPage() {
             {/* 게시글 내용 */}
             <div className="prose max-w-none">
               <p className="text-gray-800 leading-relaxed">
-                {post?.b_content}
+                {post?.content}
               </p>
             </div>
           </div>

@@ -61,7 +61,7 @@ const FreeBoardAxios = {
   async getPosts(gameId) {
     try {
       // URL을 Path Variable 형식으로 수정
-      const response = await axiosInstance.get(`/board/${gameId}`);
+      const response = await axiosInstance.get(`/boardList/${gameId}`);
       console.log('게시글 목록:', response.data);
       return response.data;
     } catch (error) {
@@ -73,7 +73,7 @@ const FreeBoardAxios = {
   // 게시글 작성
   async createPost(postData) {
     try {
-      const response = await axios.post(`${BASE_URL}/post`, postData);
+      const response = await axios.post(`${BASE_URL}/board/write`, postData);
       return response.data;
     } catch (error) {
       console.error('게시글 작성 실패:', error);
@@ -84,7 +84,7 @@ const FreeBoardAxios = {
   // 게시글 상세 조회
   async getPostDetail(postId) {
     try {
-      const response = await axios.get(`${BASE_URL}/post/${postId}`);
+      const response = await axios.get(`${BASE_URL}/board/${postId}`);
       return response.data;
     } catch (error) {
       console.error('게시글 상세 조회 실패:', error);
