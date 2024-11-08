@@ -30,21 +30,15 @@ public class VideoComment {
     Member member;
 
 
-<<<<<<< HEAD
-=======
-
     protected VideoComment(){
 
     }
->>>>>>> 99d67ceb0d98376bdd3738f941ad9b253a543d35
+
     public VideoComment(String content, Video video, Member member, LocalDateTime createDate){
         this.content = content;
         this.video = video;
         this.member = member;
         this.createDate = createDate;
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> 99d67ceb0d98376bdd3738f941ad9b253a543d35
 }
