@@ -5,6 +5,10 @@ import { Search, Plus } from 'lucide-react';
 import PageTransition from '../component/PageTransition';
 import FreeBoardAxios from '../axios/FreeBoardAxios';
 import LeagueOfLegendImg from '../assets/lol.png';
+import StarCraftImg from '../assets/starcraft.png';
+import LostArkImg from '../assets/lostark.png';
+import CandyCrashSagaImg from '../assets/candycrashsaga.png';
+import AniPangImg from '../assets/anipang.png';
 
 function FreeBoardList() {
   const [gameCategories, setGameCategories] = useState([]);
@@ -17,6 +21,10 @@ function FreeBoardList() {
   // 게임 이미지 매핑
   const gameImages = {
     '리그오브레전드': LeagueOfLegendImg,
+    '스타크래프트': StarCraftImg,
+    '로스트아크': LostArkImg,
+    '캔디크러쉬사가' : CandyCrashSagaImg,
+    '애니팡' : AniPangImg,
     // 다른 게임 이미지들 추가
   };
 
@@ -31,9 +39,9 @@ function FreeBoardList() {
 
           return {
             id: game.id,               
-            name: game.name,     // g_name -> name
-            genre: game.genre,   // g_genre -> genre
-            image: gameImages[game.name]  // g_name -> name
+            name: game.name,
+            genre: game.genre, 
+            image: gameImages[game.name] 
           };
         });
         console.log('매핑된 게임 데이터:', mappedGames);
