@@ -5,6 +5,10 @@ import { Search, Plus } from 'lucide-react';
 import PageTransition from '../component/PageTransition';
 import FreeBoardAxios from '../axios/FreeBoardAxios';
 import LeagueOfLegendImg from '../assets/lol.png';
+import StarCraftImg from '../assets/starcraft.png';
+import LostArkImg from '../assets/lostark.png';
+import CandyCrashSagaImg from '../assets/candycrashsaga.png';
+import AniPangImg from '../assets/anipang.png';
 
 function FreeBoardList() {
   const [gameCategories, setGameCategories] = useState([]);
@@ -17,6 +21,10 @@ function FreeBoardList() {
   // 게임 이미지 매핑
   const gameImages = {
     '리그오브레전드': LeagueOfLegendImg,
+    '스타크래프트': StarCraftImg,
+    '로스트아크': LostArkImg,
+    '캔디크러쉬사가' : CandyCrashSagaImg,
+    '애니팡' : AniPangImg
     // 다른 게임 이미지들 추가
   };
 
@@ -31,9 +39,9 @@ function FreeBoardList() {
 
           return {
             id: game.id,               
-            name: game.name,     // g_name -> name
-            genre: game.genre,   // g_genre -> genre
-            image: gameImages[game.name]  // g_name -> name
+            name: game.name,
+            genre: game.genre, 
+            image: gameImages[game.name] 
           };
         });
         console.log('매핑된 게임 데이터:', mappedGames);
@@ -128,15 +136,15 @@ function FreeBoardList() {
                 console.log('렌더링되는 게임:', game); // 각 게임 데이터 확인용
                 return (
                   <button
-                    key={game.g_genre}
+                    key={game.genre}
                     onClick={() => {
                       console.log('선택된 게임 장르:', game.genre); // 클릭 시 선택되는 장르 확인용
-                      setSelectedGame(game.g_genre);
+                      setSelectedGame(game.genre);
                     }}
                     className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
-                      ${selectedGame === game.g_genre
+                      ${selectedGame === game.genre
                         ? 'bg-white text-black border-green-500'
-                        : 'border-gray-300 hover:bg-white'
+                        : 'border-gray-300 hover:bg-green-400 transition duration-500 ease-in-out'
                       }`}
                   >
                     {game.image && (
