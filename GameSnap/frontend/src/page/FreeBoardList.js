@@ -131,12 +131,12 @@ function FreeBoardList() {
                     key={game.g_genre}
                     onClick={() => {
                       console.log('선택된 게임 장르:', game.genre); // 클릭 시 선택되는 장르 확인용
-                      setSelectedGame(game.g_genre);
+                      setSelectedGame(game.genre);
                     }}
                     className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
-                      ${selectedGame === game.g_genre
+                      ${selectedGame === game.genre
                         ? 'bg-white text-black border-green-500'
-                        : 'border-gray-300 hover:bg-white'
+                        : 'border-gray-300 hover:bg-green-400 transition duration-500 ease-in-out'
                       }`}
                   >
                     {game.image && (
