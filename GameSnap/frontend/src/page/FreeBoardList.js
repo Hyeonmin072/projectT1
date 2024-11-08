@@ -24,7 +24,7 @@ function FreeBoardList() {
     '스타크래프트': StarCraftImg,
     '로스트아크': LostArkImg,
     '캔디크러쉬사가' : CandyCrashSagaImg,
-    '애니팡' : AniPangImg,
+    '애니팡' : AniPangImg
     // 다른 게임 이미지들 추가
   };
 
@@ -47,8 +47,8 @@ function FreeBoardList() {
         console.log('매핑된 게임 데이터:', mappedGames);
         setGameCategories(mappedGames);
         // 첫 번째 게임의 장르를 기본값으로 설정
-        if (mappedGames.length > 0 && mappedGames[0].genre) {
-          setSelectedGame(mappedGames[0].genre);
+        if (mappedGames.length > 0 && mappedGames[0].g_genre) {
+          setSelectedGame(mappedGames[0].g_genre);
         }
       } catch (error) {
         console.error('게임 목록을 불러오는데 실패했습니다:', error);
