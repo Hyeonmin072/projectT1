@@ -9,8 +9,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // CORS를 허용할 경로
-                .allowedOrigins("http://localhost:3000") // React 애플리케이션 주소
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS"); // 허용할 HTTP 메서드
+        registry.addMapping("/**")  // 모든 경로에 대해
+                .allowedOrigins("http://localhost:3000")  // React 앱의 주소
+                .allowedMethods("*")  // 모든 HTTP 메서드 허용
+                .allowedHeaders("*")  // 모든 헤더 허용
+                .allowCredentials(true);  // 인증 정보 허용
     }
 }

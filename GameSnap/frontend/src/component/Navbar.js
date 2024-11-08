@@ -146,7 +146,6 @@ const Navbar = () => {
         </div>
       </nav>
   
-      {/* 나머지 코드는 그대로 유지 */}
       {currentForm === 'login' && (
         <LoginForm 
           onClose={() => setCurrentForm('none')}

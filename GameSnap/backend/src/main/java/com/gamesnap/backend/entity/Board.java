@@ -8,8 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+
+import java.time.LocalDate;
 
 @Entity
+@Getter
 public class Board {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "b_id")
@@ -22,7 +26,7 @@ public class Board {
     private String content;
 
     @Column(name = "b_createdate")
-    private String createDate;
+    private LocalDate createDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "m_id")
@@ -31,4 +35,23 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "g_id")
     private Game game;
+
+    @Column(name = "b_view")
+    private Integer view;
+
+    @Column(name = "b_like")
+    private Integer like;
+
+    protected Board() {
+    }
+
+    public Board(Game game, Member member, String content, String title) {
+        this.view = 0;
+        this.like = 0;
+        this.game = game;
+        this.member = member;
+        this.createDate = LocalDate.now();
+        this.content = content;
+        this.title = title;
+    }
 }

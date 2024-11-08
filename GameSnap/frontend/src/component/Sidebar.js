@@ -71,7 +71,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
           </div>
 
           <nav className="space-y-2 flex-grow">
-            <Link to="/" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            <Link to="user/" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <Home className="mr-3" size={20} />
               홈
             </Link>

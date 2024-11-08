@@ -1,7 +1,9 @@
+/*eslint-disable*/
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import PageTransition from '../component/PageTransition';
+import FreeBoardAxios from '../axios/FreeBoardAxios';
 
 function FreeBoardWrite() {
   const navigate = useNavigate();

@@ -11,6 +11,14 @@
 # production
 /build
 
+# 캐시 파일
+.cache/
+*.bin
+*.lock
+
+# 특정 파일/폴더
+fileHashes/
+
 # misc
 .DS_Store
 .env.local
