@@ -7,7 +7,7 @@ import FreeBoardAxios from '../axios/FreeBoardAxios';
 import LeagueOfLegendImg from '../assets/lol.png';
 
 function FreeBoardList() {
-  const [gameCategories, setGameCategories] = useState([]);
+  const [gameCategories, setGameCategories] = useState([1]);
   const [selectedGame, setSelectedGame] = useState("MOBA");
   const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,22 +26,29 @@ function FreeBoardList() {
       try {
         const gamesData = await FreeBoardAxios.getGames();
         const mappedGames = gamesData.map(game => ({
-          id: game.g_genre,
-          name: game.g_name,
+          g_genre: game.g_genre,  // ID 대신 g_genre 사용
+          g_name: game.g_name,
           image: gameImages[game.g_name]
         }));
         setGameCategories(mappedGames);
+        // 첫 번째 게임의 장르를 기본값으로 설정
+        if (mappedGames.length > 0) {
+          setSelectedGame(mappedGames[0].g_genre);
+        }
       } catch (error) {
+        console.error('게임 목록을 불러오는데 실패했습니다:', error);
         setError('게임 목록을 불러오는데 실패했습니다.');
       }
     };
-
+  
     fetchGames();
   }, []);
 
   // 게시글 목록 불러오기
   useEffect(() => {
     const fetchPosts = async () => {
+      if (!selectedGame) return; // selectedGame이 없으면 요청하지 않음
+      
       setLoading(true);
       try {
         let posts;
@@ -50,14 +57,15 @@ function FreeBoardList() {
         } else {
           posts = await FreeBoardAxios.getPosts(selectedGame);
         }
-        setPosts(posts);
+        setPosts(posts || []); // null/undefined 체크
       } catch (error) {
+        console.error('게시글을 불러오는데 실패했습니다:', error);
         setError('게시글을 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchPosts();
   }, [selectedGame, searchTerm]);
 
@@ -108,12 +116,12 @@ function FreeBoardList() {
 
           {/* 게임 카테고리 버튼 */}
           <div className="flex gap-2 mb-6 overflow-x-auto">
-            {gameCategories.map((game) => (
+            {gameCategories.map((game, index) => (
               <button
-                key={game.id}
-                onClick={() => setSelectedGame(game.id)}
+                key={game.g_genre || index}  // g_genre나 index를 key로 사용
+                onClick={() => setSelectedGame(game.g_genre)}
                 className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
-                  ${selectedGame === game.id
+                  ${selectedGame === game.g_genre
                     ? 'bg-white text-black border-green-500'
                     : 'border-gray-300 hover:bg-white'
                   }`}
@@ -121,11 +129,11 @@ function FreeBoardList() {
                 {game.image && (
                   <img 
                     src={game.image} 
-                    alt={game.name} 
+                    alt={game.g_name} 
                     className="w-6 h-6 rounded object-cover"
                   />
                 )}
-                {game.name}
+                {game.g_name}
               </button>
             ))}
           </div>
