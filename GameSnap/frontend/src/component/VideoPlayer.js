@@ -25,7 +25,7 @@ const VideoPlayer = ({ video, onLike, isLiked, likes, onCommentClick, commentCou
         </div>
   
         {/* 버튼 섹션 */}
-        <div className="flex flex-col gap-6 justify-center pb-6">
+        <div className="flex flex-col gap-6 justify-end pb-6">
           <button
             onClick={onLike}
             className={`flex flex-col items-center ${isLiked ? 'text-red-500' : 'text-gray-600'} hover:opacity-75 transition-colors`}
