@@ -7,6 +7,7 @@ spring:
        path: /h2/console
   datasource:
 #
+<<<<<<< HEAD
     url: jdbc:mysql://localhost:3306/gamesnap_db
     ##mysql 설정
     username: guest
@@ -33,6 +34,31 @@ spring:
 
 
 #      최초 한번은 jdbc:h2~/gamesnap로 접속 후 위와 같이 접속
+=======
+#    url: jdbc:mysql://localhost:3306/gamesnap_db
+#    ##mysql 설정
+#    username: guest
+#    password: 123
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+
+     driver-class-name: org.h2.Driver
+     username: sa
+     password:
+     url: jdbc:h2:tcp://localhost/~/gamesnap
+
+
+  #    jdbc:h2:tcp://localhost/~/gamesnap
+
+
+  #      최초 한번은 jdbc:h2~/gamesnap로 접속 후 위와 같이 접속
+
+  sql:
+    init:
+      mode: never
+
+>>>>>>> 99d67ceb0d98376bdd3738f941ad9b253a543d35
   jpa:
     hibernate:
       ddl-auto: update
