@@ -29,20 +29,11 @@ public class VideoComment {
     @JoinColumn(name = "m_id")
     Member member;
 
-<<<<<<< HEAD
-    protected VideoComment() {
-    }
 
-
-=======
-    protected VideoComment(){
-
-    }
     public VideoComment(String content, Video video, Member member, LocalDateTime createDate){
         this.content = content;
         this.video = video;
         this.member = member;
         this.createDate = createDate;
     }
->>>>>>> videoDevelop
 }
