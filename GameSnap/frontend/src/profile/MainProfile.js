@@ -5,25 +5,28 @@ import { useNavigate } from "react-router-dom";
 import { getProfile } from "../axios/UserProfileAxios";
 import SetProfile from "./UpdateProfile";
 
-const Profile = ({ userid, onClose }) => {
+const Profile = (props) => {
+  const { onClose, id } = props || {};
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);; 
   const [notifications, setNotifications] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   
   const navigate = useNavigate();
   
 
   const handleEditProfile = () => {
+    setIsEditing(true);
     navigate('/profile/edit');
   }
 
   // console.log("프로필 출력 완료");
   // // 유저 프로필 상태 정의
   const [userInfo, setUserInfo] = useState({
-    userid: '1',
-    username: '1',
-    email: '1@',
-    phone: '12',
+    id: '1',
+    name: '',
+    email: '',
+    phone: '',
     preferredGenre: "No", // 기본 선호 장르
   });
 
@@ -33,7 +36,7 @@ const Profile = ({ userid, onClose }) => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await getProfile(userid); // API 요청
+        const response = await getProfile(id); // API 요청
         const result = await response.json();
         setUserInfo(result);
         setIsLoading(false);
@@ -44,12 +47,12 @@ const Profile = ({ userid, onClose }) => {
       }
     };
 
-    if (userid) {
+    if (id) {
     loadUserProfile();}
     }, []);
 
   // 로딩 상태 처리
-  if (!userInfo || !userInfo.userid) {
+  if (!userInfo || !userInfo.id) {
     return <p>Loading...</p>;
   }
 
@@ -57,9 +60,15 @@ const Profile = ({ userid, onClose }) => {
     return <p>{error}</p>;
   }
 
-  if (!userInfo.userid) {
+  if (!userInfo.id) {
     return <p>프로필 정보가 없습니다.</p>;
   }
+
+  const handleUpdateProfile = (updatedInfo) => {
+    setUserInfo(updatedInfo);
+    setIsEditing(false); // 수정 모드를 종료
+  };
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
@@ -75,11 +84,11 @@ const Profile = ({ userid, onClose }) => {
         <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
             <div className={`flex justify-between`}>
                 <label className="font-semibold hidden">아이디:</label>
-                <span className="hidden ml-auto">{userInfo.userid}</span>
+                <span className="hidden ml-auto">{userInfo.id}</span>
             </div>
             <div className="flex justify-between">
                 <label className="font-semibold">이름:</label>
-                <span className="ml-auto">{userInfo.username}</span>
+                <span className="ml-auto">{userInfo.name}</span>
             </div>
             <div className="flex justify-between">
                 <label className="font-semibold">이메일:</label>
@@ -124,9 +133,16 @@ const Profile = ({ userid, onClose }) => {
         >
         ✕
         </button>
-  
-            
       </div>
+
+      {/* 수정 모드일 때만 SetProfile 컴포넌트 렌더링 */}
+      {isEditing && (
+        <SetProfile
+          userInfo={userInfo}
+          onClose={() => setIsEditing(false)}
+          onUpdateProfile={handleUpdateProfile}
+        />
+      )}
     </div>
 );
 };

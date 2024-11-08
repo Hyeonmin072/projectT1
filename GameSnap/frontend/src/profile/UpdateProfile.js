@@ -1,26 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import Profile from './MainProfile';
 
-const SetProfile = async ({ onClose }) => {
-    const { userInfo, setUserInfo } = useState(null);
-    const [newProfile, setNewProfile] = useState({});
+const SetProfile = async ({ onClose, onUpdateProfile }) => {
+    const { userInfo, setUserInfo } = Profile();
+    const [newProfile, setNewProfile] = useState(userInfo || {});
     const [updateStatus, setUpdateStatus ] = useState(null);
     const [isProfileEditing, setIsProfileEditing] = useState(false);
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
+        const fetchUserId = async () => {
             try {
-                const response = await fetch('/getUserInfo');
+                const response = await fetch('/profile');  // userId만 가져오는 경로
                 const data = await response.json();
-                setUserInfo(data);
-                setNewProfile(data);
+                setUserId(data.userId);  // userId 설정
+                fetchUserInfo(data.userId); // userId를 통해 프로필 정보 가져오기
             } catch (error) {
-                
+                console.error('Error getting userId');
             }
         };
-        fetchUserInfo();
+        fetchUserId();
     }, []);
 
+    const fetchUserInfo = async (id) => {
+        try {
+            const response = await fetch(`/profile/${id}`);  // userId로 해당 유저 정보 가져오기
+            const data = await response.json();
+            setUserInfo(data);
+            setNewProfile(data);    
+        } catch (error) {
+            console.error('Error fetching user info');
+        }
+    };
+    
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewProfile((prevProfile) => ({
@@ -44,19 +56,19 @@ const SetProfile = async ({ onClose }) => {
 
     const handleUpdateClick = async () => {
         // 유효성 검사
-        if (!newProfile.username || !newProfile.phone || !newProfile.email) {
+        if (!newProfile.name || !newProfile.phone || !newProfile.email) {
             setUpdateStatus({ success: false, message: "모든 필드를 입력해 주세요." });
             return;
         }
-            try { 
-                const response = await fetch('/updateProfile', { 
-                    method: 'POST', 
-                    headers: { 
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newProfile) 
-                }); 
-                
+        try { 
+            const response = await fetch('/updateProfile', { 
+                method: 'POST', 
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newProfile) 
+            }); 
+            
             if (response.ok) { 
                 setUpdateStatus({ success: true, message: "프로필이 성공적으로 업데이트되었습니다." }); 
             } else { 
@@ -67,10 +79,9 @@ const SetProfile = async ({ onClose }) => {
         }
     };
 
-    // 프로필 수정 닫기
-    const handleCloseProfile = () => {
-        setIsProfileEditing(false);
-    };
+    const handleSave = () => {
+        onUpdateProfile(newProfile);
+    }
 
     return (
         <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
@@ -82,8 +93,8 @@ const SetProfile = async ({ onClose }) => {
             <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
                 <input
                     type="text"
-                    name="username"
-                    value={userInfo.username}
+                    name="name"
+                    value={userInfo.name}
                     onChange={handleInputChange}
                     placeholder="이름을 입력하세요"
                 />
@@ -121,8 +132,8 @@ const SetProfile = async ({ onClose }) => {
                 </select>
             </div>
         
-            <button onClick={handleUpdateClick}>
-                프로필 수정 완료
+            <button onClick={handleSave}>
+                저장
             </button>
             {updateStatus && (
                 <div style={{color: updateStatus.success ? 'green' : 'red'}}>

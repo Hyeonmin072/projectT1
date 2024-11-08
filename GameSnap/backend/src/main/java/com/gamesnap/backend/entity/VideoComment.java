@@ -1,10 +1,16 @@
 package com.gamesnap.backend.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
 
 @Entity
 @Getter
@@ -30,21 +36,10 @@ public class VideoComment {
     Member member;
 
 
-<<<<<<< HEAD
-=======
-
-    protected VideoComment(){
-
-    }
->>>>>>> 99d67ceb0d98376bdd3738f941ad9b253a543d35
     public VideoComment(String content, Video video, Member member, LocalDateTime createDate){
         this.content = content;
         this.video = video;
         this.member = member;
         this.createDate = createDate;
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 99d67ceb0d98376bdd3738f941ad9b253a543d35
 }

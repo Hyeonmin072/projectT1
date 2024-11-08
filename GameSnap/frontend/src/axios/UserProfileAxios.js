@@ -11,9 +11,9 @@ const apiClientForUpdate = axios.create({
 
 
 // 사용자 프로필 가져오기
-export const getProfile = async (userid) => {
+export const getProfile = async (id) => {
     try {
-        return await apiClient.get('/getProfile' , { params: { userid } });
+        return await apiClient.get('/getProfile' , { params: { id } });
     } catch (error) {
         console.error('Error fetching profile data:', error);
         return null; // 오류 발생 시 null 반환
@@ -21,11 +21,11 @@ export const getProfile = async (userid) => {
 };
 
 // 사용자 프로필 변경하기
-export const updateProfile = async (userid, { phone, preferredGenre, notification }) => {
+export const updateProfile = async (id, { phone, preferredGenre, notification }) => {
     try {
         // PUT 요청을 사용하여 사용자 정보를 업데이트
         const response = await apiClientForUpdate.put('/updateProfile', {
-            userid,                // 유저 ID는 고정
+            id,                // 유저 ID는 고정
             phone,                 // 변경할 전화번호
             preferredGenre,        // 선택한 선호 장르
             notification           // 알림 설정 (On, Off)
