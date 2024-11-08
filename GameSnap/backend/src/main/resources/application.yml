@@ -18,7 +18,7 @@ spring:
   #     password:
   #     url: jdbc:h2:tcp://localhost/~/gamesnap
   #      최초 한번은 jdbc:h2/~/gamesnap로 접속 후 위와 같이 접속
-
+  # GitIgnore 추가할거임!!!!!!!!!!
   jpa:
     hibernate:
       ddl-auto: update
