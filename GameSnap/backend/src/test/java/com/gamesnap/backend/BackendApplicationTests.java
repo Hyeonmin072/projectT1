@@ -7,8 +7,6 @@ import com.gamesnap.backend.entity.Member;
 import com.gamesnap.backend.repository.BoardRepository;
 import com.gamesnap.backend.repository.GameRepository;
 import com.gamesnap.backend.repository.MemberRepository;
-import com.gamesnap.backend.service.MemberService;
-//import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,8 +30,6 @@ class BackendApplicationTests {
     @Autowired
     private BoardRepository boardRepository;
 
-
-
     @BeforeEach
     @Transactional
     public void initData() {
@@ -44,7 +40,7 @@ class BackendApplicationTests {
         if (gameRepository.count() == 0) { //게임 초기 데이터 추가, 반복 실행 문제 X
             gameRepository.save(new Game(Genre.STRATEGY, "스타크래프트"));
             gameRepository.save(new Game(Genre.RPG, "로스트아크"));
-            gameRepository.save(new Game(Genre.AOS, "리그오브레전드"));
+            gameRepository.save(new Game(Genre.AOS, "리그 오브 레전드"));
             gameRepository.save(new Game(Genre.PUZZLE, "캔디크러쉬사가"));
             gameRepository.save(new Game(Genre.PUZZLE, "애니팡"));
         }
@@ -68,8 +64,5 @@ class BackendApplicationTests {
     @Test
     public void test() {
         Assertions.assertThat(gameRepository.findAll()).hasSizeGreaterThan(0); //게임 데이터가 제대로 들어갔는지 그냥 확인
-
     }
-
-
 }
