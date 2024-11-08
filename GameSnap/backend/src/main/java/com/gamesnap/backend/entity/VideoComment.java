@@ -29,12 +29,8 @@ public class VideoComment {
     @JoinColumn(name = "m_id")
     Member member;
 
-<<<<<<< HEAD
-    protected VideoComment() {
-    }
 
 
-=======
     protected VideoComment(){
 
     }
@@ -44,5 +40,5 @@ public class VideoComment {
         this.member = member;
         this.createDate = createDate;
     }
->>>>>>> videoDevelop
+
 }

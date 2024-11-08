@@ -12,32 +12,24 @@ spring:
 #    username: guest
 #    password: 123
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-<<<<<<< HEAD
 
-
-     driver-class-name: org.h2.Driver
-     username: sa
-     password:
-     url: jdbc:h2:tcp://localhost/~/gamesnap
-
-
-#      최초 한번은 jdbc:h2/~/gamesnap로 접속 후 위와 같이 접속
-  sql:
-    init:
-      mode: never
-=======
 
 
      driver-class-name: org.h2.Driver
      username: sa
      password:
      url: jdbc:h2:tcp://localhost/~/gamesnap
+
 
   #    jdbc:h2:tcp://localhost/~/gamesnap
 
 
-#      최초 한번은 jdbc:h2~/gamesnap로 접속 후 위와 같이 접속
->>>>>>> videoDevelop
+  #      최초 한번은 jdbc:h2~/gamesnap로 접속 후 위와 같이 접속
+
+  sql:
+    init:
+      mode: never
+
   jpa:
     hibernate:
       ddl-auto: update
