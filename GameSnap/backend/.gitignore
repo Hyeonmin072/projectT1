@@ -44,11 +44,4 @@ fileHashes/
 ### VS Code ###
 .vscode/
 
-# IntelliJ IDEA 관련 파일 무시
-filehashes.bin
-filehashes.lock
-buildouputcleanup.lock
-workspace.xml
 
-# 애플리케이션 설정 파일 무시
-application.yml
