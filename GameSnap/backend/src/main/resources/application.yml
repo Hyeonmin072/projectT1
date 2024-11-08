@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/gamesnap_db
     username: guest
-    password: 1234
+    password: 123
 
 
   #
