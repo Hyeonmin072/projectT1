@@ -7,8 +7,6 @@ import com.gamesnap.backend.entity.Member;
 import com.gamesnap.backend.repository.BoardRepository;
 import com.gamesnap.backend.repository.GameRepository;
 import com.gamesnap.backend.repository.MemberRepository;
-import com.gamesnap.backend.service.MemberService;
-import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

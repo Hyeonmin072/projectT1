@@ -28,10 +28,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok:1.18.22'  // 컴파일 타임에만 Lombok 사용
-	annotationProcessor 'org.projectlombok:lombok:1.18.22'  // 컴파일 타임에 Lombok 어노테이션 처리
-	testCompileOnly 'org.projectlombok:lombok:1.18.22'  // 테스트 컴파일 타임에만 Lombok 사용
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'  // 테스트 컴파일 타임에 Lombok 어노테이션 처리
+	compileOnly 'org.projectlombok:lombok:1.18.22'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
