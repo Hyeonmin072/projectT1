@@ -32,7 +32,9 @@ const Profile = ({ userid, onClose }) => {
     setError(null);
     try {
       const response = await getProfile(userid); // API 요청
-      setUserInfo(response);
+      const result = await response.json();
+      setUserInfo(result);
+      setIsLoading(false);
       // setUserInfo({
       //   userid: '1234567890',
       //   username: '홍길동',

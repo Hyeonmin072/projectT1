@@ -7,26 +7,37 @@ const SetProfile = async ({currentProfile, onClose, setProfile }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setNewProfile({
-          ...newProfile,
-          [name]: value,
-        });
+        setNewProfile((prevProfile) => ({
+          ...prevProfile,
+          [name]: value
+        }));
       };
 
     const handleGenreChange = (e) => {
         const { value } = e.target;
-        setNewProfile({
-        ...newProfile,
+        setNewProfile((prevProfile) => ({
+        ...prevProfile,
         preferredGenre: value,
-        });
+        }));
     };
 
-    // 프로필 수정 버튼 클릭 시, 프로필 수정 모달 열기
+    // 프로필 수정 버튼 클릭 시, 프로필 수정 열기
     const handleEditProfile = () => {
         setIsProfileEditing(true);
     };
 
-    // 프로필 수정 모달 닫기
+    const handleUpdateClick = () => {
+        // 유효성 검사
+        if (!newProfile.name || !newProfile.phone || !newProfile.email) {
+            setUpdateStatus({ success: false, message: "모든 필드를 입력해 주세요." });
+            return;
+        }
+
+        updateProfileHandler(newProfile);
+        setUpdateStatus({ success: true, message: "프로필이 성공적으로 업데이트되었습니다." });
+    };
+
+    // 프로필 수정 닫기
     const handleCloseProfile = () => {
         setIsProfileEditing(false);
     };
@@ -60,46 +71,48 @@ const SetProfile = async ({currentProfile, onClose, setProfile }) => {
                 className="fixed inset-0 bg-black bg-opacity-50"
                 onClick={onClose} // 닫기 버튼 클릭 시 onClose 호출
             />
-            <h2>프로필 수정</h2>
-            <input
-                type="text"
-                name="name"
-                value={newProfile.name}
-                onChange={handleInputChange}
-                placeholder="이름을 입력하세요"
-            />
-            <input
-                type="phone"
-                name="phone"
-                value={newProfile.phone}
-                onChange={handleInputChange}
-                placeholder="전화번호를 입력하세요"
-            />
-            <input
-                type="email"
-                name="email"
-                value={newProfile.email}
-                onChange={handleInputChange}
-                placeholder="이메일을 입력하세요"
-            />
+            <h2 className="text-xl font-semibold mb-4">프로필 수정</h2>
+            <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
+                <input
+                    type="text"
+                    name="name"
+                    value={newProfile.name}
+                    onChange={handleInputChange}
+                    placeholder="이름을 입력하세요"
+                />
+                <input
+                    type="phone"
+                    name="phone"
+                    value={newProfile.phone}
+                    onChange={handleInputChange}
+                    placeholder="전화번호를 입력하세요"
+                />
+                <input
+                    type="email"
+                    name="email"
+                    value={newProfile.email}
+                    onChange={handleInputChange}
+                    placeholder="이메일을 입력하세요"
+                />
 
-            {/* 선호 장르 선택 */}
-            <select
-                name="preferredGenre"
-                value={newProfile.preferredGenre}
-                onChange={handleGenreChange}
-            >
-                <option value="NO">선호 장르 선택</option>
-                <option value="RPG">RPG</option>
-                <option value="ACTION">ACTION</option>
-                <option value="STRATEGY">STRATEGY</option>
-                <option value="SPORTS">SPORTS</option>
-                <option value="SIMULATION">SIMULATION</option>
-                <option value="CASUAL">CASUAL</option>
-                <option value="MOBA">MOBA</option>
-                <option value="RACING">RACING</option>
-                <option value="PUZZLE">PUZZLE</option>
-            </select>
+                {/* 선호 장르 선택 */}
+                <select
+                    name="preferredGenre"
+                    value={newProfile.preferredGenre}
+                    onChange={handleGenreChange}
+                >
+                    <option value="NO">선호 장르 선택</option>
+                    <option value="RPG">RPG</option>
+                    <option value="ACTION">ACTION</option>
+                    <option value="STRATEGY">STRATEGY</option>
+                    <option value="SPORTS">SPORTS</option>
+                    <option value="SIMULATION">SIMULATION</option>
+                    <option value="CASUAL">CASUAL</option>
+                    <option value="MOBA">MOBA</option>
+                    <option value="RACING">RACING</option>
+                    <option value="PUZZLE">PUZZLE</option>
+                </select>
+            </div>
         
             <button onClick={updateProfileHandler}>
                 프로필 수정 완료
@@ -111,7 +124,11 @@ const SetProfile = async ({currentProfile, onClose, setProfile }) => {
             )}
 
             {/* 닫기 버튼 */}
-            <button onClick={onClose}>닫기</button>
+            <button onClick={onClose}
+            className="absolute right-4 bottom-4 text-black-500
+            border-2 border-gray-500 p-1">
+            닫기
+            </button>
         </div>
     );
 };
