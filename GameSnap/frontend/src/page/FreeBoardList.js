@@ -7,8 +7,8 @@ import FreeBoardAxios from '../axios/FreeBoardAxios';
 import LeagueOfLegendImg from '../assets/lol.png';
 
 function FreeBoardList() {
-  const [gameCategories, setGameCategories] = useState([1]);
-  const [selectedGame, setSelectedGame] = useState("MOBA");
+  const [gameCategories, setGameCategories] = useState([]);
+  const [selectedGame, setSelectedGame] = useState(null);
   const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -25,14 +25,21 @@ function FreeBoardList() {
     const fetchGames = async () => {
       try {
         const gamesData = await FreeBoardAxios.getGames();
-        const mappedGames = gamesData.map(game => ({
-          g_genre: game.g_genre,  // ID 대신 g_genre 사용
-          g_name: game.g_name,
-          image: gameImages[game.g_name]
-        }));
+        console.log('백엔드에서 받아온 게임 데이터:', gamesData);
+        const mappedGames = gamesData.map(game => {
+          console.log('각 게임 데이터:', game);
+
+          return {
+            id: game.id,               
+            name: game.name,     // g_name -> name
+            genre: game.genre,   // g_genre -> genre
+            image: gameImages[game.name]  // g_name -> name
+          };
+        });
+        console.log('매핑된 게임 데이터:', mappedGames);
         setGameCategories(mappedGames);
         // 첫 번째 게임의 장르를 기본값으로 설정
-        if (mappedGames.length > 0) {
+        if (mappedGames.length > 0 && mappedGames[0].g_genre) {
           setSelectedGame(mappedGames[0].g_genre);
         }
       } catch (error) {
@@ -116,26 +123,36 @@ function FreeBoardList() {
 
           {/* 게임 카테고리 버튼 */}
           <div className="flex gap-2 mb-6 overflow-x-auto">
-            {gameCategories.map((game, index) => (
-              <button
-                key={game.g_genre || index}  // g_genre나 index를 key로 사용
-                onClick={() => setSelectedGame(game.g_genre)}
-                className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
-                  ${selectedGame === game.g_genre
-                    ? 'bg-white text-black border-green-500'
-                    : 'border-gray-300 hover:bg-white'
-                  }`}
-              >
-                {game.image && (
-                  <img 
-                    src={game.image} 
-                    alt={game.g_name} 
-                    className="w-6 h-6 rounded object-cover"
-                  />
-                )}
-                {game.g_name}
-              </button>
-            ))}
+            {gameCategories.length > 0 ? (
+              gameCategories.map((game, index) => {
+                console.log('렌더링되는 게임:', game); // 각 게임 데이터 확인용
+                return (
+                  <button
+                    key={game.g_genre || index}
+                    onClick={() => {
+                      console.log('선택된 게임 장르:', game.g_genre); // 클릭 시 선택되는 장르 확인용
+                      setSelectedGame(game.g_genre);
+                    }}
+                    className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
+                      ${selectedGame === game.g_genre
+                        ? 'bg-white text-black border-green-500'
+                        : 'border-gray-300 hover:bg-white'
+                      }`}
+                  >
+                    {game.image && (
+                      <img 
+                        src={game.image} 
+                        alt={game.g_name} 
+                        className="w-6 h-6 rounded object-cover"
+                      />
+                    )}
+                    {game.g_name || '알 수 없는 게임'}
+                  </button>
+                );
+              })
+            ) : (
+              <div>게임 목록을 불러오는 중...</div>
+            )}
           </div>
 
           {/* 게시글 목록 */}
