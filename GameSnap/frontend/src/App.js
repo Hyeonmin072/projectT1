@@ -9,6 +9,7 @@ import UserPage from './page/UserPage';
 import { AuthProvider } from './context/AuthContext';
 import FreeBoardList from './page/FreeBoardList';  
 import FreeBoardWrite from './page/FreeBoardWrite'; 
+import FreeBoardPage from './page/FreeBoardPage';
 
 // AnimatePresence를 사용하기 위한 래퍼 컴포넌트
 function AnimatedRoutes() {
@@ -23,6 +24,7 @@ function AnimatedRoutes() {
         <Route path="/contact" element={<Footer />} />
         <Route path="/board" element={<FreeBoardList />} />
         <Route path="/board/write" element={<FreeBoardWrite />} />
+        <Route path="/board/:postId" element={<FreeBoardPage />} />
       </Routes>
       <Footer />
     </AnimatePresence>
