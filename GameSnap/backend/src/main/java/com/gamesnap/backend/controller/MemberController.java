@@ -38,7 +38,7 @@ public class MemberController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody  MemberRequestDto memberRequestDto){
+    public ResponseEntity<String> register(@RequestBody MemberRequestDto memberRequestDto){
 
         String email = memberRequestDto.getEmail();
         String password = memberRequestDto.getPassword();
