@@ -128,9 +128,9 @@ function FreeBoardList() {
                 console.log('렌더링되는 게임:', game); // 각 게임 데이터 확인용
                 return (
                   <button
-                    key={game.g_genre || index}
+                    key={game.g_genre}
                     onClick={() => {
-                      console.log('선택된 게임 장르:', game.g_genre); // 클릭 시 선택되는 장르 확인용
+                      console.log('선택된 게임 장르:', game.genre); // 클릭 시 선택되는 장르 확인용
                       setSelectedGame(game.g_genre);
                     }}
                     className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
@@ -142,11 +142,11 @@ function FreeBoardList() {
                     {game.image && (
                       <img 
                         src={game.image} 
-                        alt={game.g_name} 
+                        alt={game.name} 
                         className="w-6 h-6 rounded object-cover"
                       />
                     )}
-                    {game.g_name || '알 수 없는 게임'}
+                    {game.name || '알 수 없는 게임'}
                   </button>
                 );
               })
