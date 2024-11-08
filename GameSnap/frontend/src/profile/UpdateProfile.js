@@ -1,154 +1,121 @@
-import React, { useEffect, useState } from 'react';
-import Profile from './MainProfile';
+/* eslint-disable */
 
-const SetProfile = async ({ onClose, onUpdateProfile }) => {
-    const { userInfo, setUserInfo } = Profile();
-    const [newProfile, setNewProfile] = useState(userInfo || {});
-    const [updateStatus, setUpdateStatus ] = useState(null);
-    const [isProfileEditing, setIsProfileEditing] = useState(false);
-    const [userId, setUserId] = useState(null);
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-    useEffect(() => {
-        const fetchUserId = async () => {
-            try {
-                const response = await fetch('/profile');  // userId만 가져오는 경로
-                const data = await response.json();
-                setUserId(data.userId);  // userId 설정
-                fetchUserInfo(data.userId); // userId를 통해 프로필 정보 가져오기
-            } catch (error) {
-                console.error('Error getting userId');
-            }
-        };
-        fetchUserId();
-    }, []);
+const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
+const [isVisible, setIsVisible] = useState(false);
+const navigate = useNavigate();
+  // 사용자 정보를 로컬 상태로 관리
+  const [updatedInfo, setUpdatedInfo] = useState({
+    name: userInfo.name || "",
+    email: userInfo.email || "",
+    phone: userInfo.phone || "",
+    preferredGenre: userInfo.preferredGenre || "No",
+  });
 
-    const fetchUserInfo = async (id) => {
-        try {
-            const response = await fetch(`/profile/${id}`);  // userId로 해당 유저 정보 가져오기
-            const data = await response.json();
-            setUserInfo(data);
-            setNewProfile(data);    
-        } catch (error) {
-            console.error('Error fetching user info');
-        }
-    };
-    
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewProfile((prevProfile) => ({
-          ...prevProfile,
-          [name]: value
-        }));
-      };
+  // 입력 필드 변경 시 상태 업데이트
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedInfo((prevInfo) => ({
+      ...prevInfo,
+      [name]: value,
+    }));
+  };
 
-    const handleGenreChange = (e) => {
-        const { value } = e.target;
-        setNewProfile((prevProfile) => ({
-        ...prevProfile,
-        preferredGenre: value,
-        }));
-    };
-
-    // 프로필 수정 버튼 클릭 시, 프로필 수정 열기
-    const handleEditProfile = () => {
-        setIsProfileEditing(true);
-    };
-
-    const handleUpdateClick = async () => {
-        // 유효성 검사
-        if (!newProfile.name || !newProfile.phone || !newProfile.email) {
-            setUpdateStatus({ success: false, message: "모든 필드를 입력해 주세요." });
-            return;
-        }
-        try { 
-            const response = await fetch('/updateProfile', { 
-                method: 'POST', 
-                headers: { 
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newProfile) 
-            }); 
-            
-            if (response.ok) { 
-                setUpdateStatus({ success: true, message: "프로필이 성공적으로 업데이트되었습니다." }); 
-            } else { 
-                setUpdateStatus({ success: false, message: "프로필 업데이트에 실패했습니다." }); 
-            } 
-        } catch (error) { 
-            setUpdateStatus({ success: false, message: `프로필 업데이트 중 오류 발생: ${error.message}` }); 
-        }
-    };
-
-    const handleSave = () => {
-        onUpdateProfile(newProfile);
+  // 폼 제출 시 부모 컴포넌트에 업데이트된 정보를 전달
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (typeof onUpdateProfile == "function") {
+        onUpdateProfile(updatedInfo);    
+    }
+    if (typeof onClose === "function") {
+        setIsVisible(false);
+        setTimeout(() => {
+        onClose?.();
+        }, 100); // 애니메이션 시간
     }
 
-    return (
-        <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-            <div 
-                className="fixed inset-0 bg-black bg-opacity-50"
-                onClick={onClose} // 닫기 버튼 클릭 시 onClose 호출
+    navigate("/profile");
+    onClose?.();
+  };
+
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-50" onClick={onClose} />
+      <div className="bg-white rounded-lg w-full max-w-md p-6 z-60 relative">
+        <h2 className="text-xl font-bold text-center mb-6">프로필 수정</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block font-semibold">이름:</label>
+            <input
+              type="text"
+              name="name"
+              value={updatedInfo.name}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded p-2"
             />
-            <h2 className="text-xl font-semibold mb-4">프로필 수정</h2>
-            <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
-                <input
-                    type="text"
-                    name="name"
-                    value={userInfo.name}
-                    onChange={handleInputChange}
-                    placeholder="이름을 입력하세요"
-                />
-                <input
-                    type="phone"
-                    name="phone"
-                    value={userInfo.phone}
-                    onChange={handleInputChange}
-                    placeholder="전화번호를 입력하세요"
-                />
-                <input
-                    type="email"
-                    name="email"
-                    value={userInfo.email}
-                    onChange={handleInputChange}
-                    placeholder="이메일을 입력하세요"
-                />
+          </div>
 
-                {/* 선호 장르 선택 */}
-                <select
-                    name="preferredGenre"
-                    value={userInfo.preferredGenre}
-                    onChange={handleGenreChange}
-                >
-                    <option value="NO">선호 장르 선택</option>
-                    <option value="RPG">RPG</option>
-                    <option value="ACTION">ACTION</option>
-                    <option value="STRATEGY">STRATEGY</option>
-                    <option value="SPORTS">SPORTS</option>
-                    <option value="SIMULATION">SIMULATION</option>
-                    <option value="CASUAL">CASUAL</option>
-                    <option value="MOBA">MOBA</option>
-                    <option value="RACING">RACING</option>
-                    <option value="PUZZLE">PUZZLE</option>
-                </select>
-            </div>
-        
-            <button onClick={handleSave}>
-                저장
-            </button>
-            {updateStatus && (
-                <div style={{color: updateStatus.success ? 'green' : 'red'}}>
-                    {updateStatus.message}
-                </div>
-            )}
+          <div>
+            <label className="block font-semibold">이메일:</label>
+            <input
+              type="email"
+              name="email"
+              value={updatedInfo.email}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded p-2"
+            />
+          </div>
 
-            {/* 닫기 버튼 */}
-            <button onClick={onClose}
-            className="absolute right-4 bottom-4 text-black-500
-            border-2 border-gray-500 p-1">
-            닫기
+          <div>
+            <label className="block font-semibold">전화번호:</label>
+            <input
+              type="tel"
+              name="phone"
+              value={updatedInfo.phone}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded p-2"
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold">선호 장르:</label>
+            <select
+              name="preferredGenre"
+              value={updatedInfo.preferredGenre}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded p-2"
+            >
+              <option value="No">선호 장르 없음</option>
+              <option value="Action">액션</option>
+              <option value="Drama">드라마</option>
+              <option value="Comedy">코미디</option>
+              {/* 추가 장르 옵션 추가 가능 */}
+            </select>
+          </div>
+
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 transition-colors duration-200 p-2"
+            >
+              취소
             </button>
-        </div>
-    );
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
+            >
+              저장
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default SetProfile;

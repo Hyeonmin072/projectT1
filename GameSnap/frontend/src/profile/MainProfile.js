@@ -11,23 +11,24 @@ const Profile = (props) => {
   const [error, setError] = useState(null);; 
   const [notifications, setNotifications] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   
   const navigate = useNavigate();
   
 
   const handleEditProfile = () => {
     setIsEditing(true);
-    navigate('/profile/edit');
+    setTimeout(() => navigate('/profile/edit'), 0);
   }
 
   // console.log("프로필 출력 완료");
   // // 유저 프로필 상태 정의
   const [userInfo, setUserInfo] = useState({
     id: '1',
-    name: '',
-    email: '',
-    phone: '',
-    preferredGenre: "No", // 기본 선호 장르
+    name: 'test',
+    email: 'test@test.com',
+    phone: '010-1234-5678',
+    preferredGenre: "선호 장르 없음", // 기본 선호 장르
   });
 
   // 유저프로필 데이터 로드
@@ -60,13 +61,16 @@ const Profile = (props) => {
     return <p>{error}</p>;
   }
 
-  if (!userInfo.id) {
-    return <p>프로필 정보가 없습니다.</p>;
-  }
-
   const handleUpdateProfile = (updatedInfo) => {
     setUserInfo(updatedInfo);
     setIsEditing(false); // 수정 모드를 종료
+  };
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(() => {
+      onClose?.();
+    }, 100); // 애니메이션 시간
   };
 
 
@@ -79,7 +83,7 @@ const Profile = (props) => {
       />
         {/* 프로필 정보 폼 */}
       <div className="bg-white rounded-lg w-full max-w-md relative z-60 p-10">
-        <h2 className="text-xl font-bold text-center mb-6">프로필</h2>
+        <h2 className="text-xl font-bold text-center mb-6"> {userInfo.name}의 프로필</h2>
 
         <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
             <div className={`flex justify-between`}>
@@ -127,7 +131,7 @@ const Profile = (props) => {
         </button>
 
         <button
-        onClick={onClose} // 닫기 버튼 클릭 시 onClose 호출
+        onClick={handleClose} // 닫기 버튼 클릭 시 onClose 호출
         className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
                     transition-colors duration-200"
         >
@@ -138,7 +142,7 @@ const Profile = (props) => {
       {/* 수정 모드일 때만 SetProfile 컴포넌트 렌더링 */}
       {isEditing && (
         <SetProfile
-          userInfo={userInfo}
+          userInfo={{ name : "test", email : "test@test.com"}}
           onClose={() => setIsEditing(false)}
           onUpdateProfile={handleUpdateProfile}
         />
