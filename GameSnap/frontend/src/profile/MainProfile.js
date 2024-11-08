@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../axios/UserProfileAxios";
+import SetProfile from "./UpdateProfile";
 
 const Profile = ({ userid, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -20,41 +21,32 @@ const Profile = ({ userid, onClose }) => {
   // // 유저 프로필 상태 정의
   const [userInfo, setUserInfo] = useState({
     userid: '1',
-    username: '',
-    email: '',
-    phone: '',
-    preferredGenre: "", // 기본 선호 장르
+    username: '1',
+    email: '1@',
+    phone: '12',
+    preferredGenre: "No", // 기본 선호 장르
   });
 
   // 유저프로필 데이터 로드
-  const loadUserProfile = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await getProfile(userid); // API 요청
-      const result = await response.json();
-      setUserInfo(result);
-      setIsLoading(false);
-      // setUserInfo({
-      //   userid: '1234567890',
-      //   username: '홍길동',
-      //   email: 'example@example.com',
-      //   phone: '010-1234-5678',
-      //   password: "1234",
-      //   preferredGenre: "No" 
-      // });
-    } catch (error) {
-      setError("Failed to load profile");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const loadUserProfile = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await getProfile(userid); // API 요청
+        const result = await response.json();
+        setUserInfo(result);
+        setIsLoading(false);
+      } catch (error) {
+        setError("Failed to load profile");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     if (userid) {
     loadUserProfile();}
-  }, [userid]);
-    
+    }, []);
 
   // 로딩 상태 처리
   if (!userInfo || !userInfo.userid) {

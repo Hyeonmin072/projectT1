@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Profile from './MainProfile';
 
-const SetProfile = async ({currentProfile, onClose, setProfile }) => {
-    const [newProfile, setNewProfile] = useState(currentProfile);
+const SetProfile = async ({ onClose }) => {
+    const { userInfo, setUserInfo } = useState(null);
+    const [newProfile, setNewProfile] = useState({});
     const [updateStatus, setUpdateStatus ] = useState(null);
     const [isProfileEditing, setIsProfileEditing] = useState(false);
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const response = await fetch('/getUserInfo');
+                const data = await response.json();
+                setUserInfo(data);
+                setNewProfile(data);
+            } catch (error) {
+                
+            }
+        };
+        fetchUserInfo();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -26,15 +42,29 @@ const SetProfile = async ({currentProfile, onClose, setProfile }) => {
         setIsProfileEditing(true);
     };
 
-    const handleUpdateClick = () => {
+    const handleUpdateClick = async () => {
         // 유효성 검사
-        if (!newProfile.name || !newProfile.phone || !newProfile.email) {
+        if (!newProfile.username || !newProfile.phone || !newProfile.email) {
             setUpdateStatus({ success: false, message: "모든 필드를 입력해 주세요." });
             return;
         }
-
-        updateProfileHandler(newProfile);
-        setUpdateStatus({ success: true, message: "프로필이 성공적으로 업데이트되었습니다." });
+            try { 
+                const response = await fetch('/updateProfile', { 
+                    method: 'POST', 
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newProfile) 
+                }); 
+                
+            if (response.ok) { 
+                setUpdateStatus({ success: true, message: "프로필이 성공적으로 업데이트되었습니다." }); 
+            } else { 
+                setUpdateStatus({ success: false, message: "프로필 업데이트에 실패했습니다." }); 
+            } 
+        } catch (error) { 
+            setUpdateStatus({ success: false, message: `프로필 업데이트 중 오류 발생: ${error.message}` }); 
+        }
     };
 
     // 프로필 수정 닫기
@@ -42,29 +72,6 @@ const SetProfile = async ({currentProfile, onClose, setProfile }) => {
         setIsProfileEditing(false);
     };
 
-    const handleProfileUpdate = (updatedProfile) => {
-        setProfile(updatedProfile);
-    };
-
-    const updateProfileHandler = async () => {
-        try {
-            const response = await fetch(`/updateProfile`, {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newProfile)
-            });
-            if (response.ok) {
-                return { success: true, message: " 프로필이 정상적으로 업데이트 되었습니다. "};
-            } else {
-                return { success: false, message: " 프로필 업데이트에 실패했습니다. "};
-            }
-        } catch (error) {
-            return { success: false, message: `프로필 업데이트 중 오류 발생: ${error.message}` };
-        }
-    }
-    
     return (
         <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
             <div 
@@ -75,22 +82,22 @@ const SetProfile = async ({currentProfile, onClose, setProfile }) => {
             <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
                 <input
                     type="text"
-                    name="name"
-                    value={newProfile.name}
+                    name="username"
+                    value={userInfo.username}
                     onChange={handleInputChange}
                     placeholder="이름을 입력하세요"
                 />
                 <input
                     type="phone"
                     name="phone"
-                    value={newProfile.phone}
+                    value={userInfo.phone}
                     onChange={handleInputChange}
                     placeholder="전화번호를 입력하세요"
                 />
                 <input
                     type="email"
                     name="email"
-                    value={newProfile.email}
+                    value={userInfo.email}
                     onChange={handleInputChange}
                     placeholder="이메일을 입력하세요"
                 />
@@ -98,7 +105,7 @@ const SetProfile = async ({currentProfile, onClose, setProfile }) => {
                 {/* 선호 장르 선택 */}
                 <select
                     name="preferredGenre"
-                    value={newProfile.preferredGenre}
+                    value={userInfo.preferredGenre}
                     onChange={handleGenreChange}
                 >
                     <option value="NO">선호 장르 선택</option>
@@ -114,7 +121,7 @@ const SetProfile = async ({currentProfile, onClose, setProfile }) => {
                 </select>
             </div>
         
-            <button onClick={updateProfileHandler}>
+            <button onClick={handleUpdateClick}>
                 프로필 수정 완료
             </button>
             {updateStatus && (
