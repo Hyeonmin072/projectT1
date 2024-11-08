@@ -45,7 +45,7 @@ public class Board {
     protected Board() {
     }
 
-    public Board(Game game, Member member, LocalDate createDate, String content, String title) {
+    public Board(Game game, Member member, String content, String title) {
         this.view = 0;
         this.like = 0;
         this.game = game;
