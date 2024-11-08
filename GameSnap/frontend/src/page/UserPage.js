@@ -4,6 +4,7 @@ import PageTransition from '../component/PageTransition';
 import { useAuth } from '../context/AuthContext';
 import VideoPlayer from '../component/VideoPlayer';
 import CommentModal from '../component/CommentModal';
+import * as VideoAxios from '../axios/VideoAxios';
 
 /* eslint-disable */
 
@@ -20,31 +21,32 @@ const UserPage = () => {
 
   // 비디오와 좋아요 데이터를 가져오는 useEffect
   useEffect(() => {
-    axios.get('http://localhost:1111/video/random')  // 백엔드 API 엔드포인트
-      .then((response) => {
-        const fetchedVideo = response.data[0]; // 첫 번째 비디오를 선택하거나 여러 개를 처리
-        setVideo(fetchedVideo);
-        setLikes(fetchedVideo.like); // 비디오에서 가져온 좋아요 수 설정
-        console.log("Fetched Video Data: ", fetchedVideo); // 데이터 확인
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the video!", error);
-      });
+    const fetchVideo = async () => {
+      try {
+        const fetchedVideo = await VideoAxios.getVideo(); //비디오 요청
+        setVideo(fetchedVideo[0]);                        // 임시로 0번째 비디오 호출
+        setLikes(fetchedVideo[0].like);                  // 0 번째 비디오 좋아요 수 
+      } catch (error) {
+        console.error("비디오를 불러오는데 오류가 발생했습니다.");
+      }
+    };
+    fetchVideo();
   }, []);
 
   // 댓글을 불러오는 useEffect
   useEffect(() => {
-    if (showComments && video) {
-      axios.get(`http://localhost:1111/video/${video.id}/comments`) // 댓글을 불러오는 API 호출
-        .then((response) => {
-          setComments(response.data); // 댓글 데이터 설정
-          console.log("Fetched Comments: ", response.data);
-        })
-        .catch((error) => {
-          console.error("There was an error fetching the comments!", error);
-        });
-    }
-  }, [showComments, video]);
+    const fetchComments = async () => {
+      if (showCommentModal && video) {
+        try {
+          const fetchedComments = await VideoAxios.getComment(video.id);  //댓글 불러오기
+          setComments(fetchedComments);     
+        } catch (error) {
+          console.error("댓글을 불러오는데 오류가 발생했습니다.");
+        }
+      }
+    };
+    fetchComments();
+  }, [showCommentModal, video]);
 
   const handleLike = () => {
     const newLikes = isLiked ? likes - 1 : likes + 1;
@@ -53,36 +55,25 @@ const UserPage = () => {
     console.log('좋아요 클릭');
   };
 
-  const handleAddComment = (e) => {
+  const handleAddComment = async (e) => {
     e.preventDefault();
-    
-    // 데이터가 제대로 준비됐는지 로그 확인
-    console.log("댓글 내용:", newComment);
-    console.log("비디오 ID:", video ? video.id : "비디오 없음");
-    console.log("사용자 ID:", userData ? userData.id : "사용자 없음");
-  
-    // 데이터 전송 전에 모든 값이 유효한지 체크
+
     if (newComment.trim() && video && userData) {
       const commentData = {
-        content: newComment,
+        content: newComment,           //값이 유효한지 탐색
         videoId: video.id,
-        memberId: userData.id
+        memberId: userData.id,
       };
-      
-      // 요청할 데이터 로그 확인
-      console.log("전송할 데이터:", commentData);
-  
-      axios.post(`http://localhost:1111/video/addComments`, commentData)
-        .then((response) => {
-          console.log("댓글 저장 성공:", response.data);
-          setComments([...comments, response.data]);
-          setNewComment('');
-        })
-        .catch((error) => {
-          console.error("There was an error posting the comment!", error);
-        });
+
+      try {
+        const addedComment = await VideoAxios.addComment(commentData);
+        setComments((prevComments) => [...prevComments, addedComment]);
+        setNewComment('');
+      } catch (error) {
+        console.error("댓글 추가에 실패했습니다.");
+      }
     } else {
-      console.log("필수 데이터가 누락되었습니다. 댓글 내용, 비디오, 사용자 정보 확인");
+      console.log("모든 필수 정보를 입력해주세요.");
     }
   };
 
