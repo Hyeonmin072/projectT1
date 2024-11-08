@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,6 +34,13 @@ public class Video {
     @JoinColumn(name = "m_id")
     Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "g_id")
+    Game game;
+
     @Column(name = "v_view")
     Integer view;
+
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
+    List<VideoComment> videoComments = new ArrayList<>();
 }

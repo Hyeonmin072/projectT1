@@ -36,6 +36,10 @@ public class VideoComment {
     Member member;
 
 
+    protected VideoComment(){
+
+    }
+
     public VideoComment(String content, Video video, Member member, LocalDateTime createDate){
         this.content = content;
         this.video = video;
