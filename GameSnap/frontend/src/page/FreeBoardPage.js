@@ -1,3 +1,5 @@
+/* eslint-disable*/
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // URL 파라미터 사용
 import { useAuth } from '../context/AuthContext';
@@ -13,18 +15,52 @@ function FreeBoardPage() {
 
   // 게시글 데이터 가져오기
   useEffect(() => {
+
+    console.log('클릭한 게시글 ID:', postId);
+    console.log('현재 유저 데이터:', userData);
+
     axios.get(`http://localhost:1111/board/${postId}`)
       .then(response => {
-        setPost(response.data);
+        console.log('서버 응답:', response.data);  // 서버에서 받아온 데이터 확인
+        if (response.data) {
+          setPost(response.data);
+        } else {
+          console.error('게시글을 찾을 수 없습니다.');
+        }
       })
       .catch(error => {
-        console.error("게시글 로딩 실패:", error);
+        console.error("게시글 로딩 실패:", error.response);
       });
   }, [postId]);
 
+  useEffect(() => {
+    console.log('현재 게시글 번호:', postId);
+  }, [post]);
+
+  useEffect(() => {
+    console.log('현재 댓글 목록:', postId.comments);
+  }, [comments]);
+  
+  useEffect(() => {
+    if (post) {
+      console.log('현재 게시글 데이터:', {
+        id: post.b_id,
+        title: post.b_title,
+        content: post.b_content,
+        createDate: post.b_createddate,
+      });
+    }
+  }, [post]);
+  
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      {console.log('렌더링 시 post 데이터:', post)}
+      {console.log('렌더링 시 comments 데이터:', comments)}
+
+
       <div className="max-w-4xl mx-auto px-4">
+        
         {/* 목록으로 돌아가기 버튼 */}
         <div className="flex items-center mb-6">
             <button 
@@ -35,15 +71,16 @@ function FreeBoardPage() {
                 <span className="text-sm">목록으로</span>
             </button>
         </div>
+
         {/* 게시글 헤더 */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-2xl font-bold">{post?.title}</h1>
+              <h1 className="text-2xl font-bold">{post?.b_title}</h1>
               <div className="flex items-center gap-4">
                 <span className="text-gray-600">작성자: {post?.author}</span>
                 <span className="text-gray-600">
-                  작성일: {new Date(post?.createdAt).toLocaleDateString()}
+                    작성일: {post?.b_createDate}
                 </span>
               </div>
             </div>
@@ -51,12 +88,13 @@ function FreeBoardPage() {
             {/* 게시글 내용 */}
             <div className="prose max-w-none">
               <p className="text-gray-800 leading-relaxed">
-                {post?.content}
+                {post?.b_content}
               </p>
             </div>
           </div>
 
-          {/* 작성자 관련 버튼 (수정/삭제) */}
+          {/* 작성자 관련 버튼 (수정/삭제) */} 
+          {/* 이거 아직 덜 구성됨 */}
           {userData?.id === post?.memberId && (
             <div className="flex justify-end gap-2 px-6 pb-4">
               <button className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
