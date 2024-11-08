@@ -78,7 +78,7 @@ function FreeBoardPage() {
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold">{post?.title}</h1>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 border-2 rounded-lg border-green-400">
                 <span className="text-gray-600">작성자: {post?.memberName}</span>
                 <span className="text-gray-600">
                     작성일: {post?.createDate}
@@ -87,7 +87,7 @@ function FreeBoardPage() {
             </div>
 
             {/* 게시글 내용 */}
-            <div className="prose max-w-none">
+            <div className="prose max-w-none border-2 rounded-lg border-green-400">
               <p className="text-gray-800 leading-relaxed">
                 {post?.content}
               </p>
