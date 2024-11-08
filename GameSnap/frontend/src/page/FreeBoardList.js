@@ -47,8 +47,8 @@ function FreeBoardList() {
         console.log('매핑된 게임 데이터:', mappedGames);
         setGameCategories(mappedGames);
         // 첫 번째 게임의 장르를 기본값으로 설정
-        if (mappedGames.length > 0 && mappedGames[0].g_genre) {
-          setSelectedGame(mappedGames[0].g_genre);
+        if (mappedGames.length > 0) {
+          setSelectedGame(mappedGames[0].id);
         }
       } catch (error) {
         console.error('게임 목록을 불러오는데 실패했습니다:', error);
@@ -62,6 +62,7 @@ function FreeBoardList() {
   // 게시글 목록 불러오기
   useEffect(() => {
     const fetchPosts = async () => {
+
       if (!selectedGame) return; // selectedGame이 없으면 요청하지 않음
       
       setLoading(true);
@@ -69,6 +70,8 @@ function FreeBoardList() {
         let posts;
         if (searchTerm) {
           posts = await FreeBoardAxios.searchPosts(selectedGame, searchTerm);
+        } else if (selectedGame === null) { // selectedGame이 null이면 모든 게시글 불러오기
+          posts = await FreeBoardAxios.getPosts();
         } else {
           posts = await FreeBoardAxios.getPosts(selectedGame);
         }
@@ -136,7 +139,7 @@ function FreeBoardList() {
                 console.log('렌더링되는 게임:', game); // 각 게임 데이터 확인용
                 return (
                   <button
-                    key={game.genre}
+                    key={game.id}
                     onClick={() => {
                       console.log('선택된 게임 아아디 : ', game.id); // 클릭 시 선택되는 장르 확인용
                       setSelectedGame(game.id);

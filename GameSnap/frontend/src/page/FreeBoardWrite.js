@@ -14,9 +14,30 @@ function FreeBoardWrite() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // 여기에 게시글 저장 로직 추가
+    console.log('게시글 전송:');
+    console.log('Title:', formData.title);
+    console.log('Content:', formData.content);
+    savePostData(); //게시글 저장 로직
     navigate('/board');
   };
+
+  const savePostData = () => {
+    fetch('/api/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(postData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('게시글이 성공적으로 저장되었습니다:', data);
+    })
+    .catch(error => {
+      console.error('게시글 저장 중 오류 발생:', error);
+    });
+  };
+
 
   return (
     <PageTransition>
