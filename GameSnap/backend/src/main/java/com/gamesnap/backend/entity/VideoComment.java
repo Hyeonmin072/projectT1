@@ -23,7 +23,7 @@ public class VideoComment {
     @JoinColumn(name = "v_id")
     Video video;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "m_id")
     Member member;
 
