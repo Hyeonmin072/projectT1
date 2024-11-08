@@ -1,5 +1,6 @@
 package com.gamesnap.backend.controller;
 
+import com.gamesnap.backend.dto.BoardResponseDto;
 import com.gamesnap.backend.entity.Board;
 import com.gamesnap.backend.entity.Game;
 import com.gamesnap.backend.service.BoardService;
@@ -21,10 +22,9 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/board/{gameId}")
-    public List<Board> getBoards(@RequestHeader Map<String, String> headers, @PathVariable("gameId") Integer gameId) {
-        log.info("요청 헤더 ={}", headers);
-        List<Board> result = boardService.findBoards(gameId);
-        log.info("모든 게임 = {}",result.toString());
+    public List<BoardResponseDto> getBoards(@RequestHeader Map<String, String> headers, @PathVariable("gameId") Integer gameId) {
+        log.info("BoardController 들어온 gameId ={}", gameId);
+        List<BoardResponseDto> result = boardService.findBoards(gameId);
         return result;
     }
 

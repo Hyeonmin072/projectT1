@@ -74,7 +74,7 @@ function FreeBoardList() {
         }
         setPosts(posts || []); // null/undefined 체크
       } catch (error) {
-        console.error('게시글을 불러오는데 실패했습니다:', error);
+        console.error('게시글을 불러오는데 실패했습니다:', error, posts);
         setError('게시글을 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
@@ -138,11 +138,11 @@ function FreeBoardList() {
                   <button
                     key={game.genre}
                     onClick={() => {
-                      console.log('선택된 게임 장르:', game.genre); // 클릭 시 선택되는 장르 확인용
-                      setSelectedGame(game.genre);
+                      console.log('선택된 게임 아아디 : ', game.id); // 클릭 시 선택되는 장르 확인용
+                      setSelectedGame(game.id);
                     }}
                     className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
-                      ${selectedGame === game.genre
+                      ${selectedGame === game.id
                         ? 'bg-white text-black border-green-500'
                         : 'border-gray-300 hover:bg-green-400 transition duration-500 ease-in-out'
                       }`}
@@ -192,13 +192,13 @@ function FreeBoardList() {
                         {post.title}
                       </Link>
                       <span className="col-span-2 text-center text-gray-600">
-                        {post.author}
+                        {post.memberName}
                       </span>
                       <span className="col-span-2 text-center text-gray-500">
-                        {post.date}
+                        {post.createDate}
                       </span>
                       <span className="col-span-1 text-center text-gray-500">
-                        {post.views}
+                        {post.view}
                       </span>
                     </div>
                   ))
