@@ -32,6 +32,7 @@ const Profile = (props) => {
     email: 'test@test.com',
     phone: '010-1234-5678',
     preferredGenre: '선호 장르 없음',
+    password: '*****'
   });
 
   useEffect(() => {
@@ -120,6 +121,11 @@ const Profile = (props) => {
                 <label className="font-semibold">선호 장르:</label>
                 <span className="ml-auto">{userInfo.preferredGenre}</span>
             </div>
+            
+            <div className="flex justify-between">
+              <label className="font-semibold">비밀번호</label>
+              <span className="ml-auto">{userInfo.password}</span>
+            </div>            
             <div className="flex justify-between">
               <label className="font-semibold">알림 설정:</label>
               <input 
