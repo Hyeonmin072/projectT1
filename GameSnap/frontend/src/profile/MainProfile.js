@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../axios/UserProfileAxios";
 import SetProfile from "./UpdateProfile";
+import Defaultimg  from "../assets/Eximg.png";
 
 const Profile = (props) => {
   const { onClose, id } = props || {};
@@ -49,7 +50,7 @@ const Profile = (props) => {
       try {
         const response = await getProfile(id); // API 요청
         const result = await response.json();
-        setUserInfo(result || defaultUserInfo); // API 결과가 없으면 기본값 사용
+        setUserInfo(result); // API 결과가 없으면 기본값 사용
       } catch (error) {
       } finally {
         setIsLoading(false);
@@ -61,11 +62,6 @@ const Profile = (props) => {
     }
   }, [id]);
 
-
-  // 로딩 상태 처리
-  if (!userInfo || !userInfo.id) {
-    return <p>Loading...</p>;
-  }
 
   const handleUpdateProfile = (updatedInfo) => {
     setUserInfo(updatedInfo);
@@ -93,8 +89,20 @@ const Profile = (props) => {
 
         <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
             <div className={`flex justify-between`}>
-                <label className="font-semibold hidden">아이디:</label>
-                <span className="hidden ml-auto">{userInfo.id}</span>
+              <label className="font-semibold hidden">아이디:</label>
+              <span className="hidden ml-auto">{userInfo.id}</span>
+            <div className="profile-setting-main-profile-change-container">
+          <div className="profile-setting-main-profile-change-img-box- justify-center items-center">
+            <img src={Defaultimg} alt="프로필 사진" className="profile-setting-main-profile-change-img w-24 h-24 object-cover"/>
+            
+            <button
+              type="button"
+              className="profile-setting-main-profile-change-delete"
+            >
+            </button>
+          </div>
+        </div>
+
             </div>
             <div className="flex justify-between">
                 <label className="font-semibold">이름:</label>
@@ -126,7 +134,7 @@ const Profile = (props) => {
                 {notifications ? 'On' : 'Off'}
                 </span>  
             </div> 
-          </div>
+        </div>
 
         <button
           onClick={handleEditProfile} // 프로필 업데이트 시 onUpdateProfile 호출
@@ -154,7 +162,7 @@ const Profile = (props) => {
         />
       )}
     </div>
-);
+  );
 };
 
 
