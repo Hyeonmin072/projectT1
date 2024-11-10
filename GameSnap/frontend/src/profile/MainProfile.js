@@ -8,7 +8,6 @@ import SetProfile from "./UpdateProfile";
 const Profile = (props) => {
   const { onClose, id } = props || {};
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);; 
   const [notifications, setNotifications] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -18,7 +17,9 @@ const Profile = (props) => {
 
   const handleEditProfile = () => {
     setIsEditing(true);
-    setTimeout(() => navigate('/profile/edit'), 0);
+    setTimeout(() => {
+      onClose?.(navigate("/profile/edit"))
+    });
   }
 
   // console.log("프로필 출력 완료");
@@ -35,30 +36,34 @@ const Profile = (props) => {
   useEffect(() => {
     const loadUserProfile = async () => {
       setIsLoading(true);
-      setError(null);
+
+      if (isClosed) {
+        setUpdatedInfo({
+          name: userInfo.name || "",
+          email: userInfo.email || "",
+          phone: userInfo.phone || "",
+          preferredGenre: userInfo.preferredGenre || "No",
+        });
+      }
+      
       try {
         const response = await getProfile(id); // API 요청
         const result = await response.json();
         setUserInfo(result);
         setIsLoading(false);
-      } catch (error) {
-        setError("Failed to load profile");
       } finally {
         setIsLoading(false);
       }
     };
 
+
     if (id) {
     loadUserProfile();}
-    }, []);
+    }, [id]);
 
   // 로딩 상태 처리
   if (!userInfo || !userInfo.id) {
     return <p>Loading...</p>;
-  }
-
-  if(error){
-    return <p>{error}</p>;
   }
 
   const handleUpdateProfile = (updatedInfo) => {
@@ -68,9 +73,10 @@ const Profile = (props) => {
 
   const handleClose = () => {
     setIsVisible(false);
+    setIsEditing(false);
     setTimeout(() => {
       onClose?.();
-    }, 100); // 애니메이션 시간
+    });
   };
 
 
@@ -142,8 +148,8 @@ const Profile = (props) => {
       {/* 수정 모드일 때만 SetProfile 컴포넌트 렌더링 */}
       {isEditing && (
         <SetProfile
-          userInfo={{ name : "test", email : "test@test.com"}}
-          onClose={() => setIsEditing(false)}
+          userInfo={userInfo}
+          onClose={handleClose}
           onUpdateProfile={handleUpdateProfile}
         />
       )}
