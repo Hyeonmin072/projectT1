@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../axios/UserProfileAxios";
 import SetProfile from "./UpdateProfile";
@@ -12,6 +12,7 @@ const Profile = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   
+  const profileRef = useRef(null);
   const navigate = useNavigate();
   
 
@@ -25,41 +26,41 @@ const Profile = (props) => {
   // console.log("프로필 출력 완료");
   // // 유저 프로필 상태 정의
   const [userInfo, setUserInfo] = useState({
-    id: '1',
+    id: '123',
     name: 'test',
     email: 'test@test.com',
     phone: '010-1234-5678',
-    preferredGenre: "선호 장르 없음", // 기본 선호 장르
+    preferredGenre: '선호 장르 없음',
   });
 
-  // 유저프로필 데이터 로드
   useEffect(() => {
     const loadUserProfile = async () => {
       setIsLoading(true);
 
       if (isClosed) {
         setUpdatedInfo({
-          name: userInfo.name || "",
-          email: userInfo.email || "",
-          phone: userInfo.phone || "",
-          preferredGenre: userInfo.preferredGenre || "No",
+          name: userInfo?.name || "",
+          email: userInfo?.email || "",
+          phone: userInfo?.phone || "",
+          preferredGenre: userInfo?.preferredGenre || "No",
         });
       }
-      
+
       try {
         const response = await getProfile(id); // API 요청
         const result = await response.json();
-        setUserInfo(result);
-        setIsLoading(false);
+        setUserInfo(result || defaultUserInfo); // API 결과가 없으면 기본값 사용
+      } catch (error) {
       } finally {
         setIsLoading(false);
       }
     };
 
-
     if (id) {
-    loadUserProfile();}
-    }, [id]);
+      loadUserProfile();
+    }
+  }, [id]);
+
 
   // 로딩 상태 처리
   if (!userInfo || !userInfo.id) {
@@ -83,12 +84,11 @@ const Profile = (props) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
         {/* 배경 오버레이 */}
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50"
-        onClick={onClose} // 닫기 버튼 클릭 시 onClose 호출
+        <div className="fixed inset-0 bg-black bg-opacity-50" 
+      onClick={handleClose} 
       />
         {/* 프로필 정보 폼 */}
-      <div className="bg-white rounded-lg w-full max-w-md relative z-60 p-10">
+      <div ref={profileRef} className="bg-white rounded-lg w-full max-w-md relative z-60 p-10">
         <h2 className="text-xl font-bold text-center mb-6"> {userInfo.name}의 프로필</h2>
 
         <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">

@@ -1,18 +1,20 @@
 /* eslint-disable */
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
-const navigate = useNavigate();
-const [isVisible, setIsVisible] = useState(true);
-const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const profileRef = useRef(null); // 프로필 영역을 참조하기 위한 ref
+  
   // 사용자 정보를 로컬 상태로 관리
   const [updatedInfo, setUpdatedInfo] = useState({
-    name: userInfo.name || "",
-    email: userInfo.email || "",
-    phone: userInfo.phone || "",
-    preferredGenre: userInfo.preferredGenre || "No",
+    name: userInfo.name,
+    email: userInfo.email,
+    phone: userInfo.phone,
+    preferredGenre: userInfo.preferredGenre,
   });
 
   // 입력 필드 변경 시 상태 업데이트
@@ -28,7 +30,7 @@ const [isEditing, setIsEditing] = useState(false);
   const handleSubmit = (e) => {
     e.preventDefault();
     if (typeof onUpdateProfile == "function") {
-        onUpdateProfile(updatedInfo);    
+      onUpdateProfile(updatedInfo);    
     }
      
     navigate("/profile");
@@ -45,8 +47,10 @@ const [isEditing, setIsEditing] = useState(false);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-      <div className="fixed inset-0 bg-black bg-opacity-50" onClick={onClose} />
-      <div className="bg-white rounded-lg w-full max-w-md p-6 z-60 relative">
+      <div className="fixed inset-0 bg-black bg-opacity-50" 
+      onClick={handleCancel} 
+      />
+      <div ref={profileRef} className="bg-white rounded-lg w-full max-w-md p-6 z-60 relative">
         <h2 className="text-xl font-bold text-center mb-6">프로필 수정</h2>
 
         <div className="space-y-4">
@@ -104,19 +108,19 @@ const [isEditing, setIsEditing] = useState(false);
           </div>
 
           <div className="flex justify-end space-x-2">
-          <button
-            onClick={handleCancel} // 닫기 버튼 클릭 시 onClose 호출
-            className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
-                        transition-colors duration-200"
-            >
-            ✕
-          </button>
             <button
-              type="submit"
-              onClick={handleSubmit}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
-            >
-              저장
+              onClick={handleCancel} // 닫기 버튼 클릭 시 onClose 호출
+              className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
+                          transition-colors duration-200"
+              >
+              ✕
+            </button>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
+              >
+                저장
             </button>
           </div>
         </div>
