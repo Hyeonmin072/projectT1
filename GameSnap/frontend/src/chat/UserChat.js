@@ -41,14 +41,7 @@ const UserChat = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div ref={profileRef} className="bg-white rounded-lg w-full max-w-md relative z-60 p-10">
-        <button
-          onClick={handleClose}
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
-                    transition-colors duration-200"         
-        >
-          ✕
-        </button>
+      <div ref={profileRef} className="bg-white rounded-lg w-full max-w-md relative z-60 p-10">  
         <div className="chat-messages mb-4 max-h-80 overflow-y-auto">
           {messages.map((msg, index) => (
             <div key={index} className={`p-2 ${msg.sender === "me" ? "text-right" : "text-left"}`}>
@@ -68,6 +61,13 @@ const UserChat = ({ onClose }) => {
           />
           <button onClick={handleSendMessage} className="bg-blue-500 text-white px-4 py-2 rounded-r-lg">
             Send
+          </button>
+          <button
+            onClick={handleClose}
+            className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
+                      transition-colors duration-200"         
+          >
+            ✕
           </button>
         </div>
       </div>
