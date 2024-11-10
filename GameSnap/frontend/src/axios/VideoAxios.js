@@ -9,9 +9,11 @@ const handleError = (error) => {
     throw error; // 호출된 곳에서 에러를 핸들링할 수 있도록 전달
 };
 
-export const getVideo = async () => {
+export const getVideo = async (likeGamesId) => {
     try {
-        const response = await apiClient.get('/random');   //UserPage로딩하면 랜덤으로 비디오 요청
+        const response = await apiClient.post('/random',{
+            gamesId: likeGamesId
+        });   //UserPage로딩하면 랜덤으로 비디오 요청
         return response.data;
     } catch (error) {
         handleError(error);

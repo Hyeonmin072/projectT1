@@ -20,7 +20,7 @@ public class Game {
     private String name;
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
-    private List<MeberGame> memberGames;
+    private List<MemberGame> memberGames;
 
     protected Game() {
     }

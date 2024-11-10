@@ -1,6 +1,7 @@
 package com.gamesnap.backend.controller;
 
 
+import com.gamesnap.backend.dto.MemberResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class MemberController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<Member> login(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<MemberResponseDto> login(@RequestBody MemberRequestDto memberRequestDto) {
 
         String email = memberRequestDto.getEmail();
         String password = memberRequestDto.getPassword();

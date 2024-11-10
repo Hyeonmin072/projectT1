@@ -1,9 +1,9 @@
 package com.gamesnap.backend.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import com.gamesnap.backend.dto.MemberResponseDto;
+import com.gamesnap.backend.entity.MemberGame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,8 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public ResponseEntity<Member> login(String email, String password) {
+    public ResponseEntity<MemberResponseDto> login(String email, String password) {
+        MemberResponseDto memberResponseDto;
         Optional<Member> result = memberRepository.findByEmail(email);//로그인 시, 회원이 가입이 되어 있는지 확인
 
         if (result.isEmpty()) { //이 이메일로 가입한 회원 없음, 로그인 실패!
@@ -29,7 +30,15 @@ public class MemberService {
 
         Member member = result.get(); //멤버를 꺼냄
         if (member.getPassword().equals(password)) { //입력받은 패스워드가 이메일로 찾은 회원의 이메일과 같으면 성공
-            return ResponseEntity.ok(member);
+            List<String> gamesId = new ArrayList<>();
+            for (MemberGame data : member.getMemberGames()){
+                    gamesId.add(""+data.getGame().getId());
+            }
+
+            memberResponseDto = new MemberResponseDto(member.getId(),member.getEmail(),member.getPassword(),member.getName(),member.getTel(),member.getImage(),member.getContent(),
+                    gamesId
+            );
+            return ResponseEntity.ok(memberResponseDto);
         } else { // 아니면 실패
             return ResponseEntity.status(401).body(null);
         }
