@@ -11,7 +11,7 @@ public class Game {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "g_genre")
+    @Column(name = "g_genre",length = 50)
     private Genre genre = Genre.NO;
 
     @Column(name = "g_name")

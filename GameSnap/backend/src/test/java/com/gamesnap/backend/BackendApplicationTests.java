@@ -38,6 +38,7 @@ class BackendApplicationTests {
             Member testMember = memberRepository.save(new Member("test@test.com", "test123", "테스트용계정", "01012345678"));
         }
         if (gameRepository.count() == 0) { //게임 초기 데이터 추가, 반복 실행 문제 X
+            gameRepository.save(new Game(Genre.NO, "자유게시판"));
             gameRepository.save(new Game(Genre.STRATEGY, "스타크래프트"));
             gameRepository.save(new Game(Genre.RPG, "로스트아크"));
             gameRepository.save(new Game(Genre.AOS, "리그 오브 레전드"));
