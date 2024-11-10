@@ -3,6 +3,7 @@ package com.gamesnap.backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,7 @@ public class Game {
     private String name;
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
-    private List<MemberGame> memberGames;
+    private List<MemberGame> memberGames = new ArrayList<>();
 
     protected Game() {
     }

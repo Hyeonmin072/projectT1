@@ -51,7 +51,7 @@ class BackendApplicationTests {
         if (boardRepository.count() == 0) { //게시글 초기 데이터 추가, 반복 실행 문제 X
             Game findGame = null;
             Member findMember = null;
-            Optional<Game> findGameResult = gameRepository.findById(1);
+            Optional<Game> findGameResult = gameRepository.findByName("스타크래프트");
             if (findGameResult.isPresent()) {
                 findGame = findGameResult.get();
             }
