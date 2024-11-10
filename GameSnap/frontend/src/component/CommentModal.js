@@ -1,23 +1,30 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react"; // useState 추가
 
 const CommentModal = ({ isOpen, onClose, comments, onAddComment, videoId }) => {
     const [newComment, setNewComment] = useState('');
-    
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
       e.preventDefault();
-      onAddComment(newComment, videoId);
-      setNewComment('');
+
+      if (newComment.trim()) {
+        try {
+          await onAddComment(newComment, videoId); // e는 불필요
+          setNewComment('');  // 댓글 입력창 초기화
+        } catch (error) {
+          console.error("댓글 추가에 실패했습니다.", error);
+        }
+      } else {
+        console.log("댓글 내용이 비어있습니다.");
+      }
     };
-  
-  
+
     return (
         <div className={`
             fixed inset-0 bg-black/50 flex items-center justify-center z-50
             transition-all duration-300 ease-in-out
             ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
-          `}>
-            
+        `}>
+        
         <div className={`
           bg-white rounded-lg w-[500px] h-[80vh] flex flex-col relative -mt-20
           transition-all duration-300 ease-in-out transform
@@ -26,7 +33,6 @@ const CommentModal = ({ isOpen, onClose, comments, onAddComment, videoId }) => {
             : 'opacity-0 scale-95 translate-y-10'
           }
         `}>
-          {/* 헤더 */}
           <div className="p-4 border-b flex justify-between items-center">
             <h2 className="text-lg font-semibold">댓글 {comments.length}개</h2>
             <button 
@@ -38,10 +44,9 @@ const CommentModal = ({ isOpen, onClose, comments, onAddComment, videoId }) => {
               </svg>
             </button>
           </div>
-  
-          {/* 댓글 목록 */}
+
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {comments.map((comment, index) => (
+            {comments.length > 0 ? comments.map((comment, index) => (
               <div key={index} className="border-b border-gray-100 pb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="font-semibold">{comment.name}</span>
@@ -51,10 +56,9 @@ const CommentModal = ({ isOpen, onClose, comments, onAddComment, videoId }) => {
                 </div>
                 <p className="text-gray-700">{comment.content}</p>
               </div>
-            ))}
+            )) : <p className="text-gray-500">댓글이 없습니다.</p>}
           </div>
-  
-          {/* 댓글 입력 폼 */}
+
           <form onSubmit={handleSubmit} className="border-t p-4">
             <div className="flex gap-2">
               <input
@@ -75,6 +79,6 @@ const CommentModal = ({ isOpen, onClose, comments, onAddComment, videoId }) => {
         </div>
       </div>
     );
-  };
-  
-  export default CommentModal;
+};
+
+export default CommentModal;

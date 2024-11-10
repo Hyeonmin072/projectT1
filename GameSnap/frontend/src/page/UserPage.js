@@ -23,7 +23,7 @@ const UserPage = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const fetchedVideo = await VideoAxios.getVideo(); //비디오 요청
+        const fetchedVideo = await VideoAxios.getVideo(userData.likeGamesId); //비디오 요청
         setVideo(fetchedVideo[0]);                        // 임시로 0번째 비디오 호출
         setLikes(fetchedVideo[0].like);                  // 0 번째 비디오 좋아요 수 
       } catch (error) {
@@ -55,27 +55,36 @@ const UserPage = () => {
     console.log('좋아요 클릭');
   };
 
-  const handleAddComment = async (e) => {
-    e.preventDefault();
-
+  const handleAddComment = async (newComment, videoId) => {
     if (newComment.trim() && video && userData) {
-      const commentData = {
-        content: newComment,           //값이 유효한지 탐색
-        videoId: video.id,
-        memberId: userData.id,
-      };
-
-      try {
-        const addedComment = await VideoAxios.addComment(commentData);
-        setComments((prevComments) => [...prevComments, addedComment]);
-        setNewComment('');
-      } catch (error) {
-        console.error("댓글 추가에 실패했습니다.");
-      }
+        const commentData = {
+            content: newComment,
+            videoId: video.id,
+            memberId: userData.id,
+        };
+    
+        try {
+            const addedComment = await VideoAxios.addComment(commentData);
+            setComments((prevComments) => [...prevComments, addedComment]);
+            setNewComment('');
+        } catch (error) {
+            console.error("댓글 추가에 실패했습니다.", error);
+        }
     } else {
-      console.log("모든 필수 정보를 입력해주세요.");
+        console.log("모든 필수 정보를 입력해주세요.");
+        // 유효하지 않은 경우 추가 로그
+        if (!newComment.trim()) {
+            console.log("댓글 내용이 비어있습니다.");
+        }
+        if (!video) {
+            console.log("비디오 정보가 없습니다.");
+        }
+        if (!userData) {
+            console.log("사용자 정보가 없습니다.");
+        }
     }
-  };
+};
+
 
   return (
     <PageTransition>

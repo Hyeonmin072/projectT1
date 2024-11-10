@@ -43,4 +43,19 @@ public class Video {
 
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
     List<VideoComment> videoComments = new ArrayList<>();
+
+
+    public Video(){}
+
+    public Video(String title,String desc,String url,Integer like,Integer view,LocalDateTime createDate,Member member,Game game){
+        this.title = title;
+        this.desc=desc;
+        this.url=url;
+        this.like=like;
+        this.view=view;
+        this.createDate=createDate;
+        this.member=member;
+        this.game=game;
+
+    }
 }

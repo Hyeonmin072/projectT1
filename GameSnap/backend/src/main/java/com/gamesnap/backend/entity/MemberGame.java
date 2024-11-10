@@ -1,9 +1,11 @@
 package com.gamesnap.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
-public class MeberGame {
+@Getter
+public class MemberGame {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mg_id")
@@ -16,4 +18,12 @@ public class MeberGame {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "g_id")
     private Game game;
+
+    protected MemberGame(){
+
+    }
+    public MemberGame(Member member, Game game){
+        this.member=member;
+        this.game=game;
+    }
 }
