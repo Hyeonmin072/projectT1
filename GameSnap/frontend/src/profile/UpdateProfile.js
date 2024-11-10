@@ -8,6 +8,7 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const profileRef = useRef(null); // 프로필 영역을 참조하기 위한 ref
+  const [image, setImage] = useState(null);
   
   // 사용자 정보를 로컬 상태로 관리
   const [updatedInfo, setUpdatedInfo] = useState({
@@ -45,6 +46,19 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
     });
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];  // 선택된 파일
+    if (file) {
+      const reader = new FileReader();
+      
+      reader.onloadend = () => {
+        setImage(reader.result);  // 이미지 URL을 상태에 저장
+      };
+
+      reader.readAsDataURL(file);  // 파일을 데이터 URL 형식으로 읽음
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
       <div className="fixed inset-0 bg-black bg-opacity-50" 
@@ -52,6 +66,22 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
       />
       <div ref={profileRef} className="bg-white rounded-lg w-full max-w-md p-6 z-60 relative">
         <h2 className="text-xl font-bold text-center mb-6">프로필 수정</h2>
+
+        <label className="block font-semibold">프로필 이미지 </label>
+        <label className="profile-setting-main-profile-change-add-img" htmlFor="input-file">
+            <input
+                type="file"
+                accept="image/*"
+                id="input-file"
+                className="profile-setting-main-profile-change-add-img-input"
+                onchange={handleFileChange}  // 파일 선택 시 미리보기 함수 호출 
+            />
+        </label>
+
+
+        <img id="image-preview" src="" alt="프로필 이미지 미리보기"
+        className="hidden w-32 h-32 rounded-full object-cover" />
+
 
         <div className="space-y-4">
           <div>
