@@ -9,6 +9,16 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
   const [isEditing, setIsEditing] = useState(false);
   const profileRef = useRef(null); // 프로필 영역을 참조하기 위한 ref
   const [image, setImage] = useState(null);
+  const [setPassword, setPasswordConfirm] = useState('');  // 비밀번호 확인 상태와 함수 정의
+
+  // 비밀번호 확인 입력 처리 함수
+  const onChangePW = (event) => {
+    setPasswordConfirm(event.target.value);  // 입력된 값으로 passwordConfirm 상태 업데이트
+  };
+
+  const onSetPW = (event) => {
+    setPassword(event.target.value);
+  }
   
   // 사용자 정보를 로컬 상태로 관리
   const [updatedInfo, setUpdatedInfo] = useState({
@@ -67,23 +77,21 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
       <div ref={profileRef} className="bg-white rounded-lg w-full max-w-md p-6 z-60 relative">
         <h2 className="text-xl font-bold text-center mb-6">프로필 수정</h2>
 
-        <label className="block font-semibold">프로필 이미지 </label>
-        <label className="profile-setting-main-profile-change-add-img" htmlFor="input-file">
-            <input
-                type="file"
-                accept="image/*"
-                id="input-file"
-                className="profile-setting-main-profile-change-add-img-input"
-                onchange={handleFileChange}  // 파일 선택 시 미리보기 함수 호출 
-            />
-        </label>
-
-
-        <img id="image-preview" src="" alt="프로필 이미지 미리보기"
-        className="hidden w-32 h-32 rounded-full object-cover" />
-
-
         <div className="space-y-4">
+          <label className="block font-semibold">프로필 이미지 </label>
+          <label className="profile-setting-main-profile-change-add-img" htmlFor="input-file">
+              <input
+                  type="file"
+                  accept="image/*"
+                  id="input-file"
+                  className="profile-setting-main-profile-change-add-img-input"
+                  onchange={handleFileChange}  // 파일 선택 시 미리보기 함수 호출 
+              />
+          </label>
+
+          <img id="image-preview" src="" alt="프로필 이미지 미리보기"
+          className="hidden w-32 h-32 rounded-full object-cover" />
+
           <div>
             <label className="block font-semibold">이름:</label>
             <input
@@ -136,6 +144,26 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
               <option value="PUZZLE">퍼즐/추리</option>
             </select>
           </div>
+
+          <div>
+            <label className="block font-semibold">비밀번호</label>
+            <input
+              type="password"
+              placeholder="새로운 비밀번호 입력"
+              onChange={onSetPW}
+              className="w-full border border-gray-300 rounded p-2"
+            />
+          </div>            
+          <div>
+            <label className="block font-semibold">비밀번호 확인</label>
+            <input
+              type="password"
+              placeholder="비밀번호 확인"
+              onChange={onChangePW}
+              className="w-full border border-gray-300 rounded p-2"
+            />
+          </div>
+          
 
           <div className="flex justify-end space-x-2">
             <button
