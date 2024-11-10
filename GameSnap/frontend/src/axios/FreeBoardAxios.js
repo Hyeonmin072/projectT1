@@ -71,10 +71,14 @@ const FreeBoardAxios = {
   },
 
   // 게시글 작성
-  async createPost(postData) {
+  async createPost(formData) {
     try {
-      const response = await axios.post(`${BASE_URL}/board/write`, postData);
-      return response.data;
+      const data = await axios.post(`${BASE_URL}/board/write`, formData, {
+        headers: {
+          'Content-Type' : 'application/x-www-form-urlencoded',
+        }
+      });
+      console.log('게시글이 성공적으로 저장되었습니다.', data)
     } catch (error) {
       console.error('게시글 작성 실패:', error);
       throw error;
@@ -131,9 +135,9 @@ const FreeBoardAxios = {
   },
 
   // 조회수 증가
-  async incrementViews(postId) {
+  async incrementViews(boardId) {
     try {
-      const response = await axios.put(`${BASE_URL}/post/${postId}/views`);
+      const response = await axios.patch(`${BASE_URL}/board/${boardId}/view`);
       return response.data;
     } catch (error) {
       console.error('조회수 증가 실패:', error);

@@ -5,6 +5,10 @@ import { useParams } from "react-router-dom"; // URL 파라미터 사용
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
+import FreeBoardAxios from "../axios/FreeBoardAxios";
+
+// 기본 URL 설정
+const BASE_URL = 'http://localhost:1111'; // 백엔드 서버 URL
 
 function FreeBoardPage() {
   const { postId } = useParams(); // URL에서 게시글 ID 가져오기
@@ -13,13 +17,14 @@ function FreeBoardPage() {
   const [newComment, setNewComment] = useState('');
   const { userData } = useAuth();
 
-  // 게시글 데이터 가져오기
+  
   useEffect(() => {
 
     console.log('클릭한 게시글 ID:', postId);
     console.log('현재 유저 데이터:', userData);
-
-    axios.get(`http://localhost:1111/board/${postId}`)
+    
+    //게시글 상세정보 가져오기
+    axios.get(`${BASE_URL}/board/${postId}`)
       .then(response => {
         console.log('서버 응답:', response.data);  // 서버에서 받아온 데이터 확인
         if (response.data) {
@@ -30,6 +35,15 @@ function FreeBoardPage() {
       })
       .catch(error => {
         console.error("게시글 로딩 실패:", error.response);
+      });
+    
+    // 조회수 증가 호출
+    FreeBoardAxios.incrementViews(postId)
+      .then(response => {
+        console.log('조회수 증가 성공 : ', response)
+      })
+      .catch(error => {
+        console.error('조회수 증가 실패 : ', error)
       });
   }, [postId]);
 
@@ -93,21 +107,24 @@ function FreeBoardPage() {
               </p>
             </div>
           </div>
-
-          {/* 작성자 관련 버튼 (수정/삭제) */} 
-          {/* 이거 아직 덜 구성됨 */}
-          {userData?.id === post?.memberId && (
-            <div className="flex justify-end gap-2 px-6 pb-4">
-              <button className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-                수정
-              </button>
-              <button className="px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600">
-                삭제
-              </button>
-            </div>
-          )}
+        
+          {/* 좋아요, 수정, 삭제 버튼 */} 
+          <div className="flex justify-end gap-2 px-6 pb-4"> 
+            <button className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600" > 
+              좋아요 
+            </button> 
+            <button 
+              className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600" 
+            > 
+              수정 
+            </button> 
+            <button 
+            className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600" 
+            > 
+              삭제 
+            </button> 
+          </div>
         </div>
-
         {/* 댓글 섹션 */}
         <div className="mt-8 bg-white rounded-lg shadow-sm">
           <div className="p-6">

@@ -3,7 +3,7 @@ package com.gamesnap.backend.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class MeberGame {
+public class MemberGame {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mg_id")

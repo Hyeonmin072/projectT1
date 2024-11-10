@@ -52,4 +52,8 @@ public class Board {
         this.content = content;
         this.title = title;
     }
+
+    public void increaseView() {
+        this.view++;
+    }
 }
