@@ -3,6 +3,8 @@ package com.gamesnap.backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.List;
+
 @Entity
 @Getter
 public class Game {
@@ -16,6 +18,9 @@ public class Game {
 
     @Column(name = "g_name")
     private String name;
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
+    private List<MeberGame> memberGames;
 
     protected Game() {
     }

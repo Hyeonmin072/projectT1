@@ -1,12 +1,9 @@
 package com.gamesnap.backend.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
@@ -38,6 +35,10 @@ public class Member {
 
     @Column(name = "m_createdate")
     private LocalDate createdate;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<MeberGame> memberGames;
+
 
     public Member() {
     }
