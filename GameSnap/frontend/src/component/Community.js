@@ -3,6 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Search, UserPlus, MessagesSquare } from 'lucide-react';
+import UserChat from '../chat/UserChat';
+import { useNavigate } from 'react-router-dom';
 
 const Community = ({ isOpen, onClose }) => {
   const [friends, setFriends] = useState([
@@ -17,6 +19,7 @@ const Community = ({ isOpen, onClose }) => {
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [searchNickname, setSearchNickname] = useState("");
   const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장할 상태
+  const navigate = useNavigate();
 
   // 검색 필터링
   const filteredFriends = friends.filter(friend =>
@@ -39,6 +42,11 @@ const Community = ({ isOpen, onClose }) => {
     setSearchResults([]);
     setSearchNickname("");
     setShowAddFriend(false);
+  };
+
+  // MessagesSquare 클릭 시 활성화
+  const handleChatClick = (userId) => {
+    navigate("/privatechat/${userId}");  // 클릭 시 채팅 화면으로 이동
   };
 
 
@@ -104,9 +112,10 @@ const Community = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* 액션 버튼들 */}
-                <div className="flex gap-2">
+                <div className="flex gap-2"> {/* 채팅 버튼 */}
                   <button className="p-2 hover:bg-gray-100 rounded-full">
-                    <MessagesSquare size={20} className="text-gray-600" />
+                    <MessagesSquare size={20} className="text-gray-600"
+                    onClick={()=> handleChatClick(friend.id)} style={{ cursor: "pointer" }}  />
                   </button>
                 </div>
               </div>

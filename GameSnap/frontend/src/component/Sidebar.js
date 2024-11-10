@@ -5,7 +5,7 @@ import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users, Del
 import { Link, useHistory } from 'react-router-dom';
 import Profile from '../profile/MainProfile';
 import Community from './Community';
-
+import DeleteUser from './DeleteUser';
 
 
 const Sidebar = ({ isOpen, onClose, onLogout }) => {
@@ -109,7 +109,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               로그아웃
             </button>
             <button 
-              onClick={handleLogout}
+              //onClick={handleDelete}
               className="flex right-4 p-3 mt-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <Delete className="mr-3" size={20} />

@@ -25,8 +25,7 @@ function AnimatedRoutes() {
         <Route path="/contact" element={<Footer />} />
         <Route path="/board" element={<FreeBoardList />} />
         <Route path="/board/write" element={<FreeBoardWrite />} />
-        
-        
+
         <Route path="/profile" element={<MainProfile />} />
         <Route path="/profile/edit" element={<SetProfile />} />
       </Routes>
