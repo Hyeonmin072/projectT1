@@ -1,20 +1,27 @@
 // Sidebar.js
 /* eslint-disable */
 import React, {useState} from 'react';
-import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users, Delete } from 'lucide-react';
+import { Link, useHistory } from 'react-router-dom';
 import Profile from '../profile/MainProfile';
 import Community from './Community';
 
 
 
 const Sidebar = ({ isOpen, onClose, onLogout }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const handleLogout = () => {
     console.log('Sidebar : 로그아웃 호출');
     onLogout(); // 로그아웃 함수 호출
     onClose(); // 사이드바 닫기
   };
 
+
+  const handleDelete = async () => {
+    if (window.confirm("정말로 계정을 삭제하시겠습니까?")) {
+      setIsLoading(true);
+    }
+  }
 
   //커뮤니티 스테이트
   const [showCommunity, setShowCommunity] = useState(false);
@@ -100,6 +107,13 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
             >
               <LogOut className="mr-3" size={20} />
               로그아웃
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="flex right-4 p-3 mt-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <Delete className="mr-3" size={20} />
+              계정삭제
             </button>
           </div>
         </div>

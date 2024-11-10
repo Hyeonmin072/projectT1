@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../axios/UserProfileAxios";
 import SetProfile from "./UpdateProfile";
-import Defaultimg  from "../assets/Eximg.png";
+import Defaultimg  from "../assets/profileimg.png";
 
 const Profile = (props) => {
   const { onClose, id } = props || {};
@@ -12,6 +12,7 @@ const Profile = (props) => {
   const [notifications, setNotifications] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [isProfileVisible, setIsProfileVisible] = useState(false);
   
   const profileRef = useRef(null);
   const navigate = useNavigate();
@@ -32,32 +33,42 @@ const Profile = (props) => {
     email: 'test@test.com',
     phone: '010-1234-5678',
     preferredGenre: '선호 장르 없음',
-    password: '*****'
-  });
+    password: '1234'
+  }); // 초기화하기
 
   useEffect(() => {
     const loadUserProfile = async () => {
       setIsLoading(true);
-
-      if (isClosed) {
-        setUpdatedInfo({
-          name: userInfo?.name || "",
-          email: userInfo?.email || "",
-          phone: userInfo?.phone || "",
-          preferredGenre: userInfo?.preferredGenre || "No",
-        });
+      /*
+      try{
+        const response = await fetch(
+          '서버URL/user/${id}',
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+          }
+        );
+        const result = await response.json();
+        if (response.ok) {
+          setUserInfo(result); // 서버에서 받은 데이터를 사용
+        }
       }
-
+      */
+      
       try {
-        const response = await getProfile(id); // API 요청
+        const response = await getProfile(id);
         const result = await response.json();
         setUserInfo(result); // API 결과가 없으면 기본값 사용
       } catch (error) {
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
     };
-
+    
     if (id) {
       loadUserProfile();
     }
@@ -70,6 +81,7 @@ const Profile = (props) => {
   };
 
   const handleClose = () => {
+    setIsProfileVisible(false);  // 프로필 화면을 숨김
     setIsVisible(false);
     setIsEditing(false);
     setTimeout(() => {
@@ -77,6 +89,11 @@ const Profile = (props) => {
     });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(prev => !prev);
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
@@ -124,7 +141,15 @@ const Profile = (props) => {
             
             <div className="flex justify-between">
               <label className="font-semibold">비밀번호</label>
-              <span className="ml-auto">{userInfo.password}</span>
+              <span className="ml-auto">
+              {showPassword ? userInfo.password : '*'.repeat(userInfo.password.length)}
+              </span>
+              <button 
+              onClick={togglePasswordVisibility}
+              className="right-4 text-black-500
+              border-2 border-gray-500 p-1 ml-2">
+                {showPassword ? '숨기기' : '보기'}
+              </button>
             </div>            
             <div className="flex justify-between">
               <label className="font-semibold">알림 설정:</label>
@@ -132,7 +157,7 @@ const Profile = (props) => {
               type="checkbox" 
               checked={notifications} 
               onChange={(e) => setNotifications(
-                e.target.checked, )}
+                prev => e.target.checked, )}
               className="ml-auto"
               />
               {/* 체크박스 상태에 따라 On/Off 텍스트 표시 */}
@@ -160,7 +185,7 @@ const Profile = (props) => {
       </div>
 
       {/* 수정 모드일 때만 SetProfile 컴포넌트 렌더링 */}
-      {isEditing && (
+      {isEditing && isProfileVisible &&(
         <SetProfile
           userInfo={userInfo}
           onClose={handleClose}

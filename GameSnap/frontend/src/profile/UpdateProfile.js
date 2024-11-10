@@ -1,6 +1,4 @@
-/* eslint-disable */
-
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
@@ -9,23 +7,32 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
   const [isEditing, setIsEditing] = useState(false);
   const profileRef = useRef(null); // 프로필 영역을 참조하기 위한 ref
   const [image, setImage] = useState(null);
-  const [setPassword, setPasswordConfirm] = useState('');  // 비밀번호 확인 상태와 함수 정의
-
+  const [password, setPassword] = useState('');  // 비밀번호 상태와 함수 정의
+  const [passwordConfirm, setPasswordConfirm] = useState('');  // 비밀번호 확인 상태와 함수 정의
+  const [isPasswordValid, setIsPasswordValid] = useState(true);  // 비밀번호 확인이 유효한지 여부
+  
   // 비밀번호 확인 입력 처리 함수
   const onChangePW = (event) => {
     setPasswordConfirm(event.target.value);  // 입력된 값으로 passwordConfirm 상태 업데이트
+    // 비밀번호와 비밀번호 확인이 일치하는지 검사
+    if (password === event.target.value) {
+      setIsPasswordValid(true); // 일치하면 유효
+    } else {
+      setIsPasswordValid(false); // 불일치하면 유효하지 않음
+    }
   };
 
   const onSetPW = (event) => {
-    setPassword(event.target.value);
-  }
-  
+    setPassword(event.target.value); // 비밀번호 입력 상태 업데이트
+  };
+
   // 사용자 정보를 로컬 상태로 관리
   const [updatedInfo, setUpdatedInfo] = useState({
     name: userInfo.name,
     email: userInfo.email,
     phone: userInfo.phone,
     preferredGenre: userInfo.preferredGenre,
+    password: userInfo.password
   });
 
   // 입력 필드 변경 시 상태 업데이트
@@ -38,14 +45,41 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
   };
 
   // 폼 제출 시 부모 컴포넌트에 업데이트된 정보를 전달
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isPasswordValid) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return; // 비밀번호가 일치하지 않으면 폼을 제출하지 않음
+    }
+
+    try {
+      const updatedData = {
+        ...updatedInfo, // 여기에 업데이트할 정보 넣기
+        password: password, // 비밀번호도 업데이트
+      };
+      
+      const response = await fetch('/api/user/update', { // 서버 주소
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+      });
+  
+      if (!response.ok) {
+        throw new Error('프로필 업데이트 실패');
+      }
+    
+
     if (typeof onUpdateProfile == "function") {
       onUpdateProfile(updatedInfo);    
     }
-     
-    navigate("/profile");
-    window.close();
+    
+    onClose?.();
+    } finally {
+      onclose?.();
+    }
+
   };
 
   const handleCancel = () => {
@@ -69,15 +103,20 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
     }
   };
 
+  useEffect(() => {
+    setPassword('') ;
+    setPasswordConfirm('');
+  }, []);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
       <div className="fixed inset-0 bg-black bg-opacity-50" 
-      onClick={handleCancel} 
+      onClick={onClose} 
       />
-      <div ref={profileRef} className="bg-white rounded-lg w-full max-w-md p-6 z-60 relative">
+      <div ref={profileRef} className="bg-white rounded-lg w-full max-w-md p-10 z-60 relative">
         <h2 className="text-xl font-bold text-center mb-6">프로필 수정</h2>
 
-        <div className="space-y-4">
+        <div className="space-y-4 border-t-2 border-b-2 border-gray-500 p-2 m-3">
           <label className="block font-semibold">프로필 이미지 </label>
           <label className="profile-setting-main-profile-change-add-img" htmlFor="input-file">
               <input
@@ -163,25 +202,27 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
               className="w-full border border-gray-300 rounded p-2"
             />
           </div>
-          
 
-          <div className="flex justify-end space-x-2">
-            <button
-              onClick={handleCancel} // 닫기 버튼 클릭 시 onClose 호출
-              className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
-                          transition-colors duration-200"
-              >
-              ✕
-            </button>
-              <button
-                type="submit"
-                onClick={handleSubmit}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
-              >
-                저장
-            </button>
-          </div>
+          {!isPasswordValid && (
+            <label style={{color: "red"}}>비밀번호가 일치하지 않습니다.</label>
+          )}
         </div>
+
+        <button
+        onClick={handleCancel} // 닫기 버튼 클릭 시 onClose 호출
+        className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 
+                    transition-colors duration-200"
+        >
+          ✕
+        </button>
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="absolute right-4 bottom-2 bg-blue-500 text-white px-4 py-2 
+          rounded hover:bg-blue-600 transition-colors duration-200 "
+        >
+          저장
+        </button>
       </div>
     </div>
   );
