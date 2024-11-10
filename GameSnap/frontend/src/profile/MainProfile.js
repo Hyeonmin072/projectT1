@@ -4,16 +4,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../axios/UserProfileAxios";
 import SetProfile from "./UpdateProfile";
-import Defaultimg  from "../assets/Eximg.png";
+import Defaultimg  from "../assets/profileimg.png";
 
 const Profile = (props) => {
   const { onClose, id } = props || {};
   const [isLoading, setIsLoading] = useState(true);
   const [notifications, setNotifications] = useState(false);
-  const [nickname, setNickname] = useState();
-  const [phoneNumber, setPhoneNumber] = useState();
   const [isEditing, setIsEditing] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [isProfileVisible, setIsProfileVisible] = useState(false);
   
   const profileRef = useRef(null);
   const navigate = useNavigate();
@@ -82,6 +81,7 @@ const Profile = (props) => {
   };
 
   const handleClose = () => {
+    setIsProfileVisible(false);  // 프로필 화면을 숨김
     setIsVisible(false);
     setIsEditing(false);
     setTimeout(() => {
@@ -94,7 +94,6 @@ const Profile = (props) => {
   const togglePasswordVisibility = () => {
     setShowPassword(prev => !prev);
   };
-
 
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
@@ -186,7 +185,7 @@ const Profile = (props) => {
       </div>
 
       {/* 수정 모드일 때만 SetProfile 컴포넌트 렌더링 */}
-      {isEditing && (
+      {isEditing && isProfileVisible &&(
         <SetProfile
           userInfo={userInfo}
           onClose={handleClose}

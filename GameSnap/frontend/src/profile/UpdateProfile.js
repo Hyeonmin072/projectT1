@@ -58,7 +58,7 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
         password: password, // 비밀번호도 업데이트
       };
       
-      const response = await fetch('/api/user/update', {
+      const response = await fetch('/api/user/update', { // 서버 주소
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
