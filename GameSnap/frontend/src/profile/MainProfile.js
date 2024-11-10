@@ -10,6 +10,8 @@ const Profile = (props) => {
   const { onClose, id } = props || {};
   const [isLoading, setIsLoading] = useState(true);
   const [notifications, setNotifications] = useState(false);
+  const [nickname, setNickname] = useState();
+  const [phoneNumber, setPhoneNumber] = useState();
   const [isEditing, setIsEditing] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   
@@ -33,31 +35,33 @@ const Profile = (props) => {
     phone: '010-1234-5678',
     preferredGenre: '선호 장르 없음',
     password: '*****'
-  });
+  }); // 초기화하기
 
   useEffect(() => {
     const loadUserProfile = async () => {
       setIsLoading(true);
-
-      if (isClosed) {
-        setUpdatedInfo({
-          name: userInfo?.name || "",
-          email: userInfo?.email || "",
-          phone: userInfo?.phone || "",
-          preferredGenre: userInfo?.preferredGenre || "No",
-        });
-      }
-
+      /*const response = await fetch(
+        '서버URL/user?id='+ userInfo.id,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `${token}`
+          },
+        }
+      );*/
+      
       try {
-        const response = await getProfile(id); // API 요청
+        const response = await getProfile(id);
         const result = await response.json();
         setUserInfo(result); // API 결과가 없으면 기본값 사용
       } catch (error) {
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
     };
-
+    
     if (id) {
       loadUserProfile();
     }
