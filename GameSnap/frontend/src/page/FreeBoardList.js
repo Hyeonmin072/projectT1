@@ -33,9 +33,9 @@ function FreeBoardList() {
     const fetchGames = async () => {
       try {
         const gamesData = await FreeBoardAxios.getGames();
-        console.log('백엔드에서 받아온 게임 데이터:', gamesData);
+        // console.log('백엔드에서 받아온 게임 데이터:', gamesData);
         const mappedGames = gamesData.map(game => {
-          console.log('각 게임 데이터:', game);
+          // console.log('각 게임 데이터:', game);
 
           return {
             id: game.id,               
@@ -44,7 +44,7 @@ function FreeBoardList() {
             image: gameImages[game.name] 
           };
         });
-        console.log('매핑된 게임 데이터:', mappedGames);
+        // console.log('매핑된 게임 데이터:', mappedGames);
         setGameCategories(mappedGames);
         // 첫 번째 게임의 장르를 기본값으로 설정
         if (mappedGames.length > 0) {
@@ -136,12 +136,12 @@ function FreeBoardList() {
           <div className="flex gap-2 mb-6 overflow-x-auto">
             {gameCategories.length > 0 ? (
               gameCategories.map((game, index) => {
-                console.log('렌더링되는 게임:', game); // 각 게임 데이터 확인용
+                // console.log('렌더링되는 게임:', game); // 각 게임 데이터 확인용
                 return (
                   <button
                     key={game.id}
                     onClick={() => {
-                      console.log('선택된 게임 아아디 : ', game.id); // 클릭 시 선택되는 장르 확인용
+                      // console.log('선택된 게임 아아디 : ', game.id); // 클릭 시 선택되는 장르 확인용
                       setSelectedGame(game.id);
                     }}
                     className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
