@@ -30,7 +30,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   response => {
-    console.log('응답 데이터:', response.data);
+    // console.log('응답 데이터:', response.data);
     return response;
   },
   error => {
@@ -49,7 +49,7 @@ const FreeBoardAxios = {
   async getGames() {
     try {
       const response = await axiosInstance.get('/game');
-      console.log('게임 목록:', response.data);
+      // console.log('게임 목록:', response.data);
       return response.data;
     } catch (error) {
       console.error('게임 목록 조회 실패:', error);
@@ -99,7 +99,9 @@ const FreeBoardAxios = {
   // 게시글 수정
   async updatePost(postId, postData) {
     try {
-      const response = await axios.put(`${BASE_URL}/board/${postId}`, postData);
+      const response = await axios.patch(`${BASE_URL}/board/${boardId}`, postData);
+      console.log('수정 요청 URL:', `${BASE_URL}/board/${postId}`);
+      console.log('게시글 수정 요청 데이터:', postData);
       return response.data;
     } catch (error) {
       console.error('게시글 수정 실패:', error);
