@@ -36,15 +36,15 @@ class BackendApplicationTests {
 
 
         if (memberRepository.count()==0) { //유저 초기 데이터 추가, 반복 실행 문제 X
-            memberRepository.save(new Member("test@test.com", "test123", "테스트용계정", "01012345678"));
             memberRepository.save(new Member("test1@test.com", "test123", "테스트용계정1", "01012345678"));
             memberRepository.save(new Member("test2@test.com", "test123", "테스트용계정2", "01012345678"));
+            memberRepository.save(new Member("test3@test.com", "test123", "테스트용계정3", "01012345678"));
         }
         if (gameRepository.count() == 0) { //게임 초기 데이터 추가, 반복 실행 문제 X
             gameRepository.save(new Game(Genre.NO, "자유게시판"));
             gameRepository.save(new Game(Genre.STRATEGY, "스타크래프트"));
             gameRepository.save(new Game(Genre.RPG, "로스트아크"));
-            gameRepository.save(new Game(Genre.AOS, "리그 오브 레전드"));
+            gameRepository.save(new Game(Genre.AOS, "리그오브레전드"));
             gameRepository.save(new Game(Genre.PUZZLE, "캔디크러쉬사가"));
             gameRepository.save(new Game(Genre.PUZZLE, "애니팡"));
         }
@@ -55,7 +55,7 @@ class BackendApplicationTests {
             if (findGameResult.isPresent()) {
                 findGame = findGameResult.get();
             }
-            Optional<Member> findMemberResult = memberRepository.findByEmail("test@test.com");
+            Optional<Member> findMemberResult = memberRepository.findByEmail("test1@test.com");
             if (findMemberResult.isPresent()) {
                 findMember = findMemberResult.get();
             }
@@ -65,8 +65,8 @@ class BackendApplicationTests {
         if(videoRepository.count() == 0){
             Member member = null;
             Game game = null;
-            Optional<Member> findMember = memberRepository.findById(1);
-            Optional<Game> findGame = gameRepository.findById(3);
+            Optional<Member> findMember = memberRepository.findByName("테스트용계정1");
+            Optional<Game> findGame = gameRepository.findByName("로스트아크");
             if(findMember.isPresent()){
                 member = findMember.get();
             }
@@ -80,22 +80,22 @@ class BackendApplicationTests {
 
         }
         if(memberGameRepository.count()==0){
-            Optional<Member> findmember1 = memberRepository.findById(1);
+            Optional<Member> findmember1 = memberRepository.findByName("테스트용계정1");
             Member member1 = findmember1.get();
-            Optional<Game> findgame1 = gameRepository.findById(3);
+            Optional<Game> findgame1 = gameRepository.findByName("로스트아크");
             Game game1 = findgame1.get();
-            Optional<Game> findgame2 = gameRepository.findById(4);
+            Optional<Game> findgame2 = gameRepository.findByName("리그오브레전드");
             Game game2 = findgame2.get();
             memberGameRepository.save(new MemberGame(member1,game1));
             memberGameRepository.save(new MemberGame(member1,game2));
         }
         if(videoCommentRepository.count() == 0 ){
-            Optional<Video> findVideo1 = videoRepository.findById(1);
+            Optional<Video> findVideo1 = videoRepository.findByTitle("테스트영상1");
             Video video1 = findVideo1.get();
-            Optional<Member> findMember1 = memberRepository.findById(1);
+            Optional<Member> findMember1 = memberRepository.findByName("테스트용계정1");
             Member member1 = findMember1.get();
-            Optional<Member> findMember2 = memberRepository.findById(2);
-            Member member2 = findMember1.get();
+            Optional<Member> findMember2 = memberRepository.findByName("테스트용계정2");
+            Member member2 = findMember2.get();
             videoCommentRepository.save(new VideoComment("테스트댓글입니다",video1,member1));
             videoCommentRepository.save(new VideoComment("테스트댓글입니다2",video1,member2));
         }
