@@ -7,9 +7,9 @@ import ChattingRoom from './ChattingRoom';
 
 const Community = ({ isOpen, onClose }) => {
   const [friends, setFriends] = useState([
-    { id: 1, name: "김철수", status: "온라인", lastSeen: "방금 전" },
-    { id: 2, name: "이영희", status: "오프라인", lastSeen: "1시간 전" },
-    { id: 3, name: "박지성", status: "온라인", lastSeen: "방금 전" },
+    { id: 1, name: "김현민", status: "온라인", lastSeen: "방금 전" },
+    { id: 2, name: "김정훈", status: "오프라인", lastSeen: "1시간 전" },
+    { id: 3, name: "김형섭", status: "온라인", lastSeen: "방금 전" },
   ]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -27,6 +27,7 @@ const Community = ({ isOpen, onClose }) => {
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
 
   // 친구 검색 함수 (임시 데이터) : 구현 하나도 안되어있음
   const handleSearch = () => {

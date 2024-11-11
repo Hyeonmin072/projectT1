@@ -2,40 +2,79 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Send, ArrowLeft } from 'lucide-react';
 
 const ChattingRoom = ({ isOpen, onClose, friend }) => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: 'user',
-      text: '안녕하세요!',
-      timestamp: '오후 2:30'
-    },
-    {
-      id: 2,
-      sender: 'friend',
-      text: '네, 안녕하세요!',
-      timestamp: '오후 2:31'
-    }
-  ]);
+  // messages 상태를 사용자별로 관리하는 객체로 변경
+  const [messagesByUser, setMessagesByUser] = useState({
+
+
+    // DB도 대충 이런 형태로 구성해야할듯 ?
+    // 초기 더미 데이터를 사용자별로 구성
+    1: [
+      {
+        id: 1,
+        sender: 'user',
+        text: '안녕하세요! 김현민님',
+        timestamp: '오후 2:30'
+      },
+      {
+        id: 2,
+        sender: 'friend',
+        text: '네, 반갑습니다!',
+        timestamp: '오후 2:31'
+      }
+    ],
+
+    2: [
+      {
+        id: 1,
+        sender: 'user',
+        text: '안녕하세요! 김정훈님',
+        timestamp: '오후 3:30'
+      },
+      {
+        id: 2,
+        sender: 'friend',
+        text: '네, 안녕하세요~',
+        timestamp: '오후 3:31'
+      }
+    ],
+    3: [
+      {
+        id: 1,
+        sender: 'user',
+        text: '안녕하세요! 김형섭님',
+        timestamp: '오후 4:30'
+      },
+      {
+        id: 2,
+        sender: 'friend',
+        text: '반갑습니다!',
+        timestamp: '오후 4:31'
+      }
+    ]
+  });
   
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
 
-  // 새 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
+  // 현재 선택된 사용자의 메시지 가져오기
+  const currentMessages = friend ? messagesByUser[friend.id] || [] : [];
+
+  // 새 메시지가 추가될 때마다 스크롤을 맨 아래로 이동하는 함수
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [currentMessages]);
 
   // 메시지 전송 함수
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !friend) return;
 
     const newMsg = {
-      id: messages.length + 1,
+      id: (currentMessages.length + 1),
       sender: 'user',
       text: newMessage,
       timestamp: new Date().toLocaleTimeString('ko-KR', { 
@@ -45,13 +84,28 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
       })
     };
 
-    setMessages(prev => [...prev, newMsg]);
+    // 특정 사용자의 메시지 배열에만 새 메시지 추가
+    setMessagesByUser(prev => ({
+      ...prev,
+      [friend.id]: [...(prev[friend.id] || []), newMsg]
+    }));
+    
     setNewMessage('');
   };
 
+  // 채팅방이 처음 열릴 때 해당 사용자의 메시지가 없다면 초기화
+  useEffect(() => {
+    if (friend && !messagesByUser[friend.id]) {
+      setMessagesByUser(prev => ({
+        ...prev,
+        [friend.id]: []
+      }));
+    }
+  }, [friend]);
+
   return (
     <>
-      {/* 오버레이 - z-index만 수정 */}
+      {/* 오버레이 */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-[100]"
@@ -59,16 +113,14 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
         />
       )}
 
-
-      {/* 채팅창 - 위치와 스타일을 중앙 모달로 변경 */}
+      {/* 채팅창 */}
       <div className={`fixed top-1/2 left-1/2 w-[480px] h-[600px] bg-white shadow-lg rounded-lg z-[110]  
                       transform -translate-x-1/2 -translate-y-1/2
                       transition-all duration-500 ease-in-out
                       ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}>
-        {/* 헤더 - 스타일 수정 */}
+        {/* 헤더 */}
         <div className="flex items-center justify-between p-4 border-b rounded-t-lg">
           <div className="flex items-center gap-3">
-            {/* 뒤로가기 버튼을 X 버튼으로 변경 */}
             <div className="flex items-center gap-3">
               <div className="relative">
                 <div className="w-10 h-10 bg-gray-200 rounded-full" />
@@ -76,11 +128,10 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
               </div>
               <div>
                 <div className="font-medium">{friend?.name || '친구 이름'}</div>
-                <div className="text-sm text-gray-500">온라인</div>
+                <div className="text-sm text-gray-500">{friend?.status || '오프라인'}</div>
               </div>
             </div>
           </div>
-          {/* X 버튼 추가 */}
           <button 
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -89,9 +140,9 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
           </button>
         </div>
 
-        {/* 메시지 영역 - 높이 계산 수정 */}
+        {/* 메시지 영역 */}
         <div className="flex flex-col h-[calc(600px-132px)] p-4 overflow-y-auto">
-          {messages.map((message) => (
+          {currentMessages.map((message) => (
             <div
               key={message.id}
               className={`flex flex-col mb-4 ${
@@ -115,7 +166,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* 메시지 입력 영역 - 둥근 모서리 추가 */}
+        {/* 메시지 입력 영역 */}
         <form 
           onSubmit={handleSendMessage}
           className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t rounded-b-lg"
@@ -141,6 +192,10 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
       </div>
     </>
   );
+
+  
 };
+
+
 
 export default ChattingRoom;
