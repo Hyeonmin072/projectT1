@@ -16,12 +16,16 @@ class BackendApplicationTests {
 
     @Autowired
     private VideoLikeRepository videoLikeRepository;
+
     @Autowired
     private VideoCommentRepository videoCommentRepository;
+
     @Autowired
     private MemberGameRepository memberGameRepository;
+
     @Autowired
     private VideoRepository videoRepository;
+
     @Autowired
     private MemberRepository memberRepository;
 
@@ -30,6 +34,9 @@ class BackendApplicationTests {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private BoardCommentRepository boardCommentRepository;
 
     @BeforeEach
     @Transactional
@@ -115,6 +122,20 @@ class BackendApplicationTests {
             Member member2 = findMember2.get();
             videoCommentRepository.save(new VideoComment("테스트댓글입니다",video1,member1));
             videoCommentRepository.save(new VideoComment("테스트댓글입니다2",video1,member2));
+        }
+        if(boardCommentRepository.count() == 0 ){
+            Optional<Board> optionBoard = boardRepository.findByTitle("스타크래프트 첫번째 게시글");
+            Optional<Member> optionMember1 = memberRepository.findByName("테스트용계정1");
+            Optional<Member> optionMember3 = memberRepository.findByName("테스트용계정3");
+
+
+            if(optionBoard.isPresent() && optionMember1.isPresent() && optionMember3.isPresent()){
+                Board board = optionBoard.get();
+                Member member1 = optionMember1.get();
+                Member member3 = optionMember3.get();
+                boardCommentRepository.save(new BoardComment("김밥 한줄 놔두고 갑니다^^ @)))))))))",board,member1));
+                boardCommentRepository.save(new BoardComment("좋아요 누르고 갑니다..^^",board,member3));
+            }
         }
     }
 

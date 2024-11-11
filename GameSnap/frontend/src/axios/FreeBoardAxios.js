@@ -158,11 +158,19 @@ const FreeBoardAxios = {
       console.error('게시글 좋아요 실패:', error);
       throw error;
     }
+  },
+
+
+// 댓글 목록 가져오기 추가 
+  async getComments(postId) { 
+    try { 
+      const response = await axiosInstance.get(`/board/${postId}/comments`); 
+      return response.data; 
+    } catch (error) { 
+      console.error('댓글 목록 로딩 실패:', error); 
+      throw error; 
+    }
   }
-
-
-
-  
 };
 
 export default FreeBoardAxios;

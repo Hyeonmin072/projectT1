@@ -66,11 +66,11 @@ public class BoardService {
                     findBoard.getTitle(),
                     findBoard.getContent(),
                     findBoard.getCreateDate(),
+                    findBoard.getMember().getId(),
                     findBoard.getMember().getName(),
                     findBoard.getView(),
                     findBoard.getLike(),
-                    findBoard.getGame().getName(),
-                    findBoard.getComments());
+                    findBoard.getGame().getName());
             return boardDetailDto;
         }
         return null;
@@ -134,11 +134,11 @@ public class BoardService {
                     findBoard.getTitle(),
                     findBoard.getContent(),
                     findBoard.getCreateDate(),
+                    findBoard.getMember().getId(),
                     findBoard.getMember().getName(),
                     findBoard.getView(),
                     findBoard.getLike(),
-                    findBoard.getGame().getName(),
-                    findBoard.getComments());
+                    findBoard.getGame().getName());
             return boardDetailDto;
         } else { // 게시물, 멤버 둘 중 하나가 없으면 에러
             throw new RuntimeException("게시글이나 회원을 찾을 수 없습니다.");
