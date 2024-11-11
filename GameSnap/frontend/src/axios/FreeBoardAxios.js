@@ -99,7 +99,7 @@ const FreeBoardAxios = {
   // 게시글 수정
   async updatePost(postId, postData) {
     try {
-      const response = await axios.put(`${BASE_URL}/post/${postId}`, postData);
+      const response = await axios.put(`${BASE_URL}/board/${postId}`, postData);
       return response.data;
     } catch (error) {
       console.error('게시글 수정 실패:', error);
@@ -110,7 +110,7 @@ const FreeBoardAxios = {
   // 게시글 삭제
   async deletePost(postId) {
     try {
-      const response = await axios.delete(`${BASE_URL}/post/${postId}`);
+      const response = await axios.post(`${BASE_URL}/board/${postId}/delete`);
       return response.data;
     } catch (error) {
       console.error('게시글 삭제 실패:', error);
@@ -143,7 +143,24 @@ const FreeBoardAxios = {
       console.error('조회수 증가 실패:', error);
       throw error;
     }
+  },
+
+  // 게시글 좋아요
+  async likePost(postId, memberName) {
+    try {
+      const response = await axios.patch(`${BASE_URL}/board/${postId}/like`, memberName, {
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('게시글 좋아요 실패:', error);
+      throw error;
+    }
   }
+
+
 
   
 };

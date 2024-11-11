@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // URL 파라미터 사용
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, Trash2, PencilLine, Pen } from 'lucide-react';
 import FreeBoardAxios from "../axios/FreeBoardAxios";
 
 // 기본 URL 설정
@@ -12,10 +13,11 @@ const BASE_URL = 'http://localhost:1111'; // 백엔드 서버 URL
 
 function FreeBoardPage() {
   const { postId } = useParams(); // URL에서 게시글 ID 가져오기
-  const [post, setPost] = useState(null);
+  const [post,  setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const { userData } = useAuth();
+  const navigate = useNavigate();
 
   
   useEffect(() => {
@@ -67,6 +69,43 @@ function FreeBoardPage() {
     }
   }, [post]);
   
+  // 게시글 삭제 함수 
+  const handleDelete = async () => { 
+    try { 
+      const response = await FreeBoardAxios.deletePost(post?.id); 
+      console.log('게시글 삭제 성공:', response.data); // 게시글 삭제 후 필요 시 페이지 리로드 또는 리다이렉트 
+      navigate('/board'); // 게시글 삭제 후 리다이렉트
+    } catch (error) { 
+      console.error('게시글 삭제 실패:', error); 
+      alert('게시글 삭제에 실패했습니다.'); 
+    } 
+  }
+
+  // 게시글 수정 함수 
+  const handleUpdate = async () => { 
+    try { 
+      const response = await FreeBoardAxios.updatePost(post?.id); 
+      console.log('게시글 수정 성공:', response.data); // 게시글 수정 후 필요 시 페이지 리로드 또는 리다이렉트 
+      setPost(response.data); // 게시글 삭제 후 리로드
+    } catch (error) { 
+      console.error('게시글 수정 실패:', error); 
+      alert('게시글 수정에 실패했습니다.'); 
+    } 
+  }
+
+  // 게시글 좋아요 함수 
+  const handleLike = async () => { 
+    try { 
+      console.log('게시글 좋아요 보낼 userdata', userData)
+      const response = await FreeBoardAxios.likePost(post?.id, userData?.name); 
+      console.log('게시글 좋아요 성공:', response); // 게시글 좋아요 후 필요 시 페이지 리로드 또는 리다이렉트 
+      setPost(response); // 좋아요 수 업데이트
+    } catch (error) { 
+      console.error('게시글 좋아요 실패:', error); 
+      alert('게시글 좋아요에 실패했습니다.'); 
+    } 
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -108,22 +147,28 @@ function FreeBoardPage() {
             </div>
           </div>
         
-          {/* 좋아요, 수정, 삭제 버튼 */} 
-          <div className="flex justify-end gap-2 px-6 pb-4"> 
-            <button className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600" > 
-              좋아요 
-            </button> 
-            <button 
-              className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600" 
-            > 
-              수정 
-            </button> 
-            <button 
-            className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600" 
-            > 
-              삭제 
-            </button> 
+          {/* 좋아요, 수정, 삭제 버튼 */}
+          <div className="flex px-6 pb-4">
+            <div className="flex items-center">
+              <button className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600" onClick={handleLike}>
+                <ThumbsUp/>
+                좋아요 = {post?.like}
+              </button>
+              <span className="ml-2 text-gray-600"></span> {/* 좋아요 수 표시 */}
+            </div>
+            <div className="flex gap-2 ml-auto">
+              
+              <button className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                <PencilLine/>
+                수정
+              </button>
+              <button className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600" onClick={handleDelete}>
+                <Trash2/>
+                삭제
+              </button>
+            </div>
           </div>
+
         </div>
         {/* 댓글 섹션 */}
         <div className="mt-8 bg-white rounded-lg shadow-sm">
@@ -161,7 +206,7 @@ function FreeBoardPage() {
                       </span>
                     </div>
                     {userData?.id === comment.memberId && (
-                      <button className="text-sm text-red-500 hover:text-red-600">
+                      <button className="text-sm text-red-500 hover:text-red-600" onClick={handleDelete}>
                         삭제
                       </button>
                     )}
