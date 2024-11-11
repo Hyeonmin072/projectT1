@@ -173,7 +173,7 @@ const handleDeleteComment = async (commentId) => {
           <div className="flex px-6 pb-4">
             <div className="flex items-center">
               <button 
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-pink-600 flex items-center gap-2" 
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2" 
                 onClick={handleLike}
               >
                 <ThumbsUp className="w-4 h-4" />
