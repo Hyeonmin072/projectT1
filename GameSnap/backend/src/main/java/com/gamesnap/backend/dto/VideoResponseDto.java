@@ -17,7 +17,8 @@ public class VideoResponseDto {
     private Integer like;
     private LocalDateTime createDate;
     private String name;
-    public VideoResponseDto(Integer id, String title, String desc, String streamUrl, Integer like, LocalDateTime createDate, String name) {
+    private boolean isLiked;
+    public VideoResponseDto(Integer id, String title, String desc, String streamUrl, Integer like, LocalDateTime createDate, String name,boolean isLiked) {
         this.id = id;
         this.title = title;
         this.desc = desc;
@@ -25,5 +26,6 @@ public class VideoResponseDto {
         this.like = like;
         this.createDate = createDate;
         this.name = name;
+        this.isLiked = isLiked;
     }
 }

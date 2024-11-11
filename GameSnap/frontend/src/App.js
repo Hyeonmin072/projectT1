@@ -11,6 +11,9 @@ import FreeBoardList from './page/FreeBoardList';
 import FreeBoardWrite from './page/FreeBoardWrite';
 import MainProfile from './profile/MainProfile' ;
 import SetProfile from './profile/UpdateProfile';
+import FreeBoardPage from './page/FreeBoardPage';
+import ChatList from './page/ChatList';
+import ModifyPage from './page/ModifyPage';
 
 // AnimatePresence를 사용하기 위한 래퍼 컴포넌트
 function AnimatedRoutes() {
@@ -25,7 +28,9 @@ function AnimatedRoutes() {
         <Route path="/contact" element={<Footer />} />
         <Route path="/board" element={<FreeBoardList />} />
         <Route path="/board/write" element={<FreeBoardWrite />} />
-
+        <Route path="/board/:postId" element={<FreeBoardPage />} />
+        <Route path="/chatList" element={<ChatList />} />
+        <Route path="/board/modify/:postId" element={<ModifyPage />} />
         <Route path="/profile" element={<MainProfile />} />
         <Route path="/profile/edit" element={<SetProfile />} />
       </Routes>

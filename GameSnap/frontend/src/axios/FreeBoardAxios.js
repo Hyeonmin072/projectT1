@@ -30,7 +30,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   response => {
-    console.log('응답 데이터:', response.data);
+    // console.log('응답 데이터:', response.data);
     return response;
   },
   error => {
@@ -49,7 +49,7 @@ const FreeBoardAxios = {
   async getGames() {
     try {
       const response = await axiosInstance.get('/game');
-      console.log('게임 목록:', response.data);
+      // console.log('게임 목록:', response.data);
       return response.data;
     } catch (error) {
       console.error('게임 목록 조회 실패:', error);
@@ -71,10 +71,14 @@ const FreeBoardAxios = {
   },
 
   // 게시글 작성
-  async createPost(postData) {
+  async createPost(formData) {
     try {
-      const response = await axios.post(`${BASE_URL}/board/write`, postData);
-      return response.data;
+      const data = await axios.post(`${BASE_URL}/board/write`, formData, {
+        headers: {
+          'Content-Type' : 'application/x-www-form-urlencoded',
+        }
+      });
+      console.log('게시글이 성공적으로 저장되었습니다.', data)
     } catch (error) {
       console.error('게시글 작성 실패:', error);
       throw error;
@@ -95,7 +99,9 @@ const FreeBoardAxios = {
   // 게시글 수정
   async updatePost(postId, postData) {
     try {
-      const response = await axios.put(`${BASE_URL}/post/${postId}`, postData);
+      const response = await axios.patch(`${BASE_URL}/board/${boardId}`, postData);
+      console.log('수정 요청 URL:', `${BASE_URL}/board/${postId}`);
+      console.log('게시글 수정 요청 데이터:', postData);
       return response.data;
     } catch (error) {
       console.error('게시글 수정 실패:', error);
@@ -106,7 +112,7 @@ const FreeBoardAxios = {
   // 게시글 삭제
   async deletePost(postId) {
     try {
-      const response = await axios.delete(`${BASE_URL}/post/${postId}`);
+      const response = await axios.post(`${BASE_URL}/board/${postId}/delete`);
       return response.data;
     } catch (error) {
       console.error('게시글 삭제 실패:', error);
@@ -131,17 +137,42 @@ const FreeBoardAxios = {
   },
 
   // 조회수 증가
-  async incrementViews(postId) {
+  async incrementViews(boardId) {
     try {
-      const response = await axios.put(`${BASE_URL}/post/${postId}/views`);
+      const response = await axios.patch(`${BASE_URL}/board/${boardId}/view`);
       return response.data;
     } catch (error) {
       console.error('조회수 증가 실패:', error);
       throw error;
     }
-  }
+  },
 
-  
+  // 게시글 좋아요
+  async likePost(postId, memberName) {
+    try {
+      const response = await axios.patch(`${BASE_URL}/board/${postId}/like`, memberName, {
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('게시글 좋아요 실패:', error);
+      throw error;
+    }
+  },
+
+
+// 댓글 목록 가져오기 추가 
+  async getComments(postId) { 
+    try { 
+      const response = await axiosInstance.get(`/board/${postId}/comments`); 
+      return response.data; 
+    } catch (error) { 
+      console.error('댓글 목록 로딩 실패:', error); 
+      throw error; 
+    }
+  }
 };
 
 export default FreeBoardAxios;

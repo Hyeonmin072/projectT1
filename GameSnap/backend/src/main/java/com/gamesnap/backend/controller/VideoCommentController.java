@@ -54,8 +54,7 @@ public class VideoCommentController {
         VideoComment comment = new VideoComment(
                 videoCommentRequestDto.getContent(),
                 video,
-                member,
-                LocalDateTime.now()
+                member
         );
         VideoComment saveVideoComment = videoCommentService.addComment(comment);
 

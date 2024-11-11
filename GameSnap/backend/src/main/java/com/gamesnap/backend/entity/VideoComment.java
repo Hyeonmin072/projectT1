@@ -40,10 +40,10 @@ public class VideoComment {
 
     }
 
-    public VideoComment(String content, Video video, Member member, LocalDateTime createDate){
+    public VideoComment(String content, Video video, Member member){
         this.content = content;
         this.video = video;
         this.member = member;
-        this.createDate = createDate;
+        this.createDate = LocalDateTime.now();
     }
 }

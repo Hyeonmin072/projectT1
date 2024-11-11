@@ -1,6 +1,7 @@
 package com.gamesnap.backend.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -37,7 +38,7 @@ public class Member {
     private LocalDate createdate;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<MeberGame> memberGames;
+    private List<MemberGame> memberGames = new ArrayList<>();
 
 
     public Member() {

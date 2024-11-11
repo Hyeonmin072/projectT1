@@ -3,14 +3,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Search, UserPlus, MessagesSquare } from 'lucide-react';
+import ChattingRoom from './ChattingRoom';
 import UserChat from '../chat/UserChat';
 import { useNavigate } from 'react-router-dom';
 
 const Community = ({ isOpen, onClose }) => {
   const [friends, setFriends] = useState([
-    { id: 1, name: "김철수", status: "온라인", lastSeen: "방금 전" },
-    { id: 2, name: "이영희", status: "오프라인", lastSeen: "1시간 전" },
-    { id: 3, name: "박지성", status: "온라인", lastSeen: "방금 전" },
+    { id: 1, name: "김현민", status: "온라인", lastSeen: "방금 전" },
+    { id: 2, name: "김정훈", status: "오프라인", lastSeen: "1시간 전" },
+    { id: 3, name: "김형섭", status: "온라인", lastSeen: "방금 전" },
   ]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -19,12 +20,16 @@ const Community = ({ isOpen, onClose }) => {
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [searchNickname, setSearchNickname] = useState("");
   const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장할 상태
-  const navigate = useNavigate();
+
+  //채팅 관련 상태
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState(null);
 
   // 검색 필터링
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
 
   // 친구 검색 함수 (임시 데이터) : 구현 하나도 안되어있음
   const handleSearch = () => {
@@ -44,15 +49,29 @@ const Community = ({ isOpen, onClose }) => {
     setShowAddFriend(false);
   };
 
-  // MessagesSquare 클릭 시 활성화
-  const handleChatClick = (userId) => {
-    navigate("/privatechat/${userId}");  // 클릭 시 채팅 화면으로 이동
+  //채팅 시작 함수
+  const handleStartChat = (friend) => {
+    setSelectedFriend(friend);
+    setIsChatOpen(true);
   };
 
-
+  {isChatOpen && (
+    <ChattingRoom 
+      isOpen={isChatOpen}
+      onClose={() => setIsChatOpen(false)}
+      friend={selectedFriend}
+    />
+  )}
+  
   return (
+    
     <>
       {/* 오버레이 */}
+      <ChattingRoom 
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        friend={selectedFriend}
+      />
       {isOpen && (
         <div
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -62,8 +81,8 @@ const Community = ({ isOpen, onClose }) => {
 
       {/* 모달 */}
       <div className={`fixed inset-y-0 right-0 w-80 bg-white shadow-lg z-50 overflow-y-auto 
-                        transform transition-transform duration-700 ease-in-out
-                        ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                      transform transition-transform duration-700 ease-in-out
+                      ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-4">
           {/* 헤더 */}
           <div className="flex justify-between items-center mb-4">
@@ -113,7 +132,10 @@ const Community = ({ isOpen, onClose }) => {
 
                 {/* 액션 버튼들 */}
                 <div className="flex gap-2"> {/* 채팅 버튼 */}
-                  <button className="p-2 hover:bg-gray-100 rounded-full">
+                  <button 
+                    className="p-2 hover:bg-gray-100 rounded-full"
+                    onClick={() => handleStartChat(friend)}
+                  >
                     <MessagesSquare size={20} className="text-gray-600"
                     onClick={()=> handleChatClick(friend.id)} style={{ cursor: "pointer" }}  />
                   </button>

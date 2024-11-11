@@ -3,23 +3,30 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // URL 파라미터 사용
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, Trash2, PencilLine, Pen } from 'lucide-react';
+import FreeBoardAxios from "../axios/FreeBoardAxios";
+
+// 기본 URL 설정
+const BASE_URL = 'http://localhost:1111'; // 백엔드 서버 URL
 
 function FreeBoardPage() {
   const { postId } = useParams(); // URL에서 게시글 ID 가져오기
-  const [post, setPost] = useState(null);
+  const [post,  setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const { userData } = useAuth();
+  const navigate = useNavigate();
 
-  // 게시글 데이터 가져오기
+  
   useEffect(() => {
 
     console.log('클릭한 게시글 ID:', postId);
     console.log('현재 유저 데이터:', userData);
-
-    axios.get(`http://localhost:1111/board/${postId}`)
+    
+    //게시글 상세정보 가져오기
+    axios.get(`${BASE_URL}/board/${postId}`)
       .then(response => {
         console.log('서버 응답:', response.data);  // 서버에서 받아온 데이터 확인
         if (response.data) {
@@ -31,6 +38,24 @@ function FreeBoardPage() {
       .catch(error => {
         console.error("게시글 로딩 실패:", error.response);
       });
+    
+    // 조회수 증가 호출
+    FreeBoardAxios.incrementViews(postId)
+      .then(response => {
+        console.log('조회수 증가 성공 : ', response)
+      })
+      .catch(error => {
+        console.error('조회수 증가 실패 : ', error)
+      });
+    
+    // 댓글 목록 가져오기 
+    FreeBoardAxios.getComments(postId) 
+    .then(response => { 
+      setComments(response);
+    }) 
+    .catch(error => { 
+      console.error('댓글 목록 로딩 실패:', error); 
+    }); 
   }, [postId]);
 
   useEffect(() => {
@@ -48,11 +73,51 @@ function FreeBoardPage() {
         title: post.title,
         content: post.content,
         createDate: post.createDate,
-        memberName: post.memberName
+        memberName: post.memberName,
+        memberId: post.memberId
       });
     }
   }, [post]);
+
+
   
+  // 게시글 삭제 함수 
+  const handleDelete = async () => { 
+    try { 
+      const response = await FreeBoardAxios.deletePost(post?.id); 
+      console.log('게시글 삭제 성공:', response.data); // 게시글 삭제 후 필요 시 페이지 리로드 또는 리다이렉트 
+      navigate('/board'); // 게시글 삭제 후 리다이렉트
+    } catch (error) { 
+      console.error('게시글 삭제 실패:', error); 
+      alert('게시글 삭제에 실패했습니다.'); 
+    } 
+  }
+
+  // 게시글 수정 함수 
+  const handleUpdate = async () => { 
+    try { 
+      const response = await FreeBoardAxios.updatePost(post?.id); 
+      console.log('게시글 수정 성공:', response.data); // 게시글 수정 후 필요 시 페이지 리로드 또는 리다이렉트 
+      setPost(response.data); // 게시글 삭제 후 리로드
+    } catch (error) { 
+      console.error('게시글 수정 실패:', error); 
+      alert('게시글 수정에 실패했습니다.'); 
+    } 
+  }
+
+  // 게시글 좋아요 함수 
+  const handleLike = async () => { 
+    try { 
+      console.log('게시글 좋아요 보낼 userdata', userData)
+      const response = await FreeBoardAxios.likePost(post?.id, userData?.name); 
+      console.log('게시글 좋아요 성공:', response); // 게시글 좋아요 후 필요 시 페이지 리로드 또는 리다이렉트 
+      setPost(response); // 좋아요 수 업데이트
+    } catch (error) { 
+      console.error('게시글 좋아요 실패:', error); 
+      alert('게시글 좋아요에 실패했습니다.'); 
+    } 
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -93,21 +158,32 @@ function FreeBoardPage() {
               </p>
             </div>
           </div>
-
-          {/* 작성자 관련 버튼 (수정/삭제) */} 
-          {/* 이거 아직 덜 구성됨 */}
-          {userData?.id === post?.memberId && (
-            <div className="flex justify-end gap-2 px-6 pb-4">
-              <button className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-                수정
+        
+          {/* 좋아요, 수정, 삭제 버튼 */}
+          <div className="flex px-6 pb-4">
+            <div className="flex items-center">
+              <button className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600" onClick={handleLike}>
+                <ThumbsUp/>
+                좋아요 = {post?.like}
               </button>
-              <button className="px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600">
-                삭제
-              </button>
+              <span className="ml-2 text-gray-600"></span> {/* 좋아요 수 표시 */}
             </div>
-          )}
-        </div>
+            {userData?.id === post?.memberId && (
+              <div className="flex gap-2 ml-auto">
+                <button className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  onClick={() => navigate(`/board/modify/${post.id}`)}>
+                  <PencilLine/>
+                  수정
+                </button>
+                <button className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600" onClick={handleDelete}>
+                  <Trash2/>
+                  삭제
+                </button>
+              </div>
+            )}
+          </div>
 
+        </div>
         {/* 댓글 섹션 */}
         <div className="mt-8 bg-white rounded-lg shadow-sm">
           <div className="p-6">
@@ -138,18 +214,18 @@ function FreeBoardPage() {
                 <div key={comment.id} className="border-b border-gray-100 pb-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">{comment.author}</span>
+                      <span className="font-semibold">{comment.memberName}</span>
                       <span className="text-sm text-gray-500">
-                        {new Date(comment.createdAt).toLocaleString()}
+                        {new Date(comment.createDate).toLocaleString()}
                       </span>
                     </div>
                     {userData?.id === comment.memberId && (
-                      <button className="text-sm text-red-500 hover:text-red-600">
+                      <button className="text-sm text-red-500 hover:text-red-600" onClick={handleDelete}>
                         삭제
                       </button>
                     )}
                   </div>
-                  <p className="text-gray-700">{comment.content}</p>
+                  <p className="text-gray-700">{comment.comment}</p>
                 </div>
               ))}
             </div>
