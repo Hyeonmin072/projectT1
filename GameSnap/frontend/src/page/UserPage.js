@@ -51,17 +51,31 @@ const UserPage = () => {
   }, [showCommentModal, video]);
 
   const handleLike = async () => {
-    try{
-      console.log('좋아요 클릭 전 상태:', isLiked);
-      const response = await VideoAxios.ToggleLike(video.id,userData.id);
-      setIsLiked(response.isLiked);
-      setLikes(response.likes);  // 좋아요 클릭 시 좋아요 수 업데이트
-      console.log('좋아요 클릭');
-      console.log('좋아요 클릭 후 상태:', response.isLiked);
-    } catch(error){
-      console.erro('좋아요 상태를 업데이트하는데 실패',error);
+    try {
+        if (!video?.id || !userData?.id) {
+            console.error('비디오 ID 또는 사용자 ID가 없습니다');
+            return;
+        }
+
+        console.log('좋아요 요청 데이터:', {
+            videoId: video.id,
+            memberId: userData.id
+        });
+
+        const response = await VideoAxios.ToggleLike(video.id, userData.id);
+        
+        // response 구조 확인
+        console.log('좋아요 응답 데이터:', response);
+        
+        if (response) {
+            setIsLiked(prev => !prev); // 직접 토글
+            setLikes(prev => isLiked ? prev - 1 : prev + 1);
+        }
+
+    } catch (error) {
+        console.error('좋아요 상태 업데이트 실패:', error);
     }
-  };
+};
 
   const handleAddComment = async (newComment, videoId) => {
     if (newComment.trim() && video && userData) {
