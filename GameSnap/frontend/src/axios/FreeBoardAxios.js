@@ -57,6 +57,8 @@ const FreeBoardAxios = {
     }
   },
 
+  
+
   // Board 엔티티 관련 요청
   async getPosts(gameId) {
     try {
@@ -96,12 +98,13 @@ const FreeBoardAxios = {
     }
   },
 
+
   // 게시글 수정
   async updatePost(postId, postData) {
     try {
-      const response = await axios.patch(`${BASE_URL}/board/${boardId}`, postData);
-      console.log('수정 요청 URL:', `${BASE_URL}/board/${postId}`);
-      console.log('게시글 수정 요청 데이터:', postData);
+      console.log('수정 요청 데이터:', postData);
+      const response = await axiosInstance.patch(`/board/${postId}`, postData);
+      console.log('수정 응답:', response.data);
       return response.data;
     } catch (error) {
       console.error('게시글 수정 실패:', error);
