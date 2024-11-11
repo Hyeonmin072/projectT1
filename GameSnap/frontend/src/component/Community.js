@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Search, UserPlus, MessagesSquare } from 'lucide-react';
+import ChattingRoom from './ChattingRoom';
 
 const Community = ({ isOpen, onClose }) => {
   const [friends, setFriends] = useState([
@@ -17,6 +18,10 @@ const Community = ({ isOpen, onClose }) => {
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [searchNickname, setSearchNickname] = useState("");
   const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장할 상태
+
+  //채팅 관련 상태
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState(null);
 
   // 검색 필터링
   const filteredFriends = friends.filter(friend =>
@@ -41,10 +46,29 @@ const Community = ({ isOpen, onClose }) => {
     setShowAddFriend(false);
   };
 
+  //채팅 시작 함수
+  const handleStartChat = (friend) => {
+    setSelectedFriend(friend);
+    setIsChatOpen(true);
+  };
 
+  {isChatOpen && (
+    <ChattingRoom 
+      isOpen={isChatOpen}
+      onClose={() => setIsChatOpen(false)}
+      friend={selectedFriend}
+    />
+  )}
+  
   return (
+    
     <>
       {/* 오버레이 */}
+      <ChattingRoom 
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        friend={selectedFriend}
+      />
       {isOpen && (
         <div
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -54,8 +78,8 @@ const Community = ({ isOpen, onClose }) => {
 
       {/* 모달 */}
       <div className={`fixed inset-y-0 right-0 w-80 bg-white shadow-lg z-50 overflow-y-auto 
-                        transform transition-transform duration-700 ease-in-out
-                        ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                      transform transition-transform duration-700 ease-in-out
+                      ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-4">
           {/* 헤더 */}
           <div className="flex justify-between items-center mb-4">
@@ -105,7 +129,10 @@ const Community = ({ isOpen, onClose }) => {
 
                 {/* 액션 버튼들 */}
                 <div className="flex gap-2">
-                  <button className="p-2 hover:bg-gray-100 rounded-full">
+                  <button 
+                    className="p-2 hover:bg-gray-100 rounded-full"
+                    onClick={() => handleStartChat(friend)}
+                  >
                     <MessagesSquare size={20} className="text-gray-600" />
                   </button>
                 </div>
