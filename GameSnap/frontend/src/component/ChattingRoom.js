@@ -125,7 +125,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="메시지를 입력하세요..."
+              placeholder="메시지를 입력하세요"
               className="flex-1 p-2 border rounded-lg focus:outline-none focus:border-green-500"
             />
             <button
@@ -134,7 +134,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
                        transition-all duration-300 ease-in-out
                        transform hover:scale-105 active:scale-95"
             >
-              <Send size={20} />
+              <Send size={25} />
             </button>
           </div>
         </form>
