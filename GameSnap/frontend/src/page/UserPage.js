@@ -26,7 +26,7 @@ const UserPage = () => {
         const fetchedVideo = await VideoAxios.getVideo(userData.likeGamesId,userData.id); //비디오 요청
         setVideo(fetchedVideo[0]);                        // 임시로 0번째 비디오 호출
         setLikes(fetchedVideo[0].like);                  // 0 번째 비디오 좋아요 수 
-        setIsLiked(fetchVideo[0].isLiked);
+        setIsLiked(fetchedVideo[0].isLiked);
       } catch (error) {
         console.error("비디오를 불러오는데 오류가 발생했습니다.");
       }
@@ -52,10 +52,12 @@ const UserPage = () => {
 
   const handleLike = async () => {
     try{
+      console.log('좋아요 클릭 전 상태:', isLiked);
       const response = await VideoAxios.ToggleLike(video.id,userData.id);
       setIsLiked(response.isLiked);
       setLikes(response.likes);  // 좋아요 클릭 시 좋아요 수 업데이트
       console.log('좋아요 클릭');
+      console.log('좋아요 클릭 후 상태:', response.isLiked);
     } catch(error){
       console.erro('좋아요 상태를 업데이트하는데 실패',error);
     }
