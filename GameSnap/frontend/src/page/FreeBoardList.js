@@ -70,7 +70,7 @@ function FreeBoardList() {
         let posts;
         if (searchTerm) {
           posts = await FreeBoardAxios.searchPosts(selectedGame, searchTerm);
-        } else if (selectedGame === null) { // selectedGame이 null이면 모든 게시글 불러오기
+        } else if (selectedGame === null) {
           posts = await FreeBoardAxios.getPosts();
         } else {
           posts = await FreeBoardAxios.getPosts(selectedGame);
@@ -175,10 +175,11 @@ function FreeBoardList() {
                 {/* 헤더 */}
                 <div className="grid grid-cols-12 px-6 py-3 bg-gray-50 font-medium text-gray-600">
                   <span className="col-span-1 text-center">번호</span>
-                  <span className="col-span-6">제목</span>
+                  <span className="col-span-5">제목</span>
                   <span className="col-span-2 text-center">작성자</span>
                   <span className="col-span-2 text-center">작성일</span>
                   <span className="col-span-1 text-center">조회</span>
+                  <span className="col-span-1 text-center">좋아요</span>
                 </div>
 
                 {/* 게시글 목록 */}
@@ -190,7 +191,7 @@ function FreeBoardList() {
                       </span>
                       <Link 
                         to={`/board/${post.id}`}
-                        className="col-span-6 text-gray-800 hover:text-green-500"
+                        className="col-span-5 text-gray-800 hover:text-green-500"
                       >
                         {post.title}
                       </Link>
@@ -202,6 +203,9 @@ function FreeBoardList() {
                       </span>
                       <span className="col-span-1 text-center text-gray-500">
                         {post.view}
+                      </span>
+                      <span className="col-span-1 text-center text-gray-500">
+                        {post.like}
                       </span>
                     </div>
                   ))
