@@ -4,62 +4,100 @@
 import React, { useState, useEffect } from 'react';
 import { X, Search, UserPlus, MessagesSquare } from 'lucide-react';
 import ChattingRoom from './ChattingRoom';
+import FriendAxios from '../axios/FriendAxios';
+import { useAuth } from '../context/AuthContext'; // 인증 컨텍스트 추가
 
 const Community = ({ isOpen, onClose }) => {
-  const [friends, setFriends] = useState([
-    { id: 1, name: "김현민", status: "온라인", lastSeen: "방금 전" },
-    { id: 2, name: "김정훈", status: "오프라인", lastSeen: "1시간 전" },
-    { id: 3, name: "김형섭", status: "온라인", lastSeen: "방금 전" },
-  ]);
+  const { userData } = useAuth();
+  const [friends, setFriends] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
-
-// 친구 추가 모달 상태
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [searchNickname, setSearchNickname] = useState("");
-  const [searchResults, setSearchResults] = useState([]); // 검색 결과를 저장할 상태
-
-  //채팅 관련 상태
+  const [searchResults, setSearchResults] = useState([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
+  const [friendRequests, setFriendRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // 검색 필터링
+  // 친구 목록 불러오기
+  useEffect(() => {
+    const loadFriends = async () => {
+      try {
+        const friendsList = await FriendService.getFriends();
+        setFriends(friendsList);
+      } catch (error) {
+        console.error('친구 목록 로드 실패:', error);
+      }
+    };
+
+    if (isOpen) {
+      loadFriends();
+    }
+  }, [isOpen]);
+
+  // 친구 검색
+  const handleSearch = async () => {
+    if (!searchNickname.trim()) return;
+    
+    setIsLoading(true);
+    try {
+      const results = await FriendService.searchUsers(searchNickname);
+      // 이미 친구인 사용자 필터링
+      const filteredResults = results.filter(user => 
+        !friends.some(friend => friend.id === user.id) && user.id !== userData.id
+      );
+      setSearchResults(filteredResults);
+    } catch (error) {
+      console.error('사용자 검색 실패:', error);
+      alert('사용자 검색에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 친구 추가 요청
+  const handleAddFriend = async (user) => {
+    try {
+      await FriendService.sendFriendRequest(user.id);
+      alert('친구 요청을 보냈습니다.');
+      setSearchResults(prev => prev.filter(result => result.id !== user.id));
+    } catch (error) {
+      console.error('친구 요청 실패:', error);
+      alert('친구 요청에 실패했습니다.');
+    }
+  };
+
+  // 친구 삭제
+  const handleRemoveFriend = async (friendId) => {
+    if (!window.confirm('정말 이 친구를 삭제하시겠습니까?')) return;
+
+    try {
+      await FriendService.removeFriend(friendId);
+      setFriends(prev => prev.filter(friend => friend.id !== friendId));
+      alert('친구가 삭제되었습니다.');
+    } catch (error) {
+      console.error('친구 삭제 실패:', error);
+      alert('친구 삭제에 실패했습니다.');
+    }
+  };
+
+  // 친구 요청 수락
+  const handleAcceptRequest = async (requestId) => {
+    try {
+      const newFriend = await FriendService.acceptFriendRequest(requestId);
+      setFriends(prev => [...prev, newFriend]);
+      setFriendRequests(prev => prev.filter(request => request.id !== requestId));
+      alert('친구 요청을 수락했습니다.');
+    } catch (error) {
+      console.error('친구 요청 수락 실패:', error);
+      alert('친구 요청 수락에 실패했습니다.');
+    }
+  };
+
+  // 친구 필터링
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-
-  // 친구 검색 함수 (임시 데이터) : 구현 하나도 안되어있음
-  const handleSearch = () => {
-    // 실제로는 API 호출이 들어갈 자리
-    const mockResults = [
-      { id: 4, name: searchNickname+ "더미 데이터1", status: "온라인(더미)" },
-      { id: 5, name: searchNickname + "더미 데이터2", status: "오프라인(더미)" },
-    ];
-    setSearchResults(mockResults);
-  };
-
-  // 친구 추가 함수 : 기능 덜 구현되어 있음 (시간 별 lastSeen 표시 필요)
-  const handleAddFriend = (user) => {
-    setFriends(prev => [...prev, { ...user, lastSeen: "방금 전" }]);
-    setSearchResults([]);
-    setSearchNickname("");
-    setShowAddFriend(false);
-  };
-
-  //채팅 시작 함수
-  const handleStartChat = (friend) => {
-    setSelectedFriend(friend);
-    setIsChatOpen(true);
-  };
-
-  {isChatOpen && (
-    <ChattingRoom 
-      isOpen={isChatOpen}
-      onClose={() => setIsChatOpen(false)}
-      friend={selectedFriend}
-    />
-  )}
   
   return (
     
@@ -201,6 +239,32 @@ const Community = ({ isOpen, onClose }) => {
                 </button>
               </div>
 
+              <div className="mt-4 border-t pt-4">
+                <h3 className="text-lg font-semibold mb-2">친구 요청</h3>
+                {friendRequests.map(request => (
+                  <div key={request.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
+                    <div>
+                      <p className="font-medium">{request.senderName}</p>
+                      <p className="text-sm text-gray-500">{request.sentAt}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleAcceptRequest(request.id)}
+                        className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                      >
+                        수락
+                      </button>
+                      <button
+                        onClick={() => handleRejectRequest(request.id)}
+                        className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                      >
+                        거절
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               {/* 검색 결과 */}
               <div 
                 className={`space-y-2 overflow-hidden transition-all duration-500 ease-in-out
@@ -237,6 +301,7 @@ const Community = ({ isOpen, onClose }) => {
                         </div>
                     </div>
                     </>
+                    
                 );
                 };
 
