@@ -28,9 +28,15 @@ const VideoPlayer = ({ video, onLike, isLiked, likes, onCommentClick, commentCou
         <div className="flex flex-col gap-6 justify-end pb-6">
           <button
             onClick={onLike}
-            className={`flex flex-col items-center ${isLiked ? 'text-red-500' : 'text-gray-600'} hover:opacity-75 transition-colors`}
+            className={`flex flex-col items-center ${
+              isLiked ? 'text-red-500' : 'text-gray-600'
+            } hover:opacity-75 transition-colors`}
           >
-            <Heart className={`w-8 h-8 ${isLiked ? 'fill-current' : ''}`} />
+            <Heart 
+              className="w-8 h-8"
+              fill={isLiked ? "#ef4444" : "none"}
+              color={isLiked ? "#ef4444" : "#4b5563"}
+            />
             <span className="text-sm">{likes}</span>
           </button>
   
