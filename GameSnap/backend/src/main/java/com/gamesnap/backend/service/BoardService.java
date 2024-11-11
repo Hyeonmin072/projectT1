@@ -103,6 +103,7 @@ public class BoardService {
         Optional<Board> optionalBoard = boardRepository.findById(boardId);
         if (optionalBoard.isPresent()) {
             Board board = optionalBoard.get();
+            boardLikeRepository.deleteByBoard(board);
             boardRepository.delete(board);
             return ResponseEntity.ok("게시글이 삭제되었어요");
         }
