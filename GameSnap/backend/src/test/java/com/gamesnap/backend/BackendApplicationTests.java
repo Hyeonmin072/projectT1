@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -82,10 +81,10 @@ class BackendApplicationTests {
 
         }
         if(videoLikeRepository.count()==0){
-            Optional<Member> findMember1 = memberRepository.findById(1);
-            Optional<Member> findMember2 = memberRepository.findById(2);
-            Optional<Member> findMember3 = memberRepository.findById(3);
-            Optional<Video> findVideo1 = videoRepository.findById(1);
+            Optional<Member> findMember1 = memberRepository.findByName("테스트용계정1");
+            Optional<Member> findMember2 = memberRepository.findByName("테스트용계정2");
+            Optional<Member> findMember3 = memberRepository.findByName("테스트용계정3");
+            Optional<Video> findVideo1 = videoRepository.findByTitle("테스트영상1");
             Member member1 = findMember1.get();
             Member member2 = findMember2.get();
             Member member3 = findMember3.get();
