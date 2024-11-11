@@ -23,15 +23,17 @@ const UserPage = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const fetchedVideo = await VideoAxios.getVideo(userData.likeGamesId); //비디오 요청
+        const fetchedVideo = await VideoAxios.getVideo(userData.likeGamesId,userData.id); //비디오 요청
         setVideo(fetchedVideo[0]);                        // 임시로 0번째 비디오 호출
         setLikes(fetchedVideo[0].like);                  // 0 번째 비디오 좋아요 수 
+        setIsLiked(fetchVideo[0].isLiked);
       } catch (error) {
         console.error("비디오를 불러오는데 오류가 발생했습니다.");
       }
     };
     fetchVideo();
   }, []);
+
 
   // 댓글을 불러오는 useEffect
   useEffect(() => {
@@ -48,11 +50,15 @@ const UserPage = () => {
     fetchComments();
   }, [showCommentModal, video]);
 
-  const handleLike = () => {
-    const newLikes = isLiked ? likes - 1 : likes + 1;
-    setIsLiked(!isLiked);
-    setLikes(newLikes);  // 좋아요 클릭 시 좋아요 수 업데이트
-    console.log('좋아요 클릭');
+  const handleLike = async () => {
+    try{
+      const response = await VideoAxios.ToggleLike(video.id,userData.id);
+      setIsLiked(response.isLiked);
+      setLikes(response.likes);  // 좋아요 클릭 시 좋아요 수 업데이트
+      console.log('좋아요 클릭');
+    } catch(error){
+      console.erro('좋아요 상태를 업데이트하는데 실패',error);
+    }
   };
 
   const handleAddComment = async (newComment, videoId) => {

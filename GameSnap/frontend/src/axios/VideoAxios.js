@@ -9,10 +9,22 @@ const handleError = (error) => {
     throw error; // 호출된 곳에서 에러를 핸들링할 수 있도록 전달
 };
 
-export const getVideo = async (likeGamesId) => {
+export const ToggleLike = async (videoId,memberId) => {
+    try{
+        const response = await apiClient.post(`/${videoId}/like-status`,{
+            userId : memberId
+        });
+        return response.data;
+    } catch (error){
+        handleError(error);
+    }
+}
+
+export const getVideo = async (likeGamesId,memberId) => {
     try {
         const response = await apiClient.post('/random',{
-            gamesId: likeGamesId
+            gamesId: likeGamesId,
+            userId: memberId
         });   //UserPage로딩하면 랜덤으로 비디오 요청
         return response.data;
     } catch (error) {
@@ -39,6 +51,7 @@ export const addComment = async (commentData) => {
 
 };
 export default {
+    ToggleLike,
     getVideo,
     getComment,
     addComment,

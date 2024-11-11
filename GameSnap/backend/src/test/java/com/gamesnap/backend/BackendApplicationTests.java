@@ -16,6 +16,8 @@ import java.util.Optional;
 class BackendApplicationTests {
 
     @Autowired
+    private VideoLikeRepository videoLikeRepository;
+    @Autowired
     private VideoCommentRepository videoCommentRepository;
     @Autowired
     private MemberGameRepository memberGameRepository;
@@ -75,9 +77,25 @@ class BackendApplicationTests {
             }
 
             videoRepository.save(new Video(
-                    "테스트영상1","테스트영상설명","testurl",52,100,LocalDateTime.now(),member,game)
+                    "테스트영상1","테스트영상설명","testurl",100,LocalDateTime.now(),member,game)
             );
 
+        }
+        if(videoLikeRepository.count()==0){
+            Optional<Member> findMember1 = memberRepository.findById(1);
+            Optional<Member> findMember2 = memberRepository.findById(2);
+            Optional<Member> findMember3 = memberRepository.findById(3);
+            Optional<Video> findVideo1 = videoRepository.findById(1);
+            Member member1 = findMember1.get();
+            Member member2 = findMember2.get();
+            Member member3 = findMember3.get();
+            Video video = findVideo1.get();
+            VideoLike videoLike1 = new VideoLike(member1,video);
+            VideoLike videoLike2 = new VideoLike(member2,video);
+            VideoLike videoLike3 = new VideoLike(member3,video);
+            videoLikeRepository.save(videoLike1);
+            videoLikeRepository.save(videoLike2);
+            videoLikeRepository.save(videoLike3);
         }
         if(memberGameRepository.count()==0){
             Optional<Member> findmember1 = memberRepository.findByName("테스트용계정1");
