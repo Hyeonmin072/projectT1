@@ -6,6 +6,7 @@ import { X, Search, UserPlus, MessagesSquare } from 'lucide-react';
 import ChattingRoom from './ChattingRoom';
 import FriendAxios from '../axios/FriendAxios';
 import { useAuth } from '../context/AuthContext'; // 인증 컨텍스트 추가
+import LoadFriends from './LoadFriends';
 
 const Community = ({ isOpen, onClose }) => {
   const { userData } = useAuth();
@@ -23,7 +24,7 @@ const Community = ({ isOpen, onClose }) => {
   useEffect(() => {
     const loadFriends = async () => {
       try {
-        const friendsList = await FriendService.getFriends();
+        const friendsList = await FriendAxios.getFriendsList();
         setFriends(friendsList);
       } catch (error) {
         console.error('친구 목록 로드 실패:', error);
@@ -39,40 +40,45 @@ const Community = ({ isOpen, onClose }) => {
   const handleSearch = async () => {
     if (!searchNickname.trim()) return;
     
-    setIsLoading(true);
     try {
-      const results = await FriendService.searchUsers(searchNickname);
-      // 이미 친구인 사용자 필터링
-      const filteredResults = results.filter(user => 
-        !friends.some(friend => friend.id === user.id) && user.id !== userData.id
-      );
-      setSearchResults(filteredResults);
+      const results = await FriendAxios.searchUsers(searchNickname);
+      setSearchResults(results);
     } catch (error) {
       console.error('사용자 검색 실패:', error);
       alert('사용자 검색에 실패했습니다.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  // 친구 추가 요청
+
+  // 친구 추가
   const handleAddFriend = async (user) => {
     try {
-      await FriendService.sendFriendRequest(user.id);
+      await FriendAxios.sendFriendRequest(user.id);
       alert('친구 요청을 보냈습니다.');
-      setSearchResults(prev => prev.filter(result => result.id !== user.id));
+      setSearchResults([]);
+      setSearchNickname('');
+      setShowAddFriend(false);
+      // 친구 목록 새로고침
+      loadFriends();
     } catch (error) {
-      console.error('친구 요청 실패:', error);
-      alert('친구 요청에 실패했습니다.');
+      console.error('친구 추가 실패:', error);
+      alert('친구 추가에 실패했습니다.');
     }
   };
+
+  //채팅시작
+  const handleStartChat = (friend) => {
+    setSelectedFriend(friend);
+    setIsChatOpen(true);
+  };
+
 
   // 친구 삭제
   const handleRemoveFriend = async (friendId) => {
     if (!window.confirm('정말 이 친구를 삭제하시겠습니까?')) return;
 
     try {
-      await FriendService.removeFriend(friendId);
+      await FriendAxios.removeFriend(friendId);
       setFriends(prev => prev.filter(friend => friend.id !== friendId));
       alert('친구가 삭제되었습니다.');
     } catch (error) {
@@ -84,7 +90,7 @@ const Community = ({ isOpen, onClose }) => {
   // 친구 요청 수락
   const handleAcceptRequest = async (requestId) => {
     try {
-      const newFriend = await FriendService.acceptFriendRequest(requestId);
+      const newFriend = await FriendAxios.acceptFriendRequest(requestId);
       setFriends(prev => [...prev, newFriend]);
       setFriendRequests(prev => prev.filter(request => request.id !== requestId));
       alert('친구 요청을 수락했습니다.');
@@ -144,40 +150,7 @@ const Community = ({ isOpen, onClose }) => {
           </div>
 
           {/* 친구 목록 */}
-          <div className="space-y-2">
-            {filteredFriends.map(friend => (
-              <div key={friend.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  {/* 프로필 이미지 */}
-                  <div className="relative">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full">
-                      {/* 프로필 이미지가 있다면 여기에 추가 */}
-                    </div>
-                    <div 
-                      className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
-                        ${friend.status === "온라인" ? "bg-green-500" : "bg-gray-400"}`}
-                    />
-                  </div>
-                  
-                  {/* 사용자 정보 */}
-                  <div>
-                    <div className="font-medium">{friend.name}</div>
-                    <div className="text-sm text-gray-500">{friend.lastSeen}</div>
-                  </div>
-                </div>
-
-                {/* 액션 버튼들 */}
-                <div className="flex gap-2">
-                  <button 
-                    className="p-2 hover:bg-gray-100 rounded-full"
-                    onClick={() => handleStartChat(friend)}
-                  >
-                    <MessagesSquare size={20} className="text-gray-600" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <LoadFriends/>
 
           {/* 친구 추가 버튼 */}
           <button 

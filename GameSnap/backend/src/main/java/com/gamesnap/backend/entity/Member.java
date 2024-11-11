@@ -37,6 +37,9 @@ public class Member {
     @Column(name = "m_createdate")
     private LocalDate createdate;
 
+    @Column(name = "m_nickname")
+    private String nickname;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberGame> memberGames = new ArrayList<>();
 
