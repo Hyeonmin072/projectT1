@@ -24,8 +24,6 @@ public class Video {
     @Column(name = "v_desc")
     String desc;
 
-    @Column(name = "v_like")
-    Integer like;
 
     @Column(name = "v_createdate")
     LocalDateTime createDate;
@@ -44,14 +42,17 @@ public class Video {
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
     List<VideoComment> videoComments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
+    List<VideoLike> videoLikes = new ArrayList<>();
+
+
 
     public Video(){}
 
-    public Video(String title,String desc,String url,Integer like,Integer view,LocalDateTime createDate,Member member,Game game){
+    public Video(String title,String desc,String url,Integer view,LocalDateTime createDate,Member member,Game game){
         this.title = title;
         this.desc=desc;
         this.url=url;
-        this.like=like;
         this.view=view;
         this.createDate=createDate;
         this.member=member;

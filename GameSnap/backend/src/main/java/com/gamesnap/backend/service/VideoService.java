@@ -1,8 +1,13 @@
 package com.gamesnap.backend.service;
 
+import com.gamesnap.backend.dto.LikeStatusResponseDto;
 import com.gamesnap.backend.entity.Game;
+import com.gamesnap.backend.entity.Member;
 import com.gamesnap.backend.entity.Video;
+import com.gamesnap.backend.entity.VideoLike;
 import com.gamesnap.backend.repository.GameRepository;
+import com.gamesnap.backend.repository.MemberRepository;
+import com.gamesnap.backend.repository.VideoLikeRepository;
 import com.gamesnap.backend.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,16 +19,20 @@ public class VideoService {
 
 
     @Autowired
+    private VideoLikeRepository videoLikeRepository;
+    @Autowired
     private GameRepository gameRepository;
     @Autowired
     private VideoRepository videoRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
 
-    public List<Video> getRandomVideos(List<String> gamesId) {
+    public List<Video> getRandomVideos(List<Integer> gamesId) {
 
         List<Video> responseVideos = new ArrayList<>();
         for (int i = 0; i < gamesId.size(); i++) {
-            Optional<Game> findGame = gameRepository.findById(Integer.parseInt(gamesId.get(i)));
+            Optional<Game> findGame = gameRepository.findById(gamesId.get(i));
             if(findGame.isPresent()){
                 Game game = findGame.get();
                 List<Video> videos = videoRepository.findByGame(game);
@@ -54,6 +63,8 @@ public class VideoService {
 
         return new ArrayList<>(randomVideos);
     }
+
+
 
     public Video findId(Integer videoId){return videoRepository.findById(videoId).orElse(null);}
 
