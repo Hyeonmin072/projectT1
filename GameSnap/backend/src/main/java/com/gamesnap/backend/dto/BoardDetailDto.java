@@ -19,6 +19,8 @@ public class BoardDetailDto {
 
     private LocalDate createDate;
 
+    private Integer memberId;
+
     private String memberName;
 
     private Integer view;
@@ -27,17 +29,15 @@ public class BoardDetailDto {
 
     private String gameName;
 
-    private List<BoardComment> boardComments;
-
-    public BoardDetailDto(Integer id, String title, String content, LocalDate createDate, String memberName, Integer view, Integer like, String gameName, List<BoardComment> boardComments) {
+    public BoardDetailDto(Integer id, String title, String content, LocalDate createDate, Integer memberId, String memberName, Integer view, Integer like, String gameName) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createDate = createDate;
+        this.memberId = memberId;
         this.memberName = memberName;
         this.view = view;
         this.like = like;
         this.gameName = gameName;
-        this.boardComments = boardComments;
     }
 }

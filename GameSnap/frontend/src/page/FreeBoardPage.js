@@ -47,6 +47,15 @@ function FreeBoardPage() {
       .catch(error => {
         console.error('조회수 증가 실패 : ', error)
       });
+    
+    // 댓글 목록 가져오기 
+    FreeBoardAxios.getComments(postId) 
+    .then(response => { 
+      setComments(response);
+    }) 
+    .catch(error => { 
+      console.error('댓글 목록 로딩 실패:', error); 
+    }); 
   }, [postId]);
 
   useEffect(() => {
@@ -64,10 +73,13 @@ function FreeBoardPage() {
         title: post.title,
         content: post.content,
         createDate: post.createDate,
-        memberName: post.memberName
+        memberName: post.memberName,
+        memberId: post.memberId
       });
     }
   }, [post]);
+
+
   
   // 게시글 삭제 함수 
   const handleDelete = async () => { 
@@ -156,17 +168,19 @@ function FreeBoardPage() {
               </button>
               <span className="ml-2 text-gray-600"></span> {/* 좋아요 수 표시 */}
             </div>
-            <div className="flex gap-2 ml-auto">
-              
-              <button className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                <PencilLine/>
-                수정
-              </button>
-              <button className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600" onClick={handleDelete}>
-                <Trash2/>
-                삭제
-              </button>
-            </div>
+            {userData?.id === post?.memberId && (
+              <div className="flex gap-2 ml-auto">
+                <button className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  onClick={() => navigate(`/board/modify/${post.id}`)}>
+                  <PencilLine/>
+                  수정
+                </button>
+                <button className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600" onClick={handleDelete}>
+                  <Trash2/>
+                  삭제
+                </button>
+              </div>
+            )}
           </div>
 
         </div>
@@ -200,9 +214,9 @@ function FreeBoardPage() {
                 <div key={comment.id} className="border-b border-gray-100 pb-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">{comment.author}</span>
+                      <span className="font-semibold">{comment.memberName}</span>
                       <span className="text-sm text-gray-500">
-                        {new Date(comment.createdAt).toLocaleString()}
+                        {new Date(comment.createDate).toLocaleString()}
                       </span>
                     </div>
                     {userData?.id === comment.memberId && (
@@ -211,7 +225,7 @@ function FreeBoardPage() {
                       </button>
                     )}
                   </div>
-                  <p className="text-gray-700">{comment.content}</p>
+                  <p className="text-gray-700">{comment.comment}</p>
                 </div>
               ))}
             </div>

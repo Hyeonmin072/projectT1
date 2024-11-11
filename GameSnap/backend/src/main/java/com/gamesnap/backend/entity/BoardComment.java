@@ -1,8 +1,12 @@
 package com.gamesnap.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+
+import java.time.LocalDate;
 
 @Entity
+@Getter
 public class BoardComment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,7 +17,7 @@ public class BoardComment {
     private String comment;
 
     @Column(name = "bc_createdate")
-    private String createDate;
+    private LocalDate createDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "b_id")
@@ -26,9 +30,9 @@ public class BoardComment {
     protected BoardComment() {
     }
 
-    public BoardComment(String comment, String createDate, Board board, Member member) {
+    public BoardComment(String comment, Board board, Member member) {
         this.comment = comment;
-        this.createDate = createDate;
+        this.createDate = LocalDate.now();
         this.board = board;
         this.member = member;
     }
