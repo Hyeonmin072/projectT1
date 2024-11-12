@@ -47,7 +47,7 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
   const handleLoginClick = () => {
     setIsVisible(false);
     setIsVisible(false);
-    console.log('로그인 창으로 돌아가는 버튼 클릭됨');
+    console.log('로그인 창으로 돌아가는 버튼이 클릭됐어요');
     setTimeout(() => {
       if (onLoginClick) onLoginClick(); 
     }, 500);
@@ -55,27 +55,27 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
 
   const validateForm = () => {
     if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      setError('올바른 이메일 형식이 아닙니다.');
+      setError('올바른 이메일 형식이 아니에요.');
       return false;
     }
 
     if (!formData.password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)) {
-      setError('비밀번호는 8자 이상의 문자와 숫자 조합이어야 합니다.');
+      setError('비밀번호는 8자 이상의 문자와 숫자 조합이어야 해요.');
       return false;
     }
 
     if (formData.password !== formData.passwordConfirm) {
-      setError('비밀번호가 일치하지 않습니다.');
+      setError('비밀번호가 일치하지 않아요.');
       return false;
     }
 
     if (formData.name.length < 2) {
-      setError('이름은 2자 이상이어야 합니다.');
+      setError('이름은 2자 이상이어야 해요.');
       return false;
     }
 
     if (!formData.tel.match(/^\d{3}-\d{3,4}-\d{4}$/)) {
-      setError('올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)');
+      setError('올바른 전화번호 형식이 아니에요. (예: 010-1234-5678)');
       return false;
     }
 
@@ -102,13 +102,13 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     } catch (error) {
       if (error.response) {
         console.error('회원 가입 실패:', error.response.data);
-        setError(error.response.data.message || '회원가입에 실패했습니다.');
+        setError(error.response.data.message || '회원가입에 실패했어요.');
       } else if (error.request) {
         console.error('서버 통신 에러:', error.request);
-        setError('서버와의 통신에 실패했습니다.');
+        setError('서버와의 통신에 실패했어요.');
       } else {
         console.error('회원 가입 오류:', error.message);
-        setError('회원가입 중 오류가 발생했습니다.');
+        setError('회원가입 중 오류가 발생했어요.');
       }
     }
   };
@@ -132,7 +132,7 @@ useEffect(() => {
   
 
   const handleNameCheck = async () => {
-    console.log('중복 확인 버튼 클릭됨'); 
+    console.log('중복 확인 버튼 클릭됐어요'); 
     
     if (!formData.name) {
       setIsDuplicateChecked(false);
@@ -159,12 +159,12 @@ useEffect(() => {
       } else {
         console.error("올바르지 않은 형식:", response);
         setIsDuplicateChecked(false);
-        setNameMessage("응답 형식이 올바르지 않습니다.");
+        setNameMessage("응답 형식이 올바르지 않아요.");
         setShowTooltip(true);
       }
     } catch (error) {
       setIsDuplicateChecked(false);
-      setNameMessage("중복 확인 중 오류가 발생했습니다.");
+      setNameMessage("중복 확인 중 오류가 발생했어요.");
       setShowTooltip(true); // useEffect에서 타이머 처리
       console.error("중복확인 에러:", error);
     }
@@ -270,7 +270,7 @@ useEffect(() => {
                   onClick={handleNameCheck}
                   disabled={isNameLocked}
                   className={`w-[30%] py-2 px-4 rounded-lg border 
-                    transition-colors duration-300 
+                    transition-colors duration-300  font-size-sm
                     ${isDuplicateChecked 
                       ? 'bg-green-100 text-green-800 border-green-500' 
                       : isNameLocked
@@ -278,7 +278,7 @@ useEffect(() => {
                         : 'bg-white hover:bg-gray-300 text-black border-gray-500'
                     }`}
                 >
-                  {isDuplicateChecked ? '확인 완료' : '중복 확인'}
+                  {isDuplicateChecked ? '확인 완료  ' : '중복 확인'}
                 </button>
               </div>
 
@@ -359,7 +359,7 @@ useEffect(() => {
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
             >
-              {isDuplicateChecked ? '가입하기' : '닉네임 중복 확인 필요'}
+              {isDuplicateChecked ? '가입하기' : '닉네임 중복 확인이 필요해요'}
             </button>
 
             <div className="text-center text-sm text-gray-600">
