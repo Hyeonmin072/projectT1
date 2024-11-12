@@ -75,6 +75,10 @@ class BackendApplicationTests {
             Game game = null;
             Optional<Member> findMember = memberRepository.findByName("테스트용계정1");
             Optional<Game> findGame = gameRepository.findByName("로스트아크");
+            Optional<Member> findMember2 = memberRepository.findByName("테스트용계정2");
+            Optional<Game> findGame2 = gameRepository.findByName("리그오브레전드");
+            Optional<Member> findMember3 = memberRepository.findByName("테스트용계정3");
+            Optional<Game> findGame3 = gameRepository.findByName("스타크래프트");
             if(findMember.isPresent()){
                 member = findMember.get();
             }
@@ -82,8 +86,15 @@ class BackendApplicationTests {
                 game = findGame.get();
             }
 
+
             videoRepository.save(new Video(
                     "테스트영상1","테스트영상설명","testurl",100,LocalDateTime.now(),member,game)
+            );
+            videoRepository.save(new Video(
+                    "테스트영상2","테스트영상설명2","testurl2",114,LocalDateTime.now(),findMember2.get(),findGame2.get())
+            );
+            videoRepository.save(new Video(
+                    "테스트영상3","테스트영상설명3","testurl3",37,LocalDateTime.now(),findMember3.get(),findGame3.get())
             );
 
         }
