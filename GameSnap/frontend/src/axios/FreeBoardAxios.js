@@ -165,17 +165,40 @@ const FreeBoardAxios = {
     }
   },
 
-
-// 댓글 목록 가져오기 추가 
+  // 댓글 목록 가져오기 
   async getComments(postId) { 
     try { 
-      const response = await axiosInstance.get(`/board/${postId}/comments`); 
+      const response = await axiosInstance.get(`/board/${postId}/comments`);
       return response.data; 
     } catch (error) { 
       console.error('댓글 목록 로딩 실패:', error); 
       throw error; 
-    }
-  }
+    } 
+  },
+
+// 댓글 작성 
+  async createComment(boardId, memberId, comment) { 
+    try { 
+      const response = await axiosInstance.post(`/board/${boardId}/comments`, { memberId, comment }); 
+      console.log('댓글 작성 응답:', response.data);
+      return response.data; 
+  } catch (error) { 
+      console.error('댓글 작성 실패:', error); 
+      throw error; 
+    } 
+  },
+
+// 댓글 삭제 
+  async deleteComment(boardId, commentId) { 
+    try { 
+      const response = await axiosInstance.post(`/board/${boardId}/comments/delete`, { commentId }); 
+      console.log('댓글 삭제 응답:', response.data); 
+      return response.data; 
+    } catch (error) { 
+      console.error('댓글 삭제 실패:', error); 
+      throw error; 
+    } 
+  } 
 };
 
 export default FreeBoardAxios;

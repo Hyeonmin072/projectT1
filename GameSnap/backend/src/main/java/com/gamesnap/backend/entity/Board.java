@@ -37,7 +37,7 @@ public class Board {
     @Column(name = "b_like")
     private Integer like;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<BoardComment> comments = new ArrayList<>();
 
     protected Board() {

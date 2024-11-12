@@ -40,6 +40,7 @@ function FreeBoardPage() {
     const fetchComments = async () => {
       try {
         const response = await FreeBoardAxios.getComments(postId);
+        console.log("댓글 목록:", response); // 받은 댓글 목록 로그 출력
         setComments(response);
       } catch (error) {
         console.error('댓글 목록 로딩 실패:', error);
@@ -77,23 +78,6 @@ function FreeBoardPage() {
     navigate(`/board/modify/${postId}`);
   };
 
-  // 댓글 삭제 함수
-const handleDeleteComment = async (commentId) => {
-  if (!window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-    return;
-  }
-
-  try {
-    await FreeBoardAxios.deleteComment(postId, commentId);
-    // 삭제 후 댓글 목록에서 해당 댓글 제거
-    setComments(comments.filter(comment => comment.id !== commentId));
-    alert('댓글이 삭제되었습니다.');
-  } catch (error) {
-    console.error('댓글 삭제 실패:', error);
-    alert('댓글 삭제에 실패했습니다.');
-  }
-};
-
   // 게시글 좋아요 함수
   const handleLike = async () => {
     try {
@@ -105,7 +89,7 @@ const handleDeleteComment = async (commentId) => {
     }
   };
 
-  // 댓글 작성 함수 추가
+  // 댓글 작성 함수
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) {
@@ -114,12 +98,8 @@ const handleDeleteComment = async (commentId) => {
     }
 
     try {
-      // 댓글 작성 API 호출 (아직 구현되지 않은 것 같습니다)
-      const response = await FreeBoardAxios.createComment(postId, {
-        comment: newComment,
-        memberId: userData?.id,
-        memberName: userData?.name
-      });
+      const response = await FreeBoardAxios.createComment(postId, userData?.id, newComment);
+      console.log(response)
       setComments([...comments, response]);
       setNewComment('');
     } catch (error) {
@@ -127,6 +107,23 @@ const handleDeleteComment = async (commentId) => {
       alert('댓글 작성에 실패했습니다.');
     }
   };
+
+    // 댓글 삭제 함수
+    const handleDeleteComment = async (commentId) => {
+      if (!window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+        return;
+      }
+  
+      try {
+        await FreeBoardAxios.deleteComment(postId, commentId);
+        // 삭제 후 댓글 목록에서 해당 댓글 제거
+        setComments(comments.filter(comment => comment.id !== commentId));
+        alert('댓글이 삭제되었습니다.');
+      } catch (error) {
+        console.error('댓글 삭제 실패:', error);
+        alert('댓글 삭제에 실패했습니다.');
+      }
+    };
 
   if (!post) {
     return <div className="min-h-screen bg-gray-50 py-8 flex justify-center items-center">
@@ -233,7 +230,7 @@ const handleDeleteComment = async (commentId) => {
                     <div className="flex items-center gap-2">
                       <span className="font-semibold">{comment.memberName}</span>
                       <span className="text-sm text-gray-500">
-                        {new Date(comment.createDate).toLocaleString()}
+                        {comment.createDate}
                       </span>
                     </div>
                     {userData?.id === comment.memberId && (

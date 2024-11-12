@@ -14,7 +14,6 @@ import com.gamesnap.backend.repository.GameRepository;
 import com.gamesnap.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -77,7 +76,7 @@ public class BoardService {
         return null;
     }
 
-    public ResponseEntity<Board> saveBoard(@ModelAttribute BoardSaveDto boardSaveDto) {
+    public ResponseEntity<Board> createBoard(@ModelAttribute BoardSaveDto boardSaveDto) {
         Optional<Game> findGame = gameRepository.findById(boardSaveDto.getGameId());
         Optional<Member> findMember = memberRepository.findById(boardSaveDto.getUserId());
 

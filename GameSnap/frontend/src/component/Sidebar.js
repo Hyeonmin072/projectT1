@@ -1,7 +1,7 @@
 // Sidebar.js
 /* eslint-disable */
 import React, {useState} from 'react';
-import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users, Delete } from 'lucide-react';
+import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users, MonitorUp } from 'lucide-react';
 import { Link, useHistory } from 'react-router-dom';
 import Profile from '../profile/MainProfile';
 import Community from './Community';
@@ -101,6 +101,12 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
           </nav>
 
           <div className="border-t">
+            <button 
+              className="flex right-4 p-3 mt-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <MonitorUp className="mr-3" size={20} />
+              업로드하기
+            </button>
             <button 
               onClick={handleLogout}
               className="flex items-center w-full p-3 mt-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"

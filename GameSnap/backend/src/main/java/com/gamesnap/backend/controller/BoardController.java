@@ -36,7 +36,7 @@ public class BoardController {
     //게시글 생성 API
     @PostMapping("/board/write")
     public ResponseEntity<Board> writeBoard(@ModelAttribute BoardSaveDto boardSaveDto) {
-        return boardService.saveBoard(boardSaveDto);
+        return boardService.createBoard(boardSaveDto);
     }
 
     //게시글 삭제 API
