@@ -79,23 +79,23 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
     try {
       let response;
   
-      // 테스트 계정 확인
-      // if (formData.email === 'test@test.com' && formData.password === 'test123') {
-      //   // 테스트 계정 로직
-      //   await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과
+      //테스트 계정 확인
+      if (formData.email === 'test@test.com' && formData.password === 'test123') {
+        // 테스트 계정 로직
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과
         
-      //   // 테스트 계정용 mock 응답
-      //   response = {
-      //     data: {
-      //       token: 'fake-jwt-token-12345',
-      //       id: 1,
-      //       email: 'test@test.com',
-      //       name: '테스트 유저'
-      //     }
-      //   };
-      // } else {
+        // 테스트 계정용 mock 응답
+        response = {
+          data: {
+            token: 'fake-jwt-token-12345',
+            id: 1,
+            email: 'test@test.com',
+            name: '테스트 유저'
+          }
+        };
+      } //else {
         // 실제 서버 로그인 시도
-        response = await login(formData.email, formData.password);
+        //response = await login(formData.email, formData.password);
       // }
   
       console.log('로그인 응답 데이터:', response.data);

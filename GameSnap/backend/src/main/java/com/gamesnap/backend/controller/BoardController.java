@@ -3,6 +3,7 @@ package com.gamesnap.backend.controller;
 import com.gamesnap.backend.dto.BoardDetailDto;
 import com.gamesnap.backend.dto.BoardResponseDto;
 import com.gamesnap.backend.dto.BoardSaveDto;
+import com.gamesnap.backend.dto.BoardUpdateDto;
 import com.gamesnap.backend.entity.Board;
 import com.gamesnap.backend.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -44,11 +45,11 @@ public class BoardController {
         return boardService.deleteBoard(boardId);
     }
 
-//    //게시글 수정 API
-//    @PatchMapping("/board/{boardId}")
-//    public ResponseEntity<String> updateBoard(@PathVariable("boardId") Integer boardId) {
-//        return boardService.deleteBoard(boardId);
-//    }
+    //게시글 수정 API
+    @PatchMapping("/board/{boardId}")
+    public ResponseEntity<String> updateBoard(@PathVariable("boardId") Integer boardId, @RequestBody BoardUpdateDto boardUpdateDto) {
+        return boardService.updateBoard(boardId, boardUpdateDto);
+    }
 
 
 

@@ -28,12 +28,12 @@ const Profile = (props) => {
   // console.log("프로필 출력 완료");
   // // 유저 프로필 상태 정의
   const [userInfo, setUserInfo] = useState({
-    id: '123',
-    name: 'test',
-    email: 'test@test.com',
-    phone: '010-1234-5678',
-    preferredGenre: '선호 장르 없음',
-    password: '1234'
+    id: '',
+    name: '',
+    email: '',
+    phone: '',
+    preferredGenre: '',
+    password: ''
   }); // 초기화하기
 
   useEffect(() => {
@@ -110,15 +110,6 @@ const Profile = (props) => {
               <label className="font-semibold hidden">아이디:</label>
               <span className="hidden ml-auto">{userInfo.id}</span>
             <div className="profile-setting-main-profile-change-container">
-          <div className="profile-setting-main-profile-change-img-box- justify-center items-center">
-            <img src={Defaultimg} alt="프로필 사진" className="profile-setting-main-profile-change-img w-24 h-24 object-cover"/>
-            
-            <button
-              type="button"
-              className="profile-setting-main-profile-change-delete"
-            >
-            </button>
-          </div>
         </div>
 
             </div>

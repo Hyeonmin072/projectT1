@@ -1,47 +1,54 @@
-/* eslint-disable */
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { ArrowLeft } from 'lucide-react';
-import axios from 'axios';
 import FreeBoardAxios from "../axios/FreeBoardAxios";
 
-const BASE_URL = 'http://localhost:1111';
-
-const ModifyPage = () => {
-  const { boardId } = useParams();
+function ModifyPage() {
+  const { postId } = useParams();
   const navigate = useNavigate();
+  const { userData } = useAuth();
   
   const [formData, setFormData] = useState({
     title: '',
-    content: ''
+    content: '',
   });
 
-  // 기존 게시글 데이터 불러오기
+  // 게시글 데이터 로드
   useEffect(() => {
-    console.log('수정할 게시글 ID:', boardId);
-    
-    axios.get(`${BASE_URL}/board/${boardId}`)
-      .then(response => {
-        console.log('서버 응답:', response.data);
-        if (response.data) {
-          setFormData({
-            title: response.data.title,
-            content: response.data.content
-          });
-        } else {
-          console.error('게시글을 찾을 수 없습니다.');
-          alert('게시글을 찾을 수 없습니다.');
+    const fetchPost = async () => {
+      try {
+        // postId가 있는지 확인
+        if (!postId) {
+          alert('잘못된 접근입니다.');
           navigate('/board');
+          return;
         }
-      })
-      .catch(error => {
-        console.error("게시글 로딩 실패:", error.response);
-        alert('게시글을 불러오는데 실패했습니다.');
-        navigate('/board');
-      });
-  }, [boardId]);
 
-  // 입력값 변경 핸들러
+        const response = await FreeBoardAxios.getPostDetail(postId);
+        console.log('불러온 게시글 데이터:', response);
+        
+        // 작성자 확인
+        if (response.memberId !== userData?.id) {
+          alert('수정 권한이 없습니다.');
+          navigate(`/board/${postId}`);
+          return;
+        }
+
+        setFormData({
+          title: response.title,
+          content: response.content,
+        });
+      } catch (error) {
+        console.error('게시글 로딩 실패:', error);
+        alert('게시글을 불러오는데 실패했습니다.');
+        navigate(`/board/${postId}`);
+      }
+    };
+
+    fetchPost();
+  }, [postId, userData?.id, navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -50,37 +57,29 @@ const ModifyPage = () => {
     }));
   };
 
-  // 수정 취소
-  const handleCancel = () => {
-    if(window.confirm('수정을 취소하시겠습니까?')) {
-      navigate(`/board/${boardId}`);
-    }
-  };
-
-  // 수정 제출 (FreeBoardAxios 사용)
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!boardId) {
-      console.error('게시글 ID가 없습니다');
-      return;
-    }
-  
     if (!formData.title.trim() || !formData.content.trim()) {
       alert('제목과 내용을 모두 입력해주세요.');
       return;
     }
-  
+
     try {
-      console.log('수정할 게시글 ID:', boardId);
-      console.log('수정할 데이터:', formData);
-      const response = await FreeBoardAxios.updateboard(boardId, formData);
-      console.log('수정 응답:', response);
+      const updateData = {
+        title: formData.title,
+        content: formData.content,
+        memberId: userData.id
+      };
+
+      console.log('수정할 데이터:', updateData);
+
+      await FreeBoardAxios.updatePost(postId, updateData);
       
       alert('게시글이 수정되었습니다.');
-      navigate(`/board/${boardId}`);
+      navigate(`/board/${postId}`);
     } catch (error) {
-      console.error("게시글 수정 실패:", error);
+      console.error('게시글 수정 실패:', error);
       alert('게시글 수정에 실패했습니다.');
     }
   };
@@ -91,11 +90,11 @@ const ModifyPage = () => {
         {/* 뒤로가기 버튼 */}
         <div className="flex items-center mb-6">
           <button 
-            onClick={handleCancel}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            onClick={() => navigate(`/board/${postId}`)}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="w-6 h-6" />
-            <span className="text-sm">돌아가기</span>
+            <span>돌아가기</span>
           </button>
         </div>
 
@@ -104,9 +103,11 @@ const ModifyPage = () => {
           <h1 className="text-2xl font-bold mb-6">게시글 수정</h1>
           
           <form onSubmit={handleSubmit}>
-            {/* 제목 입력 */}
             <div className="mb-4">
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              <label 
+                htmlFor="title" 
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 제목
               </label>
               <input
@@ -116,13 +117,15 @@ const ModifyPage = () => {
                 value={formData.title}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
-                placeholder="제목을 입력하세요"
+                required
               />
             </div>
 
-            {/* 내용 입력 */}
             <div className="mb-6">
-              <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
+              <label 
+                htmlFor="content" 
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 내용
               </label>
               <textarea
@@ -132,24 +135,23 @@ const ModifyPage = () => {
                 onChange={handleChange}
                 rows="10"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
-                placeholder="내용을 입력하세요"
+                required
               />
             </div>
 
-            {/* 버튼 그룹 */}
-            <div className="flex justify-end gap-4">
+            <div className="flex justify-end gap-2">
               <button
                 type="button"
-                onClick={handleCancel}
-                className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                onClick={() => navigate(`/board/${postId}`)}
+                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
               >
                 취소
               </button>
               <button
                 type="submit"
-                className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
               >
-                수정완료
+                수정하기
               </button>
             </div>
           </form>
@@ -157,6 +159,6 @@ const ModifyPage = () => {
       </div>
     </div>
   );
-};
+}
 
 export default ModifyPage;

@@ -23,16 +23,31 @@ const UserPage = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const fetchedVideo = await VideoAxios.getVideo(userData.likeGamesId,userData.id); //비디오 요청
-        setVideo(fetchedVideo[0]);                        // 임시로 0번째 비디오 호출
-        setLikes(fetchedVideo[0].like);                  // 0 번째 비디오 좋아요 수 
-        setIsLiked(fetchedVideo[0].isLiked);
+        if (!userData?.id || !userData?.likeGamesId) return;
+  
+        const fetchedVideo = await VideoAxios.getPreferenceRandomVideo(userData.likeGamesId, userData.id);
+        if (!fetchedVideo || fetchedVideo.length === 0) {
+          console.log("선호 게임에 맞는 비디오가 없어 랜덤 비디오 요청");
+          const randomVideos = await VideoAxios.getRandomVideo(userData.id);
+          if (randomVideos && randomVideos.length > 0) {
+            setVideo(randomVideos[0]);
+            setLikes(randomVideos[0].like);
+            setIsLiked(randomVideos[0].liked); // isLiked 대신 liked 사용
+          }
+        } else {
+          setVideo(fetchedVideo[0]);
+          setLikes(fetchedVideo[0].like);
+          setIsLiked(fetchedVideo[0].liked); // isLiked 대신 liked 사용
+        }
       } catch (error) {
-        console.error("비디오를 불러오는데 오류가 발생했습니다.");
+        console.error("비디오를 불러오는데 오류가 발생했습니다.", error);
       }
     };
-    fetchVideo();
-  }, []);
+  
+    if (userData?.id) {
+      fetchVideo();
+    }
+  }, [userData]);
 
 
   // 댓글을 불러오는 useEffect
@@ -68,7 +83,8 @@ const UserPage = () => {
         console.log('좋아요 응답 데이터:', response);
         
         if (response) {
-            setIsLiked(prev => !prev); // 직접 토글
+            const newLikedState = !isLiked;
+            setIsLiked(newLikedState);
             setLikes(prev => isLiked ? prev - 1 : prev + 1);
         }
 
@@ -76,6 +92,7 @@ const UserPage = () => {
         console.error('좋아요 상태 업데이트 실패:', error);
     }
 };
+
 
   const handleAddComment = async (newComment, videoId) => {
     if (newComment.trim() && video && userData) {

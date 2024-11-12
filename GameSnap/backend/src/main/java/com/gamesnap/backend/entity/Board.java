@@ -64,4 +64,9 @@ public class Board {
     public void decreaseLike() {
         this.like--;
     }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

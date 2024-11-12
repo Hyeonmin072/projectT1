@@ -1,196 +1,213 @@
-/* eslint-disable*/
-
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // URL 파라미터 사용
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { ArrowLeft, ThumbsUp, Trash2, PencilLine, Pen } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, Trash2, PencilLine } from 'lucide-react';
 import FreeBoardAxios from "../axios/FreeBoardAxios";
 
-// 기본 URL 설정
-const BASE_URL = 'http://localhost:1111'; // 백엔드 서버 URL
-
 function FreeBoardPage() {
-  const { postId } = useParams(); // URL에서 게시글 ID 가져오기
-  const [post,  setPost] = useState(null);
+  const { postId } = useParams();
+  const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const { userData } = useAuth();
   const navigate = useNavigate();
 
-  
   useEffect(() => {
-
-    console.log('클릭한 게시글 ID:', postId);
-    console.log('현재 유저 데이터:', userData);
-    
-    //게시글 상세정보 가져오기
-    axios.get(`${BASE_URL}/board/${postId}`)
-      .then(response => {
-        console.log('서버 응답:', response.data);  // 서버에서 받아온 데이터 확인
-        if (response.data) {
-          setPost(response.data);
+    // 게시글 상세정보 가져오기
+    const fetchPost = async () => {
+      try {
+        const response = await FreeBoardAxios.getPostDetail(postId);
+        if (response) {
+          setPost(response);
         } else {
           console.error('게시글을 찾을 수 없습니다.');
         }
-      })
-      .catch(error => {
-        console.error("게시글 로딩 실패:", error.response);
-      });
-    
+      } catch (error) {
+        console.error("게시글 로딩 실패:", error);
+      }
+    };
+
     // 조회수 증가 호출
-    FreeBoardAxios.incrementViews(postId)
-      .then(response => {
-        console.log('조회수 증가 성공 : ', response)
-      })
-      .catch(error => {
-        console.error('조회수 증가 실패 : ', error)
-      });
-    
-    // 댓글 목록 가져오기 
-    FreeBoardAxios.getComments(postId) 
-    .then(response => { 
-      setComments(response);
-    }) 
-    .catch(error => { 
-      console.error('댓글 목록 로딩 실패:', error); 
-    }); 
+    const incrementPostViews = async () => {
+      try {
+        await FreeBoardAxios.incrementViews(postId);
+      } catch (error) {
+        console.error('조회수 증가 실패:', error);
+      }
+    };
+
+    // 댓글 목록 가져오기
+    const fetchComments = async () => {
+      try {
+        const response = await FreeBoardAxios.getComments(postId);
+        setComments(response);
+      } catch (error) {
+        console.error('댓글 목록 로딩 실패:', error);
+      }
+    };
+
+    fetchPost();
+    incrementPostViews();
+    fetchComments();
   }, [postId]);
 
-  useEffect(() => {
-    console.log('현재 게시글 번호:', postId);
-  }, [post]);
-
-  useEffect(() => {
-    console.log('현재 댓글 목록:', postId.comments);
-  }, [comments]);
-  
-  useEffect(() => {
-    if (post) {
-      console.log('현재 게시글 데이터:', {
-        id: post.id,
-        title: post.title,
-        content: post.content,
-        createDate: post.createDate,
-        memberName: post.memberName,
-        memberId: post.memberId
-      });
+  // 게시글 삭제 함수
+  const handleDelete = async () => {
+    if (!window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+      return;
     }
-  }, [post]);
 
+    try {
+      await FreeBoardAxios.deletePost(postId);
+      alert('게시글이 삭제되었습니다.');
+      navigate('/board');
+    } catch (error) {
+      console.error('게시글 삭제 실패:', error);
+      alert('게시글 삭제에 실패했습니다.');
+    }
+  };
 
-  
-  // 게시글 삭제 함수 
-  const handleDelete = async () => { 
-    try { 
-      const response = await FreeBoardAxios.deletePost(post?.id); 
-      console.log('게시글 삭제 성공:', response.data); // 게시글 삭제 후 필요 시 페이지 리로드 또는 리다이렉트 
-      navigate('/board'); // 게시글 삭제 후 리다이렉트
-    } catch (error) { 
-      console.error('게시글 삭제 실패:', error); 
-      alert('게시글 삭제에 실패했습니다.'); 
-    } 
+  // 게시글 수정 페이지로 이동
+  const handleModify = () => {
+    // 작성자 확인
+    if (userData?.id !== post?.memberId) {
+      alert('게시글 수정 권한이 없습니다.');
+      return;
+    }
+    navigate(`/board/modify/${postId}`);
+  };
+
+  // 댓글 삭제 함수
+const handleDeleteComment = async (commentId) => {
+  if (!window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+    return;
   }
 
-  // 게시글 수정 함수 
-  const handleUpdate = async () => { 
-    try { 
-      const response = await FreeBoardAxios.updatePost(post?.id); 
-      console.log('게시글 수정 성공:', response.data); // 게시글 수정 후 필요 시 페이지 리로드 또는 리다이렉트 
-      setPost(response.data); // 게시글 삭제 후 리로드
-    } catch (error) { 
-      console.error('게시글 수정 실패:', error); 
-      alert('게시글 수정에 실패했습니다.'); 
-    } 
+  try {
+    await FreeBoardAxios.deleteComment(postId, commentId);
+    // 삭제 후 댓글 목록에서 해당 댓글 제거
+    setComments(comments.filter(comment => comment.id !== commentId));
+    alert('댓글이 삭제되었습니다.');
+  } catch (error) {
+    console.error('댓글 삭제 실패:', error);
+    alert('댓글 삭제에 실패했습니다.');
   }
+};
 
-  // 게시글 좋아요 함수 
-  const handleLike = async () => { 
-    try { 
-      console.log('게시글 좋아요 보낼 userdata', userData)
-      const response = await FreeBoardAxios.likePost(post?.id, userData?.name); 
-      console.log('게시글 좋아요 성공:', response); // 게시글 좋아요 후 필요 시 페이지 리로드 또는 리다이렉트 
-      setPost(response); // 좋아요 수 업데이트
-    } catch (error) { 
-      console.error('게시글 좋아요 실패:', error); 
-      alert('게시글 좋아요에 실패했습니다.'); 
-    } 
+  // 게시글 좋아요 함수
+  const handleLike = async () => {
+    try {
+      const response = await FreeBoardAxios.likePost(postId, userData?.name);
+      setPost(response);
+    } catch (error) {
+      console.error('게시글 좋아요 실패:', error);
+      alert('게시글 좋아요에 실패했습니다.');
+    }
+  };
+
+  // 댓글 작성 함수 추가
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) {
+      alert('댓글 내용을 입력해주세요.');
+      return;
+    }
+
+    try {
+      // 댓글 작성 API 호출 (아직 구현되지 않은 것 같습니다)
+      const response = await FreeBoardAxios.createComment(postId, {
+        comment: newComment,
+        memberId: userData?.id,
+        memberName: userData?.name
+      });
+      setComments([...comments, response]);
+      setNewComment('');
+    } catch (error) {
+      console.error('댓글 작성 실패:', error);
+      alert('댓글 작성에 실패했습니다.');
+    }
+  };
+
+  if (!post) {
+    return <div className="min-h-screen bg-gray-50 py-8 flex justify-center items-center">
+      <p>게시글을 불러오는 중...</p>
+    </div>;
   }
-
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      {console.log('렌더링 시 post 데이터:', post)}
-      {console.log('렌더링 시 comments 데이터:', comments)}
-
-
       <div className="max-w-4xl mx-auto px-4">
-        
         {/* 목록으로 돌아가기 버튼 */}
         <div className="flex items-center mb-6">
-            <button 
-                onClick={() => window.history.back()}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-                <ArrowLeft className="w-6 h-6" />
-                <span className="text-sm">목록으로</span>
-            </button>
+          <button
+            onClick={() => navigate('/board')}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeft className="w-6 h-6" />
+            <span className="text-sm">목록으로</span>
+          </button>
         </div>
 
-        {/* 게시글 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="text-2xl font-bold">{post?.title}</h1>
-              <div className="flex items-center gap-4 border-2 rounded-lg border-green-400">
-                <span className="text-gray-600">작성자: {post?.memberName}</span>
-                <span className="text-gray-600">
-                    작성일: {post?.createDate}
-                </span>
+        {/* 게시글 내용 */}
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="p-6">
+              {/* 제목 */}
+              <h1 className="text-2xl font-bold mb-3">{post.title}</h1>
+              
+              {/* 작성자 정보와 작성일 */}
+              <div className="flex items-center gap-4 text-sm text-gray-600 border-b border-gray-200 pb-4 mb-4">
+                <span>작성자: {post.memberName}</span>
+                <span className="text-gray-300">|</span>
+                <span>작성일: {post.createDate}</span>
+              </div>
+
+              {/* 본문 내용 */}
+              <div className="prose max-w-none border border-gray-200 rounded-lg p-6 bg-gray-50">
+                <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                  {post.content}
+                </p>
               </div>
             </div>
 
-            {/* 게시글 내용 */}
-            <div className="prose max-w-none border-2 rounded-lg border-green-400">
-              <p className="text-gray-800 leading-relaxed">
-                {post?.content}
-              </p>
-            </div>
-          </div>
-        
           {/* 좋아요, 수정, 삭제 버튼 */}
           <div className="flex px-6 pb-4">
             <div className="flex items-center">
-              <button className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600" onClick={handleLike}>
-                <ThumbsUp/>
-                좋아요 = {post?.like}
+              <button 
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2" 
+                onClick={handleLike}
+              >
+                <ThumbsUp className="w-4 h-4" />
+                <span>좋아요 {post.like}</span>
               </button>
-              <span className="ml-2 text-gray-600"></span> {/* 좋아요 수 표시 */}
             </div>
-            {userData?.id === post?.memberId && (
+            {userData?.id === post.memberId && (
               <div className="flex gap-2 ml-auto">
-                <button className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                  onClick={() => navigate(`/board/modify/${post.id}`)}>
-                  <PencilLine/>
-                  수정
+                <button
+                  className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2"
+                  onClick={handleModify}
+                >
+                  <PencilLine className="w-4 h-4" />
+                  <span>수정</span>
                 </button>
-                <button className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600" onClick={handleDelete}>
-                  <Trash2/>
-                  삭제
+                <button
+                  className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center gap-2"
+                  onClick={handleDelete}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>삭제</span>
                 </button>
               </div>
             )}
           </div>
-
         </div>
+
         {/* 댓글 섹션 */}
         <div className="mt-8 bg-white rounded-lg shadow-sm">
           <div className="p-6">
             <h2 className="text-lg font-semibold mb-4">댓글</h2>
-            
+
             {/* 댓글 입력 */}
-            <form className="mb-6">
+            <form onSubmit={handleCommentSubmit} className="mb-6">
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -220,7 +237,10 @@ function FreeBoardPage() {
                       </span>
                     </div>
                     {userData?.id === comment.memberId && (
-                      <button className="text-sm text-red-500 hover:text-red-600" onClick={handleDelete}>
+                      <button
+                        className="text-sm text-red-500 hover:text-red-600"
+                        onClick={() => handleDeleteComment(comment.id)}
+                      >
                         삭제
                       </button>
                     )}
@@ -231,7 +251,6 @@ function FreeBoardPage() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

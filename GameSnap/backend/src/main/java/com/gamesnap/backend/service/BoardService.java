@@ -3,6 +3,7 @@ package com.gamesnap.backend.service;
 import com.gamesnap.backend.dto.BoardDetailDto;
 import com.gamesnap.backend.dto.BoardResponseDto;
 import com.gamesnap.backend.dto.BoardSaveDto;
+import com.gamesnap.backend.dto.BoardUpdateDto;
 import com.gamesnap.backend.entity.Board;
 import com.gamesnap.backend.entity.BoardLike;
 import com.gamesnap.backend.entity.Game;
@@ -143,5 +144,15 @@ public class BoardService {
         } else { // 게시물, 멤버 둘 중 하나가 없으면 에러
             throw new RuntimeException("게시글이나 회원을 찾을 수 없습니다.");
         }
+    }
+
+    public ResponseEntity<String> updateBoard(Integer boardId, BoardUpdateDto boardUpdateDto) {
+        Optional<Board> optionBoard = boardRepository.findById(boardId);
+        if (optionBoard.isPresent()) {
+            Board board = optionBoard.get();
+            board.update(boardUpdateDto.getTitle(), boardUpdateDto.getContent());
+            return ResponseEntity.ok("게시글이 수정되었어요");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 }

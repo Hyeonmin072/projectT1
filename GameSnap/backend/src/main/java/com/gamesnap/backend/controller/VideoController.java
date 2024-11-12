@@ -25,10 +25,31 @@ public class VideoController {
     @Autowired
     private VideoLikeService videoLikeService;
 
+
     @PostMapping("/random")
+    public List<VideoResponseDto> getPreferenceVideos(@RequestBody VideoRequestDto videoRequestDto){
+
+        List<Video> videos = videoService.getRandomVideos();
+
+        // VideoResponse 객체로 변환하여 반환
+        return videos.stream()
+                .map(video -> new VideoResponseDto(
+                        video.getId(),
+                        video.getTitle(),
+                        video.getDesc(),
+                        video.getUrl(),
+                        video.getVideoLikes().size(),
+                        video.getCreateDate(),
+                        video.getMember().getName(),
+                        videoLikeService.LikeStatus(video.getId(), videoRequestDto.getMemberId())
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @PostMapping("/preferenceRandom")
     public List<VideoResponseDto> getRandomVideos(@RequestBody VideoRequestDto videoRequestDto) {
         // 랜덤 비디오 목록을 가져옴
-        List<Video> videos = videoService.getRandomVideos(videoRequestDto.getGamesId());
+        List<Video> videos = videoService.getPreferenceRandomVideos(videoRequestDto.getGamesId());
 
         // VideoResponse 객체로 변환하여 반환
         return videos.stream()
