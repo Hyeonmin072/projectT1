@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://3.36.125.13:1111/video',
+    baseURL: aws.env.REACT_APP_API_URL+'/video',
 });
 
 const handleError = (error) => {
