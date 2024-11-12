@@ -20,17 +20,30 @@ export const ToggleLike = async (videoId,memberId) => {
     }
 }
 
-export const getVideo = async (likeGamesId,memberId) => {
+export const getPreferenceRandomVideo = async (likeGamesId,userId) => {
     try {
-        const response = await apiClient.post('/random',{
+        const response = await apiClient.post('/preferenceRandom',{
             gamesId: likeGamesId,
-            userId: memberId
-        });   //UserPage로딩하면 랜덤으로 비디오 요청
+            memberId: userId
+        });   //UserPage로딩하면 랜덤으로 선호 비디오 요청
         return response.data;
     } catch (error) {
         handleError(error);
     }
 };
+
+export const getRandomVideo = async (userId) => {
+    try{
+        const response = await apiClient.post('/random',{
+            memberId : userId
+        });
+
+        return response.data;
+
+    } catch(error){
+        handleError(error);
+    }
+}
 
 export const getComment = async (videoId) => {
     try {
@@ -52,7 +65,8 @@ export const addComment = async (commentData) => {
 };
 export default {
     ToggleLike,
-    getVideo,
+    getRandomVideo,
     getComment,
     addComment,
+    getPreferenceRandomVideo
 };
