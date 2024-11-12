@@ -14,6 +14,7 @@ import SetProfile from './profile/UpdateProfile';
 import FreeBoardPage from './page/FreeBoardPage';
 import ChatList from './page/ChatList';
 import ModifyPage from './page/ModifyPage';
+import PageTransition from './component/PageTransition';
 
 // AnimatePresence를 사용하기 위한 래퍼 컴포넌트
 function AnimatedRoutes() {
@@ -21,7 +22,7 @@ function AnimatedRoutes() {
     const location = useLocation();
   
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode="sync" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<MainPage />} />
         <Route path="/user" element={<UserPage />} />
