@@ -34,6 +34,7 @@ export const getPreferenceRandomVideo = async (likeGamesId,userId) => {
 
 export const getRandomVideo = async (userId) => {
     try{
+        console.log('유저아이디 : ',userId);
         const response = await apiClient.post('/random',{
             memberId : userId
         });
