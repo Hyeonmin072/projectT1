@@ -1,149 +1,172 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import PageTransition from '../component/PageTransition';
 import { useAuth } from '../context/AuthContext';
 import VideoPlayer from '../component/VideoPlayer';
 import CommentModal from '../component/CommentModal';
 import * as VideoAxios from '../axios/VideoAxios';
 
-/* eslint-disable */
-
-
 const UserPage = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(0);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [comments, setComments] = useState([]);
-  const [video, setVideo] = useState(null);
+  const [videos, setVideos] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const { userData } = useAuth();
-  const [showComments, setShowComments] = useState(false);
-  const [newComment, setNewComment] = useState('');
 
-  // 비디오와 좋아요 데이터를 가져오는 useEffect
+  // 비디오 목록 가져오기
   useEffect(() => {
-    const fetchVideo = async () => {
+    const fetchVideos = async () => {
       try {
-        if (!userData?.id || !userData?.likeGamesId) return;
-  
-        const fetchedVideo = await VideoAxios.getPreferenceRandomVideo(userData.likeGamesId, userData.id);
-        if (!fetchedVideo || fetchedVideo.length === 0) {
-          console.log("선호 게임에 맞는 비디오가 없어 랜덤 비디오 요청");
-          const randomVideos = await VideoAxios.getRandomVideo(userData.id);
-          if (randomVideos && randomVideos.length > 0) {
-            setVideo(randomVideos[0]);
-            setLikes(randomVideos[0].like);
-            setIsLiked(randomVideos[0].liked); // isLiked 대신 liked 사용
+        if (userData?.likeGamesId?.length > 0) {
+          const fetchedVideos = await VideoAxios.getPreferenceRandomVideo(userData.likeGamesId, userData.id); // 선호게임 랜덤 비디오 요청
+          console.log("PreferenceRandomVideo:Data",fetchedVideos);
+          if (fetchedVideos.length === 0) {
+            const randomVideos = await VideoAxios.getRandomVideo(userData.id);  // 선호게임이 없을 시 그냥 무작위 비디오 요청
+            console.log("RandomVideo:Data",randomVideos);
+            setVideos(randomVideos);
+          } else {
+            setVideos(fetchedVideos);
           }
         } else {
-          setVideo(fetchedVideo[0]);
-          setLikes(fetchedVideo[0].like);
-          setIsLiked(fetchedVideo[0].liked); // isLiked 대신 liked 사용
+          const randomVideos = await VideoAxios.getRandomVideo(userData.id);
+          setVideos(randomVideos);
         }
       } catch (error) {
         console.error("비디오를 불러오는데 오류가 발생했습니다.", error);
       }
     };
-  
+
     if (userData?.id) {
-      fetchVideo();
+      fetchVideos();
     }
   }, [userData]);
 
-
-  // 댓글을 불러오는 useEffect
+  // 현재 비디오 데이터 업데이트
   useEffect(() => {
-    const fetchComments = async () => {
-      if (showCommentModal && video) {
+    const updateVideoData = async () => {
+      if (videos.length > 0 && videos[currentIndex]) {
+        const currentVideo = videos[currentIndex];   // 현재 실행되는 비디오 정보 가져오기
+        setLikes(currentVideo.like);   //현재 실행되는 비디오 좋아요 수
+        setIsLiked(currentVideo.liked); //현재 실행되는 비디오에 로그인한 유저가 좋아요를 눌렀는 영상인지 상태 체크 TrueFalse
+
         try {
-          const fetchedComments = await VideoAxios.getComment(video.id);  //댓글 불러오기
-          setComments(fetchedComments);     
+          const fetchedComments = await VideoAxios.getComment(currentVideo.id);  //현재 비디오의 댓글목록 가져오기
+          setComments(fetchedComments);
         } catch (error) {
           console.error("댓글을 불러오는데 오류가 발생했습니다.");
         }
       }
     };
-    fetchComments();
-  }, [showCommentModal, video]);
 
+    updateVideoData();
+  }, [videos, currentIndex]);
+
+  // 좋아요 처리
   const handleLike = async () => {
     try {
-        if (!video?.id || !userData?.id) {
-            console.error('비디오 ID 또는 사용자 ID가 없습니다');
-            return;
-        }
+      if (!videos[currentIndex]?.id || !userData?.id) {
+        console.error('비디오 ID 또는 사용자 ID가 없습니다');
+        return;
+      }
 
-        console.log('좋아요 요청 데이터:', {
-            videoId: video.id,
-            memberId: userData.id
-        });
-
-        const response = await VideoAxios.ToggleLike(video.id, userData.id);
-        
-        // response 구조 확인
-        console.log('좋아요 응답 데이터:', response);
-        
-        if (response) {
-            const newLikedState = !isLiked;
-            setIsLiked(newLikedState);
-            setLikes(prev => isLiked ? prev - 1 : prev + 1);
-        }
-
+      const response = await VideoAxios.ToggleLike(videos[currentIndex].id, userData.id);  // 좋아요 토글 요청
+      if (response) {
+        setIsLiked(!isLiked);
+        setLikes(prev => (isLiked ? prev - 1 : prev + 1));
+      }
     } catch (error) {
-        console.error('좋아요 상태 업데이트 실패:', error);
+      console.error('좋아요 상태 업데이트 실패:', error);
     }
-};
-
-
-  const handleAddComment = async (newComment, videoId) => {
-    if (newComment.trim() && video && userData) {
-        const commentData = {
-            content: newComment,
-            videoId: video.id,
-            memberId: userData.id,
-        };
-    
-        try {
-            const addedComment = await VideoAxios.addComment(commentData);
-            setComments((prevComments) => [...prevComments, addedComment]);
-            setNewComment('');
-        } catch (error) {
-            console.error("댓글 추가에 실패했습니다.", error);
-        }
+  };
+  // 랜덤 비디오 추가 요청 함수
+const fetchMoreRandomVideos = async () => {
+  try {
+    const additionalVideos = await VideoAxios.getRandomVideo(userData.id); // 랜덤 비디오 요청
+    console.log("additionalVideos:Data호출",additionalVideos)
+    if (additionalVideos.length > 0) {
+      setVideos((prevVideos) => [...prevVideos, ...additionalVideos]); // 기존 리스트에 병합
     } else {
-        console.log("모든 필수 정보를 입력해주세요.");
-        // 유효하지 않은 경우 추가 로그
-        if (!newComment.trim()) {
-            console.log("댓글 내용이 비어있습니다.");
-        }
-        if (!video) {
-            console.log("비디오 정보가 없습니다.");
-        }
-        if (!userData) {
-            console.log("사용자 정보가 없습니다.");
-        }
+      console.log("더 이상 랜덤 비디오가 없습니다.");
     }
+  } catch (error) {
+    console.error("추가 랜덤 비디오를 불러오는데 실패했습니다.", error);
+  }
 };
 
+  // 댓글 추가 처리
+  const handleAddComment = async (newComment) => {
+    if (newComment.trim() && userData) {
+      const commentData = {
+        content: newComment,
+        videoId: videos[currentIndex].id,
+        memberId: userData.id,
+      };
+
+      try {
+        const addedComment = await VideoAxios.addComment(commentData);   // 댓글 추가 요청
+        setComments((prevComments) => [...prevComments, addedComment]); // 기존 댓글에 추가응답받은 댓글 병합
+      } catch (error) {
+        console.error("댓글 추가에 실패했습니다.", error);
+      }
+    }
+  };
+
+  // 비디오 전환
+  const prevVideo = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);   //현재 인덱스에서 이전 인덱스 비디오 호출
+      console.log("이전 비디오 호출");
+    }
+  };
+
+  const nextVideo = () => {
+    if (currentIndex < videos.length - 1) {   // 현재 인덱스에서 다음 인덱스 비디오 호출
+      setCurrentIndex(currentIndex + 1);
+      console.log("다음 비디오 호출")
+    } else {
+      console.log("모든 비디오를 소진하였습니다."); 
+      fetchMoreRandomVideos()  // 모든 비디오를 소진했을시 무작위 랜덤 비디오 요청하는 함수
+    }
+  };
+
+  // 방향키 입력 이벤트 처리
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'ArrowLeft') {
+        prevVideo(); // 왼쪽 방향키: 이전 비디오
+      } else if (event.key === 'ArrowRight') {
+        nextVideo(); // 오른쪽 방향키: 다음 비디오
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);   //눌렀을때 이벤트 감지 
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);  // 뗏을때 이벤트 감지  * 누수를 방지함 *
+    };
+  }, [currentIndex, videos]);
 
   return (
     <PageTransition>
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <VideoPlayer
-          video={video}
-          onLike={handleLike}
-          isLiked={isLiked}
-          likes={likes}
-          onCommentClick={() => setShowCommentModal(true)}
-          commentCount={comments.length}
-          onShare={() => console.log('공유하기')}
-        />
+        {videos.length > 0 && (
+            <VideoPlayer
+              video={videos[currentIndex]}
+              onLike={handleLike}
+              isLiked={isLiked}
+              likes={likes}
+              onCommentClick={() => setShowCommentModal(true)}
+              commentCount={comments.length}
+              onShare={() => console.log('공유하기')}
+            />
+        )}
 
         <CommentModal
           isOpen={showCommentModal}
           onClose={() => setShowCommentModal(false)}
           comments={comments}
           onAddComment={handleAddComment}
-          videoId={video?.id}
+          videoId={videos[currentIndex]?.id}
         />
       </div>
     </PageTransition>
