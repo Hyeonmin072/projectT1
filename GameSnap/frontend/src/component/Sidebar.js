@@ -115,10 +115,8 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               로그아웃
             </button>
             <button 
-              //onClick={handleDelete}
               className="flex right-4 p-3 mt-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              <Delete className="mr-3" size={20} />
               계정삭제
             </button>
           </div>
