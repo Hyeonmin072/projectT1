@@ -1,11 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
-import { X } from 'lucide-react';
+import React, { useState, useEffect } from "react";
 import { updateProfile } from "../axios/UserProfileAxios";
 
-const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
-  const [isVisible, setIsVisible] = useState(true);
+const SetProfile = ({ userInfo = {}, onUpdateProfile }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const profileRef = useRef(null);
   const [image, setImage] = useState(userInfo.profileImage); // 기존 프로필 이미지 URL을 초기값으로 설정
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -44,7 +41,7 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isPasswordValid) {
-      alert('비밀번호가 일치하지 않습니다.');
+      // 비밀번호 불일치 처리
       return;
     }
 
@@ -69,22 +66,10 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
       if (typeof onUpdateProfile === "function") {
         onUpdateProfile(updatedInfo);
       }
-      
-      onClose?.();
     } catch (error) {
       console.error(error);
     }
   };
-
-  const handleCancel = () => {
-    setIsVisible(false);
-    setIsEditing(false);
-    setTimeout(() => {
-      onClose?.();
-    }, 0);
-  };
-
-  
 
   useEffect(() => {
     setPassword('');
@@ -92,105 +77,102 @@ const SetProfile = ({ userInfo = {}, onClose, onUpdateProfile }) => {
   }, []);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-      <div className="fixed inset-0 bg-black bg-opacity-50" 
-      onClick={handleCancel} 
-      />
-      <div ref={profileRef} className="bg-white rounded-lg w-full max-w-md p-10 z-60 relative">
-        <h2 className="text-xl font-bold text-center mb-6">프로필 수정</h2>
+    <div className="container mx-auto p-4">
+      <h2 className="text-3xl font-bold text-center mb-6">프로필 수정</h2>
 
-        <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
-          {/* 입력 필드와 레이블을 수평으로 정렬 */}
-          <div className="flex items-center space-x-4">
-            <label className="font-semibold w-24">이름:</label>
-            <input
-              type="text"
-              name="name"
-              value={updatedInfo.name}
-              onChange={handleChange}
-              className="flex-grow border border-gray-300 rounded p-2"
-            />
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <label className="font-semibold w-24">이메일:</label>
-            <input
-              type="email"
-              name="email"
-              value={updatedInfo.email}
-              onChange={handleChange}
-              className="flex-grow border border-gray-300 rounded p-2"
-            />
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <label className="font-semibold w-24">전화번호:</label>
-            <input
-              type="tel"
-              name="phone"
-              value={updatedInfo.phone}
-              onChange={handleChange}
-              className="flex-grow border border-gray-300 rounded p-2"
-            />
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <label className="font-semibold w-24">선호 장르:</label>
-            <select
-              name="preferredGenre"
-              value={updatedInfo.preferredGenre}
-              onChange={handleChange}
-              className="flex-grow border border-gray-300 rounded p-2"
-            >
-              <option value="No">선호 장르 없음</option>
-              <option value="Action">액션</option>
-              <option value="STRATEGY">드라마</option>
-              <option value="SPORTS">스포츠</option>
-              <option value="SIMULATION">시뮬레이션</option>
-              <option value="CASUAL">캐주얼</option>
-              <option value="MOBA">모바..?</option>
-              <option value="RACING">레이싱</option>
-              <option value="PUZZLE">퍼즐/추리</option>
-            </select>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <label className="font-semibold w-24">비밀번호 : </label>
-            <input
-              type="password"
-              placeholder="새로운 비밀번호 입력"
-              onChange={onSetPW}
-              className="flex-grow border border-gray-300 rounded p-2"
-            />
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <label className="font-semibold w-25">비밀번호 확인 : </label>
-            <input
-              type="password"
-              placeholder="비밀번호 확인"
-              onChange={onChangePW}
-              className="flex-grow border border-gray-300 rounded p-2"
-            />
-          </div>
-
-          {!isPasswordValid && (
-            <label style={{color: "red"}}>비밀번호가 일치하지 않습니다.</label>
-          )}
+      <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
+        {/* 입력 필드와 레이블을 수평으로 정렬 */}
+        <div className="flex items-center space-x-4">
+          <label className="font-semibold w-24">이름:</label>
+          <input
+            type="text"
+            name="name"
+            value={updatedInfo.name}
+            onChange={handleChange}
+            className="flex-grow border border-gray-300 rounded p-2"
+          />
         </div>
 
+        <div className="flex items-center space-x-4">
+          <label className="font-semibold w-24">이메일:</label>
+          <input
+            type="email"
+            name="email"
+            value={updatedInfo.email}
+            onChange={handleChange}
+            className="flex-grow border border-gray-300 rounded p-2"
+          />
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <label className="font-semibold w-24">전화번호:</label>
+          <input
+            type="tel"
+            name="phone"
+            value={updatedInfo.phone}
+            onChange={handleChange}
+            className="flex-grow border border-gray-300 rounded p-2"
+          />
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <label className="font-semibold w-24">선호 장르:</label>
+          <select
+            name="preferredGenre"
+            value={updatedInfo.preferredGenre}
+            onChange={handleChange}
+            className="flex-grow border border-gray-300 rounded p-2"
+          >
+            <option value="No">선호 장르 없음</option>
+            <option value="Action">액션</option>
+            <option value="STRATEGY">드라마</option>
+            <option value="SPORTS">스포츠</option>
+            <option value="SIMULATION">시뮬레이션</option>
+            <option value="CASUAL">캐주얼</option>
+            <option value="MOBA">모바..?</option>
+            <option value="RACING">레이싱</option>
+            <option value="PUZZLE">퍼즐/추리</option>
+          </select>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <label className="font-semibold w-24">비밀번호 : </label>
+          <input
+            type="password"
+            placeholder="새로운 비밀번호 입력"
+            onChange={onSetPW}
+            className="flex-grow border border-gray-300 rounded p-2"
+          />
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <label className="font-semibold w-25">비밀번호 확인 : </label>
+          <input
+            type="password"
+            placeholder="비밀번호 확인"
+            onChange={onChangePW}
+            className="flex-grow border border-gray-300 rounded p-2"
+          />
+        </div>
+
+        {/* 비밀번호 불일치 메시지는 여기서만 표시 */}
+        {!isPasswordValid && (
+          <div className="text-red-500 mt-2">비밀번호가 일치하지 않습니다.</div>
+        )}
+      </div>
+
+      <div className="flex justify-end space-x-4 mt-6">
         <button
-          onClick={handleCancel}
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 transition-colors duration-200"
-        >
-          <X size={20}/>
-        </button>
-        <button
-          type="submit"
           onClick={handleSubmit}
-          className="absolute right-4 bottom-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
         >
           저장
+        </button>
+        <button
+          onClick={() => window.history.back()} // 뒤로 가기 버튼
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors duration-200"
+        >
+          취소
         </button>
       </div>
     </div>
