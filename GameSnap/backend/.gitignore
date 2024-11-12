@@ -44,4 +44,8 @@ fileHashes/
 ### VS Code ###
 .vscode/
 
-
+# .gitignore
+.env
+*.env
+.env.*
+!.env.example
