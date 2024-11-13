@@ -64,46 +64,43 @@ const Profile = (props) => {
   };
 
   return (
-    <div className="p-10 border-b-2 border-gray-500 p-2 m-4">
-      <h2 className="text-xl font-bold text-center p-22 m-24" style={{ position: 'relative', zIndex: 10 }}>프로필</h2>
+    <div className="p-8 border border-gray-300 rounded-lg shadow-lg m-6 bg-white">
+      <h2 className="text-2xl font-bold text-center p-22 m-24">프로필</h2>
 
-
-        <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-4 m-4">
-          <div className="flex justify-between">
-            <label className="font-semibold p-4">이름:</label>
-            <span className="ml-auto m-4">{userInfo.name}</span>
-          </div>
-          <div className="flex justify-between">
-            <label className="font-semibold p-4">이메일:</label>
-            <span className="ml-auto p-4">{userInfo.email}</span>
-          </div>
-          <div className="flex justify-between">
-            <label className="font-semibold p-4">전화번호:</label>
-            <span className="ml-auto p-4">{userInfo.phone}</span>
-          </div>
-          <div className="flex justify-between">
-            <label className="font-semibold p-4">선호 장르:</label>
-            <span className="ml-auto p-4">{userInfo.preferredGenre}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <label className="font-semibold p-4">비밀번호:</label>
-            <span className="ml-auto p-4">
-              {showPassword ? userInfo.password : "*".repeat(userInfo.password.length)}
-            </span>
-            <button
-              onClick={togglePasswordVisibility}
-              className="right-4 text-black-500 border-2 border-gray-500 p-1 m-4 ml-2"
-            >
-              {showPassword ? "숨기기" : "보기"}
-            </button>
-          </div>
+      <div className="space-y-4 border-t border-b border-gray-300 p-10 m-15">
+        <div className="flex justify-between items-center">
+          <label className="font-semibold">이름:</label>
+          <span>{userInfo.name}</span>
         </div>
-      
+        <div className="flex justify-between items-center">
+          <label className="font-semibold">이메일:</label>
+          <span>{userInfo.email}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <label className="font-semibold">전화번호:</label>
+          <span>{userInfo.phone}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <label className="font-semibold">선호 장르:</label>
+          <span>{userInfo.preferredGenre}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <label className="font-semibold">비밀번호:</label>
+          <span>
+            {showPassword ? userInfo.password : "*".repeat(userInfo.password.length)}
+          </span>
+          <button
+            onClick={togglePasswordVisibility}
+            className="border border-gray-400 p-1 px-3 rounded"
+          >
+            {showPassword ? "숨기기" : "보기"}
+          </button>
+        </div>
+      </div>
 
       <button
         onClick={handleEditProfile}
-        className="border-2 border-gray-500 p-2 mt-4 w-full text-center"
+        className="border border-gray-400 p-2 mt-6 w-full text-center rounded"
       >
         프로필 수정
       </button>
@@ -111,11 +108,13 @@ const Profile = (props) => {
       {/* 수정 모드일 때만 SetProfile 컴포넌트 렌더링 */}
       {isEditing && (
         <SetProfile 
-        userInfo={userInfo} 
-        onClose={handleClose} 
-        onUpdateProfile={handleUpdateProfile} />
+          userInfo={userInfo} 
+          onClose={handleClose} 
+          onUpdateProfile={handleUpdateProfile} 
+        />
       )}
     </div>
+
   );
 };
 

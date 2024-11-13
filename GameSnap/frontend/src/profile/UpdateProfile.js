@@ -77,51 +77,51 @@ const SetProfile = ({ userInfo = {}, onUpdateProfile }) => {
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-3xl font-bold text-center mb-6">프로필 수정</h2>
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h2 className="text-3xl font-bold text-center mb-8">프로필 수정</h2>
 
-      <div className="space-y-3 border-t-2 border-b-2 border-gray-500 p-2 m-4">
+      <div className="space-y-6 border-t border-b border-gray-300 p-4">
         {/* 입력 필드와 레이블을 수평으로 정렬 */}
-        <div className="flex items-center space-x-4">
-          <label className="font-semibold w-24">이름:</label>
+        <div className="flex items-center space-x-6">
+          <label className="font-semibold w-28">이름:</label>
           <input
             type="text"
             name="name"
             value={updatedInfo.name}
             onChange={handleChange}
-            className="flex-grow border border-gray-300 rounded p-2"
+            className="flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="flex items-center space-x-4">
-          <label className="font-semibold w-24">이메일:</label>
+        <div className="flex items-center space-x-6">
+          <label className="font-semibold w-28">이메일:</label>
           <input
             type="email"
             name="email"
             value={updatedInfo.email}
             onChange={handleChange}
-            className="flex-grow border border-gray-300 rounded p-2"
+            className="flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="flex items-center space-x-4">
-          <label className="font-semibold w-24">전화번호:</label>
+        <div className="flex items-center space-x-6">
+          <label className="font-semibold w-28">전화번호:</label>
           <input
             type="tel"
             name="phone"
             value={updatedInfo.phone}
             onChange={handleChange}
-            className="flex-grow border border-gray-300 rounded p-2"
+            className="flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="flex items-center space-x-4">
-          <label className="font-semibold w-24">선호 장르:</label>
+        <div className="flex items-center space-x-6">
+          <label className="font-semibold w-28">선호 장르:</label>
           <select
             name="preferredGenre"
             value={updatedInfo.preferredGenre}
             onChange={handleChange}
-            className="flex-grow border border-gray-300 rounded p-2"
+            className="flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="No">선호 장르 없음</option>
             <option value="Action">액션</option>
@@ -135,47 +135,48 @@ const SetProfile = ({ userInfo = {}, onUpdateProfile }) => {
           </select>
         </div>
 
-        <div className="flex items-center space-x-4">
-          <label className="font-semibold w-24">비밀번호 : </label>
+        <div className="flex items-center space-x-6">
+          <label className="font-semibold w-28">비밀번호:</label>
           <input
             type="password"
             placeholder="새로운 비밀번호 입력"
             onChange={onSetPW}
-            className="flex-grow border border-gray-300 rounded p-2"
+            className="flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <div className="flex items-center space-x-4">
-          <label className="font-semibold w-25">비밀번호 확인 : </label>
+        <div className="flex items-center space-x-6">
+          <label className="font-semibold w-28">비밀번호 확인:</label>
           <input
             type="password"
             placeholder="비밀번호 확인"
             onChange={onChangePW}
-            className="flex-grow border border-gray-300 rounded p-2"
+            className="flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        {/* 비밀번호 불일치 메시지는 여기서만 표시 */}
+        {/* 비밀번호 불일치 메시지 */}
         {!isPasswordValid && (
           <div className="text-red-500 mt-2">비밀번호가 일치하지 않습니다.</div>
         )}
       </div>
 
-      <div className="flex justify-end space-x-4 mt-6">
+      <div className="flex justify-end space-x-4 mt-8">
         <button
           onClick={handleSubmit}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
+          className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-200"
         >
           저장
         </button>
         <button
           onClick={() => window.history.back()} // 뒤로 가기 버튼
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors duration-200"
+          className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors duration-200"
         >
           취소
         </button>
       </div>
     </div>
+
   );
 };
 
