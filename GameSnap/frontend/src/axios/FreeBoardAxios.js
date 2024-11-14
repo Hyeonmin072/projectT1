@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 // 기본 URL 설정
-const BASE_URL = aws.env.REACT_APP_API_URL; // 백엔드 서버 URL
+const BASE_URL = "http://localhost:1111"; // 백엔드 서버 URL
 
 
 const axiosInstance = axios.create({
@@ -45,11 +45,9 @@ axiosInstance.interceptors.response.use(
 );
 
 const FreeBoardAxios = {
-  // Game 엔티티 관련 요청
   async getGames() {
     try {
       const response = await axiosInstance.get('/game');
-      // console.log('게임 목록:', response.data);
       return response.data;
     } catch (error) {
       console.error('게임 목록 조회 실패:', error);

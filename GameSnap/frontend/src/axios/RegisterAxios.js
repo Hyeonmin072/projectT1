@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API 기본 URL 설정
-const API_URL = aws.env.REACT_APP_API_URL;
+const API_URL = "http://localhost:1111";
 // 회원가입 요청 함수
 export const register = async (userData) => {
   try {
