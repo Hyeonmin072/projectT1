@@ -3,13 +3,9 @@
 import axios from 'axios';
 
 // 기본 URL 설정
-<<<<<<< HEAD
 const BASE_URL = "http://localhost:1111"; // 백엔드 서버 URL
-=======
-const BASE_URL = process.env.REACT_APP_API_URL; // 백엔드 서버 URL
->>>>>>> 8c9a466f143d19961e0ca0ae9a935bd493a1935b
 
-
+S
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   withCredentials: true ,

@@ -34,15 +34,11 @@
 #   port: 1111
 
 # 위에가 로컬 설정 아래가 AWS 설정
-<<<<<<< HEAD
 # test
-=======
->>>>>>> 8c9a466f143d19961e0ca0ae9a935bd493a1935b
 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-<<<<<<< HEAD
     url: jdbc:mysql://3.37.183.85:3306/TEAM1?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: admin
     password: 1234
@@ -57,23 +53,3 @@ spring:
 
 server:
   port: 1111  # 로컬에서 사용할 포트
-=======
-    url: jdbc:mysql://3.37.183.85:3306/TEAM1 # AWS EC2 IP 주소와 데이터베이스 이름
-    username: admin # 아까 생성한 MySQL 사용자
-    password: 1234 # 설정한 비밀번호
-  jpa:
-    hibernate:
-      ddl-auto: update # 테이블 자동 생성/업데이트
-    properties:
-      hibernate:
-        format_sql: true
-        use_sql_comments: true
-        dialect: org.hibernate.dialect.MySQLDialect # MySQL 방언 설정
-
-logging:
-  org.hibernate.sql: debug
-
-server:
-  port: 1111
-  address: 0.0.0.0
->>>>>>> 8c9a466f143d19961e0ca0ae9a935bd493a1935b
