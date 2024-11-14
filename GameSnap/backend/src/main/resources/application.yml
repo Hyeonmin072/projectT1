@@ -37,7 +37,7 @@
 
 
 # 위에가 로컬 설정 아래가 AWS 설정
-
+# test
 
 spring:
   datasource:

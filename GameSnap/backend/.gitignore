@@ -46,6 +46,7 @@ fileHashes/
 
 # .gitignore 
 .env
+.yml
 *.env
 .env.*
 !.env.example
