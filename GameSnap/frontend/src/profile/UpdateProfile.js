@@ -10,7 +10,7 @@ const SetProfile = ({ id, token }) => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [userInfo, setUserInfo] = useState({
-    id: '',
+    id: '1',
     name: '',
     email: '',
     phone: '',
@@ -57,8 +57,6 @@ const SetProfile = ({ id, token }) => {
         });
 
       }catch (error) {
-        console.error("프로필 정보를 가져오는 중 오류 발생")
-        alert("프로필 정보를 가져오는 중 문제가 발생했습니다.");
       }
     };
     fetchData();

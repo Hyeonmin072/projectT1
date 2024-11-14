@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ProfilePage from '../axios/UserProfileAxios';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useHistory } from "react-router-dom";
 
 const Profile = () => {
     // 상태 정의
@@ -10,13 +10,12 @@ const Profile = () => {
         email: '1',
         phone: '1',
         preferredGenre: '1',
-        password: '1'
+        password: 'test123'
       }); // 초기화하기
 
     const [isEditing, setIsEditing] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();
 
     // 컴포넌트가 마운트될 때 프로필 정보를 가져오는 useEffect
     useEffect(() => {
@@ -38,7 +37,7 @@ const Profile = () => {
 
     // 프로필 수정 화면으로 이동
     const handleEditProfile = () => {
-        navigate(`/profile/edit`);
+        navigate('/profile/edit');
         setIsEditing(false);
     };
 
