@@ -5,7 +5,7 @@ import axios from 'axios';
 // 기본 URL 설정
 const BASE_URL = "http://localhost:1111"; // 백엔드 서버 URL
 
-S
+
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   withCredentials: true ,

@@ -52,4 +52,4 @@ spring:
     show-sql: true
 
 server:
-  port: 1111  # 로컬에서 사용할 포트
+  port: 1111 # 로컬에서 사용할 포트
