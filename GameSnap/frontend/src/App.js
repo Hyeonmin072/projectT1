@@ -9,7 +9,7 @@ import UserPage from './page/UserPage';
 import { AuthProvider } from './context/AuthContext';
 import FreeBoardList from './page/FreeBoardList';  
 import FreeBoardWrite from './page/FreeBoardWrite';
-import MainProfile from './profile/MainProfile' ;
+import Profile from './profile/Profile';
 import SetProfile from './profile/UpdateProfile';
 import FreeBoardPage from './page/FreeBoardPage';
 import ChatList from './page/ChatList';
@@ -32,7 +32,7 @@ function AnimatedRoutes() {
         <Route path="/board/:postId" element={<FreeBoardPage />} />
         <Route path="/chatList" element={<ChatList />} />
         <Route path="/board/modify/:postId" element={<ModifyPage />} />
-        <Route path="/profile" element={<MainProfile />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/profile/edit" element={<SetProfile />} />
       </Routes>
       <Footer />

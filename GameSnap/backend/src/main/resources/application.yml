@@ -7,10 +7,9 @@ spring:
   #     path: /h2/console
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/gamesnap_db
+    url: jdbc:mysql://localhost:3307/gamesnap_db
     username: guest
     password: 123
-
 
   #
   #     driver-class-name: org.h2.Driver

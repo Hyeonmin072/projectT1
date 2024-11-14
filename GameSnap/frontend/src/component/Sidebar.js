@@ -3,9 +3,9 @@
 import React, {useState} from 'react';
 import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users, MonitorUp } from 'lucide-react';
 import { Link, useHistory } from 'react-router-dom';
-import Profile from '../profile/MainProfile';
+import Profile from '../profile/Profile';
 import Community from './Community';
-
+import DeleteUser from './DeleteUser';
 
 
 const Sidebar = ({ isOpen, onClose, onLogout }) => {
@@ -37,18 +37,6 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
     setShowCommunity(false);
   };
   
-
-
-  const [showProfile, setShowProfile] = useState(false); // 프로필 화면 상태
-
-  const handleProfileClick = (e) => {
-    e.preventDefault(); // 링크 클릭 시 기본 동작 방지
-    setShowProfile(true); // 프로필 화면 열기
-  };
-
-  const handleCloseProfile = () => {
-    setShowProfile(false); // 프로필 화면 닫기
-  };
 
   return (
     <>
@@ -90,7 +78,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               <MessagesSquare className="mr-3" size={20} />
               채팅
             </Link>
-            <Link to="/profile" onClick={handleProfileClick} className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            <Link to="/profile" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <User className="mr-3" size={20} />
               프로필
             </Link>
@@ -114,13 +102,15 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               <LogOut className="mr-3" size={20} />
               로그아웃
             </button>
+            <button 
+              className="flex right-4 p-3 mt-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              계정삭제
+            </button>
           </div>
         </div>
       </div>
-
-      {/* 프로필 화면 */}
-      {showProfile && <Profile userId="사용자_ID_여기에_입력" onClose={handleCloseProfile} />}
-
+      
       <Community isOpen={showCommunity} onClose={handleCloseCommunity} />
 
     </>

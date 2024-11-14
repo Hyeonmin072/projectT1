@@ -3,7 +3,6 @@ package com.gamesnap.backend.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 @Data
@@ -32,4 +31,19 @@ public class MemberResponseDto {
         this.memberGames = memberGames;
         this.createdate = LocalDate.now();
     }
+
+
+
+    public MemberResponseDto(Integer id, String name, String email, String password, String image, String tel,
+            List<String> memberGames) {
+        this.image = image;
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.tel = tel;
+        this.memberGames = memberGames;
+    }
+
+    
 }
