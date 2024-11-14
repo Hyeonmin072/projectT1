@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users, MonitorUp } from 'lucide-react';
 import { Link, useHistory } from 'react-router-dom';
-import Profile from '../profile/MainProfile';
+import Profile from '../profile/Profile';
 import Community from './Community';
 import DeleteUser from './DeleteUser';
 
@@ -90,7 +90,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               <MessagesSquare className="mr-3" size={20} />
               채팅
             </Link>
-            <Link to="/profile" onClick={handleProfileClick} className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            <Link to="/profile/edit" onClick={handleProfileClick} className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <User className="mr-3" size={20} />
               프로필
             </Link>
