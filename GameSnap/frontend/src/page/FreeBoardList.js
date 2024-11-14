@@ -217,6 +217,33 @@ function FreeBoardList() {
               </div>
             )}
           </div>
+          
+          <div className="flex justify-center mt-6">
+            {/* 이전 버튼 */} 
+            <button 
+              onClick={() => console.log('Navigate to page 1')} 
+              className={`px-4 py-2 mx-1 rounded-lg bg-gray-200 text-gray-700 transition-colors hover:bg-gray-300`} 
+            > 
+              이전 
+            </button>
+            {/* 페이징 버튼 */} 
+            {Array.from({ length: Math.ceil(100 / 10) }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => console.log(`Navigate to page ${index + 1}`)}
+                className={`px-4 py-2 mx-1 rounded-lg ${index + 1 === 1 ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'} transition-colors hover:bg-gray-300`}
+              >
+                {index + 1}
+              </button>
+            ))}
+            {/* 다음 버튼 */} 
+            <button 
+              onClick={() => console.log('Navigate to page 2')} 
+              className={`px-4 py-2 mx-1 rounded-lg bg-gray-200 text-gray-700 transition-colors hover:bg-gray-300`} 
+            > 
+              다음 
+            </button>
+          </div>
         </div>
       </div>
     </PageTransition>
