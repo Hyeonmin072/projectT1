@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: aws.env.REACT_APP_API_URL,
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -10,8 +10,9 @@ const apiClient = axios.create({
 
 export const login = async (email, password) => {
   try {
-    console.log('로그인 요청 URL:', `${apiClient.defaults.baseURL}/login`);
-    console.log('로그인 요청 데이터:', { email, password });
+    // 로그인 요청 전에 콘솔에 찍어보기
+    console.log('API URL:', process.env.REACT_APP_API_URL);
+    console.log('Login URL:', `${process.env.REACT_APP_API_URL}/login`);
     
     // 서버로 보내는 데이터 형식을 서버 요구사항에 맞게 수정
     const requestData = {

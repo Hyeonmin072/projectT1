@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 // 기본 URL 설정
-const BASE_URL = aws.env.REACT_APP_API_URL; // 백엔드 서버 URL
+const BASE_URL = process.env.REACT_APP_API_URL; // 백엔드 서버 URL
 
 
 const axiosInstance = axios.create({

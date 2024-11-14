@@ -12,7 +12,6 @@
 #     username: guest
 #     password: 123
 
-
 #   #
 #   #     driver-class-name: org.h2.Driver
 #   #     username: sa
@@ -34,30 +33,28 @@
 # server:
 #   port: 1111
 
-
-
 # 위에가 로컬 설정 아래가 AWS 설정
-
 
 spring:
   application:
     name: Backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.36.125.13:3306/TEAM1    # AWS EC2 IP 주소와 데이터베이스 이름
-    username: admin                              # 아까 생성한 MySQL 사용자
-    password: 1234                              # 설정한 비밀번호
+    url: jdbc:mysql://3.37.183.85:3306/TEAM1 # AWS EC2 IP 주소와 데이터베이스 이름
+    username: admin # 아까 생성한 MySQL 사용자
+    password: 1234 # 설정한 비밀번호
   jpa:
     hibernate:
-      ddl-auto: update                          # 테이블 자동 생성/업데이트
+      ddl-auto: update # 테이블 자동 생성/업데이트
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
-        dialect: org.hibernate.dialect.MySQLDialect  # MySQL 방언 설정
+        dialect: org.hibernate.dialect.MySQLDialect # MySQL 방언 설정
 
 logging:
   org.hibernate.sql: debug
 
 server:
   port: 1111
+  address: 0.0.0.0

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = aws.env.REACT_APP_API_URL;
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 const FriendAxios = {
   // 친구 목록 조회
