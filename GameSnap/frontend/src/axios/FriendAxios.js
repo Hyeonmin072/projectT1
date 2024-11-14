@@ -1,6 +1,10 @@
 import axios from 'axios';
 
+<<<<<<< HEAD
 const BASE_URL = "http://localhost:1111";
+=======
+const BASE_URL = process.env.REACT_APP_API_URL;
+>>>>>>> 8c9a466f143d19961e0ca0ae9a935bd493a1935b
 
 const FriendAxios = {
   // 친구 목록 조회
