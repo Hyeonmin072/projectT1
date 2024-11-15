@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -34,11 +35,10 @@ public class Member {
     @Column(name = "m_tel")
     private String tel;
 
+
     @Column(name = "m_createdate")
     private LocalDate createdate;
 
-    @Column(name = "m_nickname")
-    private String nickname;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberGame> memberGames = new ArrayList<>();
@@ -54,4 +54,16 @@ public class Member {
         this.tel = tel;
         this.createdate = LocalDate.now();
     }
+
+    public void MemberUpdate(String email, String password, String name, String tel,String image,String content,List<MemberGame> memberGames) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.tel = tel;
+        this.image = image;
+        this.content = content;
+        this.memberGames = memberGames;
+    }
+
+
 }

@@ -3,7 +3,9 @@ package com.gamesnap.backend.service;
 import java.util.*;
 
 import com.gamesnap.backend.dto.MemberResponseDto;
+import com.gamesnap.backend.dto.UpdateProfileRequestDto;
 import com.gamesnap.backend.entity.MemberGame;
+import com.gamesnap.backend.repository.MemberGameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,11 @@ import com.gamesnap.backend.repository.MemberRepository;
 public class MemberService {
 
     @Autowired
+    private MemberGameRepository memberGameRepository;
+    @Autowired
     private MemberRepository memberRepository;
+//    @Autowired
+//    private ImageService imageService;
 
     public ResponseEntity<MemberResponseDto> login(String email, String password) {
         MemberResponseDto memberResponseDto;
@@ -29,14 +35,13 @@ public class MemberService {
         }
 
         Member member = result.get(); //멤버를 꺼냄
-        if (member.getPassword().equals(password)) { //입력받은 패스워드가 이메일로 찾은 회원의 이메일과 같으면 성공
-            List<String> gamesId = new ArrayList<>();
-            for (MemberGame data : member.getMemberGames()){
-                    gamesId.add(""+data.getGame().getId());
-            }
+        if (member.getPassword().equals(password)) {//입력받은 패스워드가 이메일로 찾은 회원의 이메일과 같으면 성공
+            List<Integer> gamesId = getMemberGameId(member);
+            List<String> gamesName = getMemberGameName(member);
+
 
             memberResponseDto = new MemberResponseDto(member.getId(),member.getEmail(),member.getPassword(),member.getName(),member.getTel(),member.getImage(),member.getContent(),
-                    gamesId
+                    gamesId,gamesName
             );
             return ResponseEntity.ok(memberResponseDto);
         } else { // 아니면 실패
@@ -93,6 +98,39 @@ public class MemberService {
         return ResponseEntity.ok(response);
     }
 
+    public ResponseEntity<MemberResponseDto> updateProfile(UpdateProfileRequestDto updateProfileRequestDto) {
+        // ID로 회원을 찾기
+        Member member = findId(updateProfileRequestDto.getId());
+
+        List<MemberGame> preferredGameList = new ArrayList<>();
+        for(Integer memberGameId  : updateProfileRequestDto.getLikeGamesId()){
+            MemberGame memberGame = memberGameRepository.findById(memberGameId).orElse(null);
+            preferredGameList.add(memberGame);
+        }
+
+        // memberUpdate 메서드 호출하여 회원 정보 업데이트
+        member.MemberUpdate(updateProfileRequestDto.getEmail(),
+                updateProfileRequestDto.getPassword(),
+                updateProfileRequestDto.getName(),
+                updateProfileRequestDto.getTel(),
+                member.getImage(),
+                updateProfileRequestDto.getContent(),
+                preferredGameList);
+
+        // 업데이트된 member를 저장
+        memberRepository.save(member);
+
+        List<String> gamesName = getMemberGameName(member);
+        List<Integer> gamesId = getMemberGameId(member);
+
+        MemberResponseDto memberResponseDto = new MemberResponseDto(member.getId(),member.getEmail(),member.getPassword(),member.getName(),member.getTel(),member.getImage(),member.getContent(),
+                gamesId,gamesName
+        );
+        return ResponseEntity.ok(memberResponseDto);
+
+    }
+
+
 
     // 회원 정보 저장 메소드
     public Member save(Member member) {
@@ -102,5 +140,21 @@ public class MemberService {
     // 회원 정보 조회 메소드
     public Member findId(Integer memberId) {
         return memberRepository.findById(memberId).orElse(null); // Optional 처리
+    }
+    // 멤버 객체로 멤버게임 아이디 찾기 메소드
+    public List<Integer> getMemberGameId(Member member){
+        List<Integer> data = new ArrayList<>();
+        for (MemberGame memberGame : member.getMemberGames()){
+            data.add(memberGame.getGame().getId());
+        }
+        return data;
+    }
+    // 멤버 객체로 멤버게임 이름 찾기 메소드
+    public List<String> getMemberGameName(Member member){
+        List<String> data = new ArrayList<>();
+        for (MemberGame memberGame : member.getMemberGames()){
+            data.add(memberGame.getGame().getName());
+        }
+        return data;
     }
 }

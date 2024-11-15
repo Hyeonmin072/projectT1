@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BaseURL= 'http://localhost:1112/';
+const BaseURL= 'http://localhost:1111';
 
 const apiClient = axios.create({
     baseURL: BaseURL,
@@ -23,20 +23,23 @@ const ProfilePage = {
     },
 
     // 사용자 프로필 변경하기
-    async updateProfile (id, { email, phone, preferredGenre, password }){
+    async updateProfile (updatedUserInfo){
         try {
             // PUT 요청을 사용하여 사용자 정보를 업데이트
-            const response = await apiClient.put('/updateProfile', {
-                id, 
-                email,
-                phone,                 // 변경할 전화번호
-                preferredGenre,        // 선택한 선호 장르
-                password
-            });
+            const response = await apiClient.put('/updateProfile', updatedUserInfo
+            );
             return response.data;      // 서버 응답 데이터를 반환
         } catch (error) {
-            console.error('Error updating profile data:', error);
-            return null;               // 오류 발생 시 null 반환
+            console.error("Error updating profile data:", error);
+            throw error; // 오류 발생 시 에러를 던져 상세 확인 가능
+        }
+    },
+
+    async getGameList (){
+        try{
+            return await apiClient.get('/game');
+        } catch(error){
+            console.error(error);
         }
     }
 }

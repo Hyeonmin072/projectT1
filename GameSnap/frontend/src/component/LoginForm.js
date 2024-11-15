@@ -93,10 +93,10 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
             name: '테스트 유저'
           }
         };
-      } //else {
-        // 실제 서버 로그인 시도
-        //response = await login(formData.email, formData.password);
-      // }
+      } else {
+       // 실제 서버 로그인 시도
+        response = await login(formData.email, formData.password);
+      }
   
       console.log('로그인 응답 데이터:', response.data);
   
@@ -104,8 +104,14 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
       const userData = {
         id: response.data.id,
         email: response.data.email,
+        password: response.data.password,
         name: response.data.name,
-        likeGamesId: response.data.memberGames,
+        tel: response.data.tel,
+        image: response.data.image,
+        content: response.data.content,
+        likeGamesId: response.data.gamesId,
+        preferredGame: response.data.gamesName,
+        createDate: response.data.createDate,
         role: 'user'
 
       };

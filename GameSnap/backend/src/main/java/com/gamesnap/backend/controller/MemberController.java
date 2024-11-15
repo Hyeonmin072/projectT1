@@ -3,12 +3,11 @@ package com.gamesnap.backend.controller;
 
 import java.util.Map;
 
+import com.gamesnap.backend.dto.UpdateProfileRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.gamesnap.backend.dto.MemberRequestDto;
 import com.gamesnap.backend.dto.MemberResponseDto;
@@ -62,9 +61,14 @@ public class MemberController {
     }
 
 
-    @GetMapping("/")
-    public String home(){
-        return "redirect:/index";
+
+    @PutMapping("/updateProfile")
+    public ResponseEntity<MemberResponseDto> updateProfile(@RequestBody UpdateProfileRequestDto updateProfileRequestDto){
+
+        return memberService.updateProfile(updateProfileRequestDto);
+
+
+
     }
     
 }
