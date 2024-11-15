@@ -52,3 +52,7 @@ resources/
 .env.*
 !.env.example
 # !!env 부분 절대 수정 금지 !! 진짜좆됨
+
+
+src/main/resources/application.yml
+src/test/resources/application.yml
