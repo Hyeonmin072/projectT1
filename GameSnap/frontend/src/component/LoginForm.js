@@ -79,24 +79,24 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
     try {
       let response;
   
-      //테스트 계정 확인
-      if (formData.email === 'test@test.com' && formData.password === 'test123') {
-        // 테스트 계정 로직
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과
+      // 테스트 계정 확인
+      // if (formData.email === 'test@test.com' && formData.password === 'test123') {
+      //   // 테스트 계정 로직
+      //   await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과
         
-        // 테스트 계정용 mock 응답
-        response = {
-          data: {
-            token: 'fake-jwt-token-12345',
-            id: 1,
-            email: 'test@test.com',
-            name: '테스트 유저'
-          }
-        };
-      } else {
-       // 실제 서버 로그인 시도
+      //   // 테스트 계정용 mock 응답
+      //   response = {
+      //     data: {
+      //       token: 'fake-jwt-token-12345',
+      //       id: 1,
+      //       email: 'test@test.com',
+      //       name: '테스트 유저'
+      //     }
+      //   };
+      // } else {
+        // 실제 서버 로그인 시도
         response = await login(formData.email, formData.password);
-      }
+      // }
   
       console.log('로그인 응답 데이터:', response.data);
   
@@ -104,14 +104,8 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
       const userData = {
         id: response.data.id,
         email: response.data.email,
-        password: response.data.password,
         name: response.data.name,
-        tel: response.data.tel,
-        image: response.data.image,
-        content: response.data.content,
-        likeGamesId: response.data.gamesId,
-        preferredGame: response.data.gamesName,
-        createDate: response.data.createDate,
+        likeGamesId: response.data.memberGames,
         role: 'user'
 
       };
@@ -143,7 +137,7 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
       } else if (error.response?.status === 401) {
         setError('이메일 또는 비밀번호가 올바르지 않습니다.');
       } else {
-        setError('로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        setError('로그인 중 오류가 발생했습   니다. 잠시 후 다시 시도해주세요.');
       }
     } finally {
       setIsLoading(false);

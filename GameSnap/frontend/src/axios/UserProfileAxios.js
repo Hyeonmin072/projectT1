@@ -2,15 +2,11 @@ import axios from 'axios';
 const BaseURL= 'http://localhost:1111';
 
 const apiClient = axios.create({
-<<<<<<< HEAD
     baseURL: BaseURL,
     method: "GET",
           headers: {
           "Content-Type": "application/json",
           "Accept": 'application/json'}
-=======
-    baseURL: 'http://3.36.125.13:1112/',
->>>>>>> test
 });
 
 
