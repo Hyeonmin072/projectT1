@@ -33,6 +33,7 @@ out/
 
 # 특정 파일/폴더
 fileHashes/
+resources/
 
 ### NetBeans ###
 /nbproject/private/
