@@ -30,6 +30,14 @@ function FreeBoardList() {
   };
 
   useEffect(() => {
+    // 게시판 이동 시 검색어 초기화 및 페이지 0으로 설정
+    setSearchTerm(""); // 검색어 초기화
+    setTempSearchTerm(""); // 임시 검색어 초기화
+    setPage(0); // 페이지 0으로 리셋
+  }, [selectedGame]); // selectedGame이 변경될 때마다 실행
+  
+
+  useEffect(() => {
     const fetchGames = async () => {
       try {
         const gamesData = await FreeBoardAxios.getGames();
@@ -74,6 +82,13 @@ function FreeBoardList() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
+
+    // 검색어가 공백만 포함된 경우에는 검색을 실행하지 않음
+    if (!tempSearchTerm.trim()) {
+      alert("검색어를 입력해주세요."); // 공백만 입력한 경우 경고 메시지
+      return; // 검색을 막음
+    }
+
     setSearchTerm(tempSearchTerm); // 임시 검색어를 실제 검색어로 설정
     setPage(0); // 새로운 검색 시 페이지를 0으로 리셋
   };
