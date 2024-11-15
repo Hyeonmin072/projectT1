@@ -3,7 +3,6 @@ const BaseURL= 'http://localhost:1111';
 
 const apiClient = axios.create({
     baseURL: BaseURL,
-    method: "GET",
           headers: {
           "Content-Type": "application/json",
           "Accept": 'application/json'}
