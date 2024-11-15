@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:1111/video',
+    baseURL: 'http://localhost:1111'+'/video',
 });
 
 const handleError = (error) => {
