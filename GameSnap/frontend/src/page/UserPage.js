@@ -14,6 +14,16 @@ const UserPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { userData } = useAuth();
 
+
+  useEffect(() => {
+    // 컴포넌트 마운트시 스크롤 방지
+    document.body.style.overflow = 'hidden';
+    
+    // 컴포넌트 언마운트시 스크롤 복구
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
   // 비디오 목록 가져오기
   useEffect(() => {
     const fetchVideos = async () => {
@@ -148,7 +158,7 @@ const fetchMoreRandomVideos = async () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 overflow-hidden">
         {videos.length > 0 && (
             <VideoPlayer
               video={videos[currentIndex]}
