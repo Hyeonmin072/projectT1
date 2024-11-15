@@ -1,13 +1,14 @@
 package com.gamesnap.backend.dto;
 
 import com.gamesnap.backend.entity.Member;
+import com.querydsl.core.annotations.QueryProjection;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 public class BoardResponseDto {
 
     private Integer id;
@@ -22,6 +23,7 @@ public class BoardResponseDto {
 
     private Integer like;
 
+    @QueryProjection
     public BoardResponseDto(Integer id, String title, LocalDate createDate, String memberName, Integer view, Integer like) {
         this.id = id;
         this.title = title;

@@ -1,11 +1,9 @@
 package com.gamesnap.backend.dto;
 
-import com.gamesnap.backend.entity.BoardComment;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter

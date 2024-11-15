@@ -1,4 +1,3 @@
-/*eslint-disable*/
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Plus } from 'lucide-react';
@@ -14,39 +13,41 @@ function FreeBoardList() {
   const [gameCategories, setGameCategories] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // 실제 검색어 상태
+  const [tempSearchTerm, setTempSearchTerm] = useState(""); // 임시 검색어 상태
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(0);
 
-  // 게임 이미지 매핑
   const gameImages = {
     '리그오브레전드': LeagueOfLegendImg,
     '스타크래프트': StarCraftImg,
     '로스트아크': LostArkImg,
-    '캔디크러쉬사가' : CandyCrashSagaImg,
-    '애니팡' : AniPangImg
-    // 다른 게임 이미지들 추가
+    '캔디크러쉬사가': CandyCrashSagaImg,
+    '애니팡': AniPangImg,
   };
 
-  // 게임 목록 불러오기
+  useEffect(() => {
+    // 게시판 이동 시 검색어 초기화 및 페이지 0으로 설정
+    setSearchTerm(""); // 검색어 초기화
+    setTempSearchTerm(""); // 임시 검색어 초기화
+    setPage(0); // 페이지 0으로 리셋
+  }, [selectedGame]); // selectedGame이 변경될 때마다 실행
+  
+
   useEffect(() => {
     const fetchGames = async () => {
       try {
         const gamesData = await FreeBoardAxios.getGames();
-        // console.log('백엔드에서 받아온 게임 데이터:', gamesData);
-        const mappedGames = gamesData.map(game => {
-          // console.log('각 게임 데이터:', game);
-
-          return {
-            id: game.id,               
-            name: game.name,
-            genre: game.genre, 
-            image: gameImages[game.name] 
-          };
-        });
-        // console.log('매핑된 게임 데이터:', mappedGames);
+        const mappedGames = gamesData.map(game => ({
+          id: game.id,
+          name: game.name,
+          genre: game.genre,
+          image: gameImages[game.name]
+        }));
         setGameCategories(mappedGames);
-        // 첫 번째 게임의 장르를 기본값으로 설정
         if (mappedGames.length > 0) {
           setSelectedGame(mappedGames[0].id);
         }
@@ -55,46 +56,46 @@ function FreeBoardList() {
         setError('게임 목록을 불러오는데 실패했습니다.');
       }
     };
-  
     fetchGames();
   }, []);
 
-  // 게시글 목록 불러오기
   useEffect(() => {
     const fetchPosts = async () => {
-
-      if (!selectedGame) return; // selectedGame이 없으면 요청하지 않음
-      
+      if (!selectedGame) return;
       setLoading(true);
       try {
-        let posts;
-        if (searchTerm) {
-          posts = await FreeBoardAxios.searchPosts(selectedGame, searchTerm);
-        } else if (selectedGame === null) {
-          posts = await FreeBoardAxios.getPosts();
-        } else {
-          posts = await FreeBoardAxios.getPosts(selectedGame);
-        }
-        setPosts(posts || []); // null/undefined 체크
+        const boardsData = searchTerm
+          ? await FreeBoardAxios.searchPosts(selectedGame, searchTerm, page, pageSize)
+          : await FreeBoardAxios.getPosts(selectedGame, page, pageSize);
+
+        setPosts(boardsData.content || []);
+        setTotalPages(boardsData.totalPages);
       } catch (error) {
-        console.error('게시글을 불러오는데 실패했습니다:', error, posts);
+        console.error('게시글을 불러오는데 실패했습니다:', error);
         setError('게시글을 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
     };
-  
     fetchPosts();
-  }, [selectedGame, searchTerm]);
+  }, [selectedGame, searchTerm, page, pageSize]);
 
-  // 검색 핸들러
   const handleSearch = async (e) => {
     e.preventDefault();
-    try {
-      const searchResults = await FreeBoardAxios.searchPosts(selectedGame, searchTerm);
-      setPosts(searchResults);
-    } catch (error) {
-      setError('검색에 실패했습니다.');
+
+    // 검색어가 공백만 포함된 경우에는 검색을 실행하지 않음
+    if (!tempSearchTerm.trim()) {
+      alert("검색어를 입력해주세요."); // 공백만 입력한 경우 경고 메시지
+      return; // 검색을 막음
+    }
+
+    setSearchTerm(tempSearchTerm); // 임시 검색어를 실제 검색어로 설정
+    setPage(0); // 새로운 검색 시 페이지를 0으로 리셋
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPage(newPage);
     }
   };
 
@@ -106,21 +107,25 @@ function FreeBoardList() {
     <PageTransition>
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-5xl mx-auto">
-          {/* 헤더 */}
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800">자유게시판</h1>
           </div>
 
-          {/* 검색 및 글쓰기 버튼 */}
           <div className="flex justify-between items-center mb-6">
             <form onSubmit={handleSearch} className="relative flex-1 max-w-md">
               <input
                 type="text"
                 placeholder="검색어를 입력하세요"
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-500"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={tempSearchTerm}
+                onChange={(e) => setTempSearchTerm(e.target.value)} // 임시 검색어 상태 업데이트
               />
+              <button
+                type="submit"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-green-500 text-white rounded-lg px-4 py-1 hover:bg-green-800 transition-colors"
+              >
+                검색
+              </button>
               <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
             </form>
             <Link
@@ -132,35 +137,29 @@ function FreeBoardList() {
             </Link>
           </div>
 
-          {/* 게임 카테고리 버튼 */}
-          <div className="flex gap-2 mb-6 overflow-x-auto">
+           {/* 게임 카테고리 버튼 */}
+           <div className="flex gap-2 mb-6 overflow-x-auto">
             {gameCategories.length > 0 ? (
-              gameCategories.map((game, index) => {
-                // console.log('렌더링되는 게임:', game); // 각 게임 데이터 확인용
-                return (
-                  <button
-                    key={game.id}
-                    onClick={() => {
-                      // console.log('선택된 게임 아아디 : ', game.id); // 클릭 시 선택되는 장르 확인용
-                      setSelectedGame(game.id);
-                    }}
-                    className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
-                      ${selectedGame === game.id
-                        ? 'bg-white text-black border-green-500'
-                        : 'border-gray-300 hover:bg-green-400 transition duration-500 ease-in-out'
-                      }`}
-                  >
-                    {game.image && (
-                      <img 
-                        src={game.image} 
-                        alt={game.name} 
-                        className="w-6 h-6 rounded object-cover"
-                      />
-                    )}
-                    {game.name || '알 수 없는 게임'}
-                  </button>
-                );
-              })
+              gameCategories.map((game, index) => (
+                <button
+                  key={game.id}
+                  onClick={() => setSelectedGame(game.id)}
+                  className={`px-4 py-2 rounded-lg border transition-colors flex items-center gap-2
+                    ${selectedGame === game.id
+                      ? 'bg-white text-black border-green-500'
+                      : 'border-gray-300 hover:bg-green-400 transition duration-500 ease-in-out'
+                    }`}
+                >
+                  {game.image && (
+                    <img 
+                      src={game.image} 
+                      alt={game.name} 
+                      className="w-6 h-6 rounded object-cover"
+                    />
+                  )}
+                  {game.name || '알 수 없는 게임'}
+                </button>
+              ))
             ) : (
               <div>게임 목록을 불러오는 중...</div>
             )}
@@ -217,6 +216,36 @@ function FreeBoardList() {
               </div>
             )}
           </div>
+          
+          <div className="flex justify-center mt-6">
+            {/* 이전 버튼 */} 
+            <button 
+              onClick={() => handlePageChange(page - 1)} 
+              className={`px-4 py-2 mx-1 rounded-lg ${page === 0 ? 'bg-gray-200 text-gray-400' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`} 
+              disabled={page === 0}
+            > 
+              이전 
+            </button>
+            {/* 페이징 버튼 */} 
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index)}
+                className={`px-4 py-2 mx-1 rounded-lg ${index === page ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`}
+              >
+                {index + 1}
+              </button>
+            ))}
+            {/* 다음 버튼 */}
+            <button 
+              onClick={() => handlePageChange(page + 1)} 
+              className={`px-4 py-2 mx-1 rounded-lg ${page === totalPages - 1 ? 'bg-gray-200 text-gray-400' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-colors`} 
+              disabled={page === totalPages - 1}
+            > 
+              다음 
+            </button> 
+          </div>
+          
         </div>
       </div>
     </PageTransition>

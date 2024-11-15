@@ -1,28 +1,34 @@
 package com.gamesnap.backend.service;
 
-import com.gamesnap.backend.dto.BoardDetailDto;
-import com.gamesnap.backend.dto.BoardResponseDto;
-import com.gamesnap.backend.dto.BoardSaveDto;
-import com.gamesnap.backend.dto.BoardUpdateDto;
-import com.gamesnap.backend.entity.Board;
-import com.gamesnap.backend.entity.BoardLike;
-import com.gamesnap.backend.entity.Game;
-import com.gamesnap.backend.entity.Member;
+import com.gamesnap.backend.dto.*;
+import com.gamesnap.backend.entity.*;
 import com.gamesnap.backend.repository.BoardLikeRepository;
 import com.gamesnap.backend.repository.BoardRepository;
 import com.gamesnap.backend.repository.GameRepository;
 import com.gamesnap.backend.repository.MemberRepository;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.gamesnap.backend.entity.QBoard.*;
 
 @Service
 @Transactional
@@ -33,28 +39,26 @@ public class BoardService {
     private final GameRepository gameRepository;
     private final MemberRepository memberRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final JPAQueryFactory queryFactory;
 
-    public List<BoardResponseDto> findBoards(Integer gameId) {
+    public Page<BoardResponseDto> findBoards(Integer gameId, int currentPage, int sizePerPage) {
         Optional<Game> findResult = gameRepository.findById(gameId); // 아이디로 게임 조회
         if (findResult.isPresent()) { // 해당 게임이 존재하면
             Game findGame = findResult.get(); // 조회 결과에서 찾은 게임을 꺼냄
-            List<Board> findBoards = boardRepository.findByGame(findGame); // 찾은 게임을 컬럼으로 가지는 게시글들을 조회
+            PageRequest pageRequest = PageRequest.of(currentPage, sizePerPage); // 페이징 사용
+            Page<Board> findBoards = boardRepository.findByGame(findGame, pageRequest); // 찾은 게임을 컬럼으로 가지는 게시글들을 조회
             log.info("result = {}", findBoards);
-            List<BoardResponseDto> boardResponseDtos = new ArrayList<>(); //Dto 객체 리스트 생성
-            for (Board findBoard : findBoards) { //Dto에 값 주입
-                BoardResponseDto boardResponseDto = new BoardResponseDto(
+            Page<BoardResponseDto> boardResponseDtos = findBoards.map(findBoard ->  new BoardResponseDto( // 찾은 게시글들을 dto로 맵핑
                         findBoard.getId(),
                         findBoard.getTitle(),
                         findBoard.getCreateDate(),
                         findBoard.getMember().getName(),
                         findBoard.getView(),
-                        findBoard.getLike());
-                
-                boardResponseDtos.add(boardResponseDto); //리스트에 추가
-            }
-            return boardResponseDtos;
+                        findBoard.getLike()
+            ));
+            return boardResponseDtos; // 맵핑한 dto를 반환
         }
-        return List.of();
+        return Page.empty(); // 존재하지 않으면 빈 페이지 반환
     }
 
     public BoardDetailDto boardDetail(Integer boardId) {
@@ -153,5 +157,41 @@ public class BoardService {
             return ResponseEntity.ok("게시글이 수정되었어요");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    public Page<BoardResponseDto> searchBoard(Integer gameId, int page, int pageSize, String boardNameCond) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        log.info("검색 요청: gameId = {}, page = {}, pageSize = {}, boardNameCond = '{}'", gameId, page, pageSize, boardNameCond);
+
+        List<BoardResponseDto> findResult = queryFactory
+                .select(new QBoardResponseDto(board.id, board.title, board.createDate, board.member.name, board.view, board.like))
+                .from(board)
+                .where(boardNameLike(boardNameCond), gameIdEq(gameId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        log.info("검색 결과: {}", findResult);
+
+        long total = queryFactory
+                .select(board.count())
+                .from(board)
+                .where(boardNameLike(boardNameCond), gameIdEq(gameId))
+                .fetchOne();
+
+        log.info("총 결과 수: {}", total);
+
+        Page<BoardResponseDto> findBoards = new PageImpl<>(findResult, pageable, total);
+        return findBoards;
+    }
+
+
+    private BooleanExpression boardNameLike(String boardNameCond) {
+        return boardNameCond != null ? board.title.like("%" + boardNameCond + "%") : null;
+    }
+
+    private BooleanExpression gameIdEq(Integer gameId) {
+        return gameId != null ? board.game.id.eq(gameId) : null;
     }
 }
