@@ -24,7 +24,8 @@ const Community = ({ isOpen, onClose }) => {
   useEffect(() => {
     const loadFriends = async () => {
       try {
-        const friendsList = await FriendAxios.getFriendsList();
+        const friendsList = await FriendAxios.getFriendsList(userData.id);
+        console.log("친구 목록 조회 성공", friendsList)
         setFriends(friendsList);
       } catch (error) {
         console.error('친구 목록 로드 실패:', error);
@@ -38,10 +39,14 @@ const Community = ({ isOpen, onClose }) => {
 
   // 친구 검색
   const handleSearch = async () => {
-    if (!searchNickname.trim()) return;
+    // 검색어가 공백만 포함된 경우에는 검색을 실행하지 않음
+    if (!searchNickname.trim()) {
+      alert("검색어를 입력해주세요."); // 공백만 입력한 경우 경고 메시지
+      return; // 검색을 막음
+    }
     
     try {
-      const results = await FriendAxios.searchUsers(searchNickname);
+      const results = await FriendAxios.searchMember(searchNickname, userData.id);
       setSearchResults(results);
     } catch (error) {
       console.error('사용자 검색 실패:', error);
@@ -53,13 +58,14 @@ const Community = ({ isOpen, onClose }) => {
   // 친구 추가
   const handleAddFriend = async (user) => {
     try {
-      await FriendAxios.sendFriendRequest(user.id);
-      alert('친구 요청을 보냈습니다.');
+      console.log(userData.id, user.id)
+      await FriendAxios.sendFriendRequest(userData.id, user.id);
+      alert('친구 추가를 완료했습니다.');
       setSearchResults([]);
       setSearchNickname('');
       setShowAddFriend(false);
       // 친구 목록 새로고침
-      loadFriends();
+      // loadFriends();
     } catch (error) {
       console.error('친구 추가 실패:', error);
       alert('친구 추가에 실패했습니다.');
@@ -137,18 +143,6 @@ const Community = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          {/* 검색바 */}
-          <div className="relative mb-4">
-            <input
-              type="text"
-              placeholder="검색"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-2 pl-10 border rounded-lg"
-            />
-            <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
-          </div>
-
           {/* 친구 목록 */}
           <LoadFriends/>
 
@@ -213,7 +207,7 @@ const Community = ({ isOpen, onClose }) => {
               </div>
 
               <div className="mt-4 border-t pt-4">
-                <h3 className="text-lg font-semibold mb-2">친구 요청</h3>
+                <h3 className="text-lg font-semibold mb-2">검색 결과</h3>
                 {friendRequests.map(request => (
                   <div key={request.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
                     <div>

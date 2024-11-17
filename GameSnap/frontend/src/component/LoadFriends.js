@@ -11,7 +11,7 @@ const LoadFriends = () => {
   const loadFriends = async () => {
     try {
       setIsLoading(true);
-      const friendsList = await FriendAxios.getFriendsList();
+      const friendsList = await FriendAxios.getFriendsList(userData.id);
       setFriends(friendsList);
     } catch (error) {
       console.error('친구 목록 로드 실패:', error);
@@ -31,7 +31,6 @@ const LoadFriends = () => {
         <div>친구 목록 로딩 중...</div>
       ) : (
         <div>
-          <h2>친구 목록</h2>
           {friends.map(friend => (
             <div key={friend.id} className="flex items-center gap-3 p-3">
               {/* 프로필 이미지 */}

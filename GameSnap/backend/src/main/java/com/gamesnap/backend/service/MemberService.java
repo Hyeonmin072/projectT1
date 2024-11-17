@@ -3,10 +3,14 @@ package com.gamesnap.backend.service;
 import java.util.*;
 
 import com.gamesnap.backend.dto.MemberResponseDto;
+import com.gamesnap.backend.dto.MemberSimpleDto;
 import com.gamesnap.backend.dto.UpdateProfileRequestDto;
+import com.gamesnap.backend.entity.Friend;
 import com.gamesnap.backend.entity.MemberGame;
 import com.gamesnap.backend.repository.MemberGameRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +21,7 @@ import com.gamesnap.backend.repository.MemberRepository;
 
 @Service
 @Transactional
+@Slf4j
 public class MemberService {
 
     @Autowired
@@ -156,5 +161,78 @@ public class MemberService {
             data.add(memberGame.getGame().getName());
         }
         return data;
+    }
+
+    public List<MemberSimpleDto> searchFriendsByName(String memberName, Integer myId) {
+        List<Member> findResult = memberRepository.findByNameContaining(memberName);
+        if (findResult.isEmpty()) {
+            return List.of();
+        }
+
+
+
+        List<MemberSimpleDto> memberSimpleDtos = new ArrayList<>();
+        for (Member member : findResult) {
+            MemberSimpleDto memberSimpleDto = new MemberSimpleDto(member.getId(), member.getName());
+            memberSimpleDtos.add(memberSimpleDto);
+            if(myId == member.getId()){
+                memberSimpleDtos.remove(memberSimpleDto);
+            }
+        }
+        return memberSimpleDtos;
+    }
+
+    public List<MemberSimpleDto> searchFriend(Integer myId) {
+        Optional<Member> optionalMember = memberRepository.findById(myId);
+        if (optionalMember.isEmpty()) {
+            return List.of();
+        }
+        Member member = optionalMember.get();
+        List<Friend> friends = member.getFriends();
+
+        List<MemberSimpleDto> memberSimpleDtos = new ArrayList<>();
+
+        for (Friend friend : friends) {
+            MemberSimpleDto memberSimpleDto = new MemberSimpleDto(friend.getSecondMember().getId(), friend.getSecondMember().getName());
+            memberSimpleDtos.add(memberSimpleDto);
+        }
+
+        return memberSimpleDtos;
+    }
+
+    public ResponseEntity<String> addFriend(Integer myId, Integer friendId) {
+        Optional<Member> optionalFirstMember = memberRepository.findById(myId);
+        Optional<Member> optionalSecondMember = memberRepository.findById(friendId);
+        if (optionalFirstMember.isEmpty() || optionalSecondMember.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("조회 오류");
+        }
+        Member firstMember = optionalFirstMember.get();
+        Member secondMember = optionalSecondMember.get();
+
+        List<Friend> friends = firstMember.getFriends();
+
+        for (Friend friend : friends) {
+            if (friend.getSecondMember() == secondMember) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("이미 친구 추가가 되어있음");
+            }
+        }
+
+        firstMember.addFriend(secondMember);
+
+        return ResponseEntity.ok("친구 추가를 완료했어요!");
+    }
+
+    public ResponseEntity<String> deleteFriend(Integer myId, Integer friendId) {
+        Optional<Member> optionalFirstMember = memberRepository.findById(myId);
+        Optional<Member> optionalSecondMember = memberRepository.findById(friendId);
+        if (optionalFirstMember.isEmpty() || optionalSecondMember.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("조회 오류");
+        }
+        Member firstMember = optionalFirstMember.get();
+        Member secondMember = optionalSecondMember.get();
+
+        firstMember.removeFriend(secondMember);
+
+        return ResponseEntity.ok("친구 삭제를 완료했어요!");
     }
 }
