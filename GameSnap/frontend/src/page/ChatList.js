@@ -38,19 +38,7 @@ const ChatList = () => {
         </div>
       </div>
 
-      {/* 검색바 */}
-      <div className="p-4 border-b bg-white">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="채팅방 검색"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-3 pl-10 bg-gray-50 border rounded-xl focus:outline-none focus:border-green-500"
-          />
-          <Search className="absolute left-3 top-3.5 text-gray-400" size={20} />
-        </div>
-      </div>
+      
 
       {/* 채팅방 목록 */}
       <div className="flex-1 overflow-y-auto">
