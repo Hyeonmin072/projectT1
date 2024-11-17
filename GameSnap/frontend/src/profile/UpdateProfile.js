@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProfilePage from "../axios/UserProfileAxios";
 import { useAuth } from "../context/AuthContext";
+import { DefalutImage } from "../assets/profile-img"
 
 const SetProfile = () => {
   const { userData, setUserData } = useAuth();
@@ -18,6 +19,7 @@ const SetProfile = () => {
     password: "",
   });
   const [gameOptions, setGameOptions] = useState([]); // 게임 리스트 상태
+  const [showOptions, setShowOptions] = useState(false);
   const navigate = useNavigate();
 
   // 서버에서 게임 리스트 가져오기
@@ -94,12 +96,83 @@ const SetProfile = () => {
       alert("프로필 업데이트 중 문제가 발생했습니다.");
     }
   };
+  
+  const fileInput = useRef(null);
+  // 기본 이미지
+  const handleSetDefaultProfile = () => {
+    setUserData((prevData) => ({ ...prevData, image: DefalutImage }));
+    setShowOptions(false);
+  };
+
+  // 내 컴퓨터에서 이미지 가져오기
+  const handleOpenFileDialog = () => {
+      fileInput.current.click();
+      setShowOptions(false); 
+  };
+
+  // 프로필 이미지 변경
+  const onChangeImage = (e) => {
+    if (e.target.files[0]) {
+        // 화면에 이미지 출력
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                setUserData((prevData) => ({ ...prevData, image: reader.result}));
+            }
+        };
+        reader.readAsDataURL(e.target.files[0])
+    }else{
+        setImage((prevData) => ({ ...prevData, image: DefalutImage}));
+        return
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <h2 className="text-2xl font-bold mb-6">프로필 수정</h2>
       <form onSubmit={handleSubmit}>
         <div className="space-y-6 border-t border-b border-gray-300 p-4">
+            <div className="flex justify-center items-center p-8">
+                <img
+                    src={userData?.image}
+                    className="w-32 h-32 rounded-full object-cover"
+                    onClick={() => setShowOptions(true)}
+                />
+            </div>
+            {/* 프로필 사진 옵션 */}
+            {showOptions && (
+              <div className="absolute inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-80 relative">
+                  <h3 className="font-semibold text-lg mb-4">프로필 사진 변경</h3>
+                  <button
+                      onClick={handleSetDefaultProfile}
+                      className="w-full py-2 mb-4 bg-gray-200 text-center rounded"
+                  >
+                      기본 프로필
+                  </button>
+                  <button
+                      onClick={handleOpenFileDialog}
+                      className="w-full py-2 bg-gray-200 text-center rounded"
+                  >
+                      프로필 사진 가져오기
+                  </button>
+                  <button
+                      onClick={() => setShowOptions(false)}
+                      className="absolute top-2 right-2 text-gray-500"
+                  >
+                      X
+                  </button>
+                </div>
+              </div>
+            )}
+            <input
+                type="file"
+                style={{ display: 'none' }}
+                accept="image/*"
+                name="profile_img"
+                onChange={onChangeImage}
+                ref={fileInput}
+            />
           {/* 이름 필드 */}
           <div className="flex items-center space-x-6">
             <label className="font-semibold w-28">이름:</label>
