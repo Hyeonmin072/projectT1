@@ -45,7 +45,7 @@ public class BoardService {
         if (findResult.isPresent()) { // 해당 게임이 존재하면
             Game findGame = findResult.get(); // 조회 결과에서 찾은 게임을 꺼냄
             PageRequest pageRequest = PageRequest.of(currentPage, sizePerPage); // 페이징 사용
-            Page<Board> findBoards = boardRepository.findByGame(findGame, pageRequest); // 찾은 게임을 컬럼으로 가지는 게시글들을 조회
+            Page<Board> findBoards = boardRepository.findByGameOrderByCreateDateDesc(findGame, pageRequest); // 찾은 게임을 컬럼으로 가지는 게시글들을 조회
             log.info("result = {}", findBoards);
             Page<BoardResponseDto> boardResponseDtos = findBoards.map(findBoard ->  new BoardResponseDto( // 찾은 게시글들을 dto로 맵핑
                         findBoard.getId(),

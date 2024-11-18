@@ -74,10 +74,10 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               <SquareMenu className="mr-3" size={20} />
               게시판
             </Link>
-            <Link to="/ChatList" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            {/* <Link to="/ChatList" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <MessagesSquare className="mr-3" size={20} />
               채팅
-            </Link>
+            </Link> */}
             <Link to="/profile" className="flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <User className="mr-3" size={20} />
               프로필

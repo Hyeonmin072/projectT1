@@ -110,7 +110,7 @@ const Community = ({ isOpen, onClose }) => {
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+  const [activeTab, setActiveTab] = useState('friends');
   return (
     
     <>
@@ -132,17 +132,40 @@ const Community = ({ isOpen, onClose }) => {
                       transform transition-transform duration-700 ease-in-out
                       ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-4">
+
           {/* 헤더 */}
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">친구 목록</h2>
+            <h2 className="text-xl font-bold">커뮤니티</h2>
             <button 
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-full"
-            >
+              >
               <X size={24} />
             </button>
           </div>
 
+
+          {/* 탭 */}
+          <div className="flex gap-1 mb-4 p-1 bg-gray-100 rounded-lg">
+            <button 
+              className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200
+                ${activeTab === 'friends' 
+                  ? 'bg-white text-green-600 shadow-sm' 
+                  : 'text-gray-500 hover:text-green-600 hover:bg-white/50'}`}
+              onClick={() => setActiveTab('friends')}
+            >
+              친구 목록
+            </button>
+            <button
+              className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200
+                ${activeTab === 'chats' 
+                  ? 'bg-white text-green-600 shadow-sm' 
+                  : 'text-gray-500 hover:text-green-600 hover:bg-white/50'}`}
+              onClick={() => setActiveTab('chats')}
+            >
+              채팅 목록
+            </button>
+          </div>
           {/* 친구 목록 */}
             <div className="space-y-2">
               {filteredFriends.map(friend => (
