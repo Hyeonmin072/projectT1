@@ -84,7 +84,7 @@ const Community = ({ isOpen, onClose }) => {
     if (!window.confirm('정말 이 친구를 삭제하시겠습니까?')) return;
 
     try {
-      await FriendAxios.removeFriend(friendId);
+      await FriendAxios.removeFriend(userData.id, friendId);
       setFriends(prev => prev.filter(friend => friend.id !== friendId));
       alert('친구가 삭제되었습니다.');
     } catch (error) {
