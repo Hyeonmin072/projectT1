@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Integer> {
-    Page<Board> findByGame(Game game, Pageable pageable);
+    Page<Board> findByGameOrderByCreateDateDesc(Game game, Pageable pageable);
+
     Optional<Board> findByTitle(String title);
 }
