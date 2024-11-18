@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { login } from '../axios/LoginAxios';
+import { login as loginAPI } from '../axios/LoginAxios';
 
 const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
-  // 상태 관리
-  const { setIsLoggedIn, setUserData, setIsSliding } = useAuth();
+  const { login, setIsSliding } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+  const [isLoading, setIsLoading] = useState(false);
 
   // 초기 마운트 시 애니메이션
   useEffect(() => {
@@ -60,13 +59,11 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
         
-    // 기본 유효성 검사
     if (!formData.email || !formData.password) {
       setError('이메일과 비밀번호를 입력해주세요.');
       return;
     }
   
-    // 이메일 형식 검사
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('올바른 이메일 형식이 아닙니다.');
@@ -77,34 +74,18 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
     setError('');
   
     try {
-      let response;
-  
-      //테스트 계정 확인
-      if (formData.email === 'test@test.com' && formData.password === 'test123') {
-        // 테스트 계정 로직
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과
-        
-        // 테스트 계정용 mock 응답
-        response = {
-          data: {
-            token: 'fake-jwt-token-12345',
-            id: 1,
-            email: 'test@test.com',
-            name: '테스트 유저'
-          }
-        };
-      } else {
-       // 실제 서버 로그인 시도
-        response = await login(formData.email, formData.password);
+      // 실제 서버 로그인 시도
+      const response = await loginAPI(formData.email, formData.password);
+
+      if (!response || !response.data) {
+        throw new Error('로그인 응답 데이터가 없습니다.');
       }
   
       console.log('로그인 응답 데이터:', response.data);
   
-      // 서버 응답 데이터 구조 변환
       const userData = {
         id: response.data.id,
         email: response.data.email,
-        password: response.data.password,
         name: response.data.name,
         tel: response.data.tel,
         image: response.data.image,
@@ -113,20 +94,13 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
         preferredGame: response.data.gamesName,
         createDate: response.data.createDate,
         role: 'user'
-
       };
   
-      // localStorage 저장
-      localStorage.setItem('token', response.data.token || '');
-      localStorage.setItem('user', JSON.stringify(userData));
-      
       setIsSliding(true);
       setIsVisible(false);
   
-      // 상태 업데이트
       setTimeout(() => {
-        setIsLoggedIn(true);
-        setUserData(userData);  // 변환된 데이터로 통일
+        login(userData, response.data.token);
         onLoginSuccess?.(response.data);
         onClose?.();
         
@@ -134,21 +108,15 @@ const LoginForm = ({ onClose, onLoginSuccess, onRegisterClick }) => {
           setIsSliding(false);
         }, 500);
       }, 300);
-  
+
     } catch (error) {
       console.error('Login error:', error);
-      
-      if (error.response?.data?.message) {
-        setError(error.response.data.message);
-      } else if (error.response?.status === 401) {
-        setError('이메일 또는 비밀번호가 올바르지 않습니다.');
-      } else {
-        setError('로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-      }
+      setError(error.response?.data?.message || '로그인 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
-  };
+};
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* 배경 오버레이 */}

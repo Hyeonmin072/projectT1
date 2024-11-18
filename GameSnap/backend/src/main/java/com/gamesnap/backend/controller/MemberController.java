@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.gamesnap.backend.dto.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,16 +26,46 @@ public class MemberController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<MemberResponseDto> login(@RequestBody MemberRequestDto memberRequestDto) {
-
+    public ResponseEntity<MemberResponseDto> login(@RequestBody MemberRequestDto memberRequestDto, HttpSession session, HttpServletResponse response) {
         String email = memberRequestDto.getEmail();
         String password = memberRequestDto.getPassword();
         System.out.println("Received email: " + email);
         System.out.println("Received password: " + password);
 
-        return memberService.login(email, password);
+        ResponseEntity<MemberResponseDto> loginResponse = memberService.login(email, password);
+        log.info("로그 왜 안떠");
+        if (loginResponse.getStatusCode().is2xxSuccessful()) {
+            log.info("Login successful");
+            MemberResponseDto member = loginResponse.getBody();
+            session.setAttribute("member", member);
+            
+            // 쿠키 생성
+            Cookie sessionCookie = new Cookie("JSESSIONID", session.getId());
+            sessionCookie.setPath("/"); // 모든 경로에서 이 쿠키 사용가능
+            sessionCookie.setMaxAge(3600); // 1시간 유효
+            sessionCookie.setHttpOnly(false); // 클라이언트 측에서 접근할 수 있게 함
+            response.addCookie(sessionCookie);
+        }
+
+        return loginResponse;
 
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session, HttpServletResponse response) {
+        session.invalidate(); // 세션 무효화
+
+        // 쿠키 삭제
+        Cookie sessionCookie = new Cookie("JSESSIONID", null);
+        sessionCookie.setPath("/");
+        sessionCookie.setMaxAge(0); // 유효기간 0 = 즉시삭제
+        sessionCookie.setHttpOnly(false);
+        response.addCookie(sessionCookie);
+
+
+        return ResponseEntity.ok("로그아웃 되었습니다.");
+    }
+
 
 
     @PostMapping("/register")

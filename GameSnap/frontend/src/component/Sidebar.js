@@ -6,10 +6,12 @@ import { Link, useHistory } from 'react-router-dom';
 import Profile from '../profile/Profile';
 import Community from './Community';
 import DeleteUser from './DeleteUser';
+import FileUploadModal from './FileUploadModal';
 
 
 const Sidebar = ({ isOpen, onClose, onLogout }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
   const handleLogout = () => {
     console.log('Sidebar : 로그아웃 호출');
     onLogout(); // 로그아웃 함수 호출
@@ -36,7 +38,16 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
   const handleCloseCommunity = () => {
     setShowCommunity(false);
   };
-  
+
+  //파일 업로드 스테이트
+  const handleFileUploadClick = () => {
+    setShowFileUpload(true);
+  };
+
+  const handleCloseFileUpload = () => {
+      setShowFileUpload(false);
+  };
+    
 
   return (
     <>
@@ -90,10 +101,12 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
 
           <div className="border-t">
             <button 
-              className="flex right-4 p-3 mt-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                onClick={handleFileUploadClick}
+                className="flex items-center w-full p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors
+                 "
             >
-              <MonitorUp className="mr-3" size={20} />
-              업로드하기
+                <MonitorUp className="mr-3" size={20} />
+                업로드하기
             </button>
             <button 
               onClick={handleLogout}
@@ -108,6 +121,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
       </div>
       
       <Community isOpen={showCommunity} onClose={handleCloseCommunity} />
+      <FileUploadModal isOpen={showFileUpload} onClose={handleCloseFileUpload} />
 
     </>
   );
