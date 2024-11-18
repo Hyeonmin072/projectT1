@@ -74,6 +74,7 @@ const SetProfile = () => {
       console.log("전송 데이터:", updatedUserInfo);
 
       const response = await ProfilePage.updateProfile(updatedUserInfo);
+      console.log("response.data",response);
 
       if (response.status === 200) {
         const updatedUserData = { ...userInfo, ...response.data };

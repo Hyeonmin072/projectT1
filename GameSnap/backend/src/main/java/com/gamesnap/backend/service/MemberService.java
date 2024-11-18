@@ -5,6 +5,7 @@ import java.util.*;
 import com.gamesnap.backend.dto.MemberResponseDto;
 import com.gamesnap.backend.dto.MemberSimpleDto;
 import com.gamesnap.backend.dto.UpdateProfileRequestDto;
+import com.gamesnap.backend.dto.UpdateProfileResponseDto;
 import com.gamesnap.backend.entity.Friend;
 import com.gamesnap.backend.entity.MemberGame;
 import com.gamesnap.backend.repository.MemberGameRepository;
@@ -103,7 +104,7 @@ public class MemberService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<MemberResponseDto> updateProfile(UpdateProfileRequestDto updateProfileRequestDto) {
+    public ResponseEntity<UpdateProfileResponseDto> updateProfile(UpdateProfileRequestDto updateProfileRequestDto) {
         // ID로 회원을 찾기
         Member member = findId(updateProfileRequestDto.getId());
 
@@ -119,16 +120,12 @@ public class MemberService {
                 updateProfileRequestDto.getContent(),
                 preferredGameList);
 
-        // 업데이트된 member를 저장
-        memberRepository.save(member);
 
-        List<String> gamesName = getMemberGameName(member);
-        List<Integer> gamesId = getMemberGameId(member);
-
-        MemberResponseDto memberResponseDto = new MemberResponseDto(member.getId(),member.getEmail(),member.getPassword(),member.getName(),member.getTel(),member.getImage(),member.getContent(),
-                gamesId,gamesName
-        );
-        return ResponseEntity.ok(memberResponseDto);
+        UpdateProfileResponseDto responseDto = new UpdateProfileResponseDto(member.getName(),
+                member.getContent(),
+                updateProfileRequestDto.getLikeGamesId(),
+                updateProfileRequestDto.getLikeGamesName());
+        return ResponseEntity.ok(responseDto);
 
     }
 

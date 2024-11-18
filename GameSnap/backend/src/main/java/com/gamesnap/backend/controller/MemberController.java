@@ -4,15 +4,12 @@ package com.gamesnap.backend.controller;
 import java.util.List;
 import java.util.Map;
 
-import com.gamesnap.backend.dto.MemberSimpleDto;
-import com.gamesnap.backend.dto.UpdateProfileRequestDto;
+import com.gamesnap.backend.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.gamesnap.backend.dto.MemberRequestDto;
-import com.gamesnap.backend.dto.MemberResponseDto;
 import com.gamesnap.backend.entity.Member;
 import com.gamesnap.backend.service.MemberService;
 
@@ -66,11 +63,9 @@ public class MemberController {
 
 
     @PutMapping("/updateProfile")
-    public ResponseEntity<MemberResponseDto> updateProfile(@RequestBody UpdateProfileRequestDto updateProfileRequestDto){
+    public ResponseEntity<UpdateProfileResponseDto> updateProfile(@RequestBody UpdateProfileRequestDto updateProfileRequestDto){
 
         return memberService.updateProfile(updateProfileRequestDto);
-
-
 
     }
 
