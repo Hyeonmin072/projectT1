@@ -6,7 +6,8 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
     
-  }
+  },
+  withCredentials: true // 쿠키를 포함하여 요청
 });
 
 export const login = async (email, password) => {
@@ -48,3 +49,14 @@ export const login = async (email, password) => {
     throw error;
   }
 };
+
+export const logout = async () => { 
+  try { 
+    const response = await apiClient.post('/logout'); 
+    console.log('로그아웃 성공:', response.data); 
+  } catch (error) { 
+    console.error('로그아웃 에러 상세 : ', error); 
+    throw error; 
+  } 
+};
+export default {login, logout};

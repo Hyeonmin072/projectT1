@@ -9,6 +9,7 @@ import SearchBar from './Searchbar';
 import RegisterForm from './RegisterForm';  
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import loginAxios from '../axios/LoginAxios';
 
 const Navbar = () => {  
   const { isLoggedIn, setIsLoggedIn, userData, isSliding } = useAuth();
@@ -32,8 +33,14 @@ const Navbar = () => {
     navigate('/user'); // 로그인 성공 시 UserPage로 이동
   };
 
-  const handleLogout = () => {
-    console.log('로그아웃');
+  const handleLogout = async () => {
+    try {
+      await loginAxios.logout();
+      console.log('로그아웃 성공');
+    } catch (error) {
+      console.error('로그아웃 에러 상세 : ', error);
+    }
+
     setIsLoggedIn(false);
     setIsSidebarOpen(false);
     localStorage.removeItem('token');
