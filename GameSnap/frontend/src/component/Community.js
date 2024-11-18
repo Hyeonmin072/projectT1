@@ -110,7 +110,47 @@ const Community = ({ isOpen, onClose }) => {
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   const [activeTab, setActiveTab] = useState('friends');
+  const [lastChatMessage, setLastChatMessage] = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [chats, setChats] = useState([]);
+
+  useEffect(() => {
+    // 더미 채팅 데이터
+    setChats([
+      {
+        id: 1,
+        name: "김정훈",
+        lastMessage: "네, 알겠습니다. 다음에 봐요!",
+        unreadCount: 3
+      },
+      {
+        id: 2,
+        name: "김현민",
+        lastMessage: "오늘 회의 몇시에 하나요?",
+        unreadCount: 1
+      },
+      {
+        id: 3,
+        name: "김형섭",
+        lastMessage: "API 문서는 안쓰나요?",
+        unreadCount: 2
+      }
+    ]);
+  }, []);
+  
+  useEffect(() => {
+    // 예시 데이터
+    setLastChatMessage({
+      sender: "홍길동",
+      content: "네, 알겠습니다. 다음에 봐요!",
+      time: "방금",
+      isNew: true
+    });
+    setUnreadCount(3);
+  }, []);
+
   return (
     
     <>
@@ -146,27 +186,46 @@ const Community = ({ isOpen, onClose }) => {
 
 
           {/* 탭 */}
-          <div className="flex gap-1 mb-4 p-1 bg-gray-100 rounded-lg">
-            <button 
-              className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200
-                ${activeTab === 'friends' 
-                  ? 'bg-white text-green-600 shadow-sm' 
-                  : 'text-gray-500 hover:text-green-600 hover:bg-white/50'}`}
-              onClick={() => setActiveTab('friends')}
-            >
-              친구 목록
-            </button>
-            <button
-              className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200
-                ${activeTab === 'chats' 
-                  ? 'bg-white text-green-600 shadow-sm' 
-                  : 'text-gray-500 hover:text-green-600 hover:bg-white/50'}`}
-              onClick={() => setActiveTab('chats')}
-            >
-              채팅 목록
-            </button>
-          </div>
-          {/* 친구 목록 */}
+            <div className='flex gap-1 mb-4 p-1 bg-gray-100 rounded-lg'>
+              <button 
+                className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200
+                  ${activeTab === 'friends' 
+                    ? 'bg-white text-green-600 shadow-sm' 
+                    : 'text-gray-500 hover:text-green-600 hover:bg-white/50'}`}
+                onClick={() => setActiveTab('friends')}
+              >
+                친구 목록
+              </button>
+              <button
+                className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-all duration-200
+                  ${activeTab === 'chats' 
+                    ? 'bg-white text-green-600 shadow-sm' 
+                    : 'text-gray-500 hover:text-green-600 hover:bg-white/50'}`}
+                onClick={() => setActiveTab('chats')}
+              >
+                채팅 목록
+              </button>
+            </div>
+
+            {/* 탭 컨텐츠 */}
+        {activeTab === 'friends' ? (
+          // 친구 목록
+          <div>
+            {/* 검색바 */}
+            <div className="mb-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="친구 검색..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full p-2 pl-8 border rounded-lg"
+                />
+                <Search className="absolute left-2 top-2.5 text-gray-400" size={16} />
+              </div>
+            </div>
+
+            {/* 친구 목록 */}
             <div className="space-y-2">
               {filteredFriends.map(friend => (
                 <div key={friend.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 group">
@@ -195,17 +254,44 @@ const Community = ({ isOpen, onClose }) => {
               ))}
             </div>
 
-          {/* 친구 추가 버튼 */}
-          <button 
-          onClick={() => setShowAddFriend(true)} 
-          className="flex items-center justify-center w-full mt-4 p-3 bg-green-500 text-white rounded-lg 
+            {/* 친구 추가 버튼 */}    
+            <button 
+              onClick={() => setShowAddFriend(true)} 
+              className="flex items-center justify-center w-full mt-4 p-3 bg-green-500 text-white rounded-lg 
                         hover:bg-green-800 transition-all duration-300 ease-in-out 
                         transform hover:scale-105 active:scale-95 
                         hover:shadow-lg active:shadow-md"
             >
-          <UserPlus size={20} className="mr-2" />
-          친구 추가하기
-        </button>
+              <UserPlus size={20} className="mr-2" />
+              친구 추가하기
+            </button>
+          </div>
+        ) : (
+          // 채팅 목록
+          <div className="space-y-2">
+            {chats.map(chat => (
+              <div key={chat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-200 rounded-full" />
+                  <div>
+                    <div className="font-medium">{chat.name}</div>
+                    <div className="text-sm text-gray-500 truncate">
+                      {chat.lastMessage}
+                    </div>
+                  </div>
+                </div>
+                {chat.unreadCount > 0 && (
+                  <span className="px-2 py-1 bg-red-500 text-white text-xs rounded-full">
+                    {chat.unreadCount}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+
+         
 
         {/* 친구 추가 모달 */}
         {showAddFriend && (
