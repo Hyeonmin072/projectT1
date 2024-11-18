@@ -144,33 +144,33 @@ const Community = ({ isOpen, onClose }) => {
           </div>
 
           {/* 친구 목록 */}
-          <div className="space-y-2">
-            {filteredFriends.map(friend => (
-              <div key={friend.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-200 rounded-full" />
-                  <div>
-                    <div className="font-medium">{friend.name}</div>
-                    <div className="text-sm text-gray-500">{friend.status}</div>
+            <div className="space-y-2">
+              {filteredFriends.map(friend => (
+                <div key={friend.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gray-200 rounded-full" />
+                    <div>
+                      <div className="font-medium">{friend.name}</div>
+                      <div className="text-sm text-gray-500">{friend.status}</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <button
+                      onClick={() => handleRemoveFriend(friend.id)}
+                      className="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    >
+                      <X size={16} />
+                    </button>
+                    <button
+                      onClick={() => handleStartChat(friend)}
+                      className="p-2 text-green-500 hover:bg-green-50 rounded-full"
+                    >
+                      <MessagesSquare size={20} />
+                    </button>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleStartChat(friend)}
-                    className="p-2 text-green-500 hover:bg-green-50 rounded-full"
-                  >
-                    <MessagesSquare size={20} />
-                  </button>
-                  <button
-                    onClick={() => handleRemoveFriend(friend.id)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded-full"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
           {/* 친구 추가 버튼 */}
           <button 
