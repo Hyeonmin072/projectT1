@@ -39,9 +39,9 @@ const MainPageDesign = () => {
   }, [currentGifIndex]);
 
   return (
-    <div className="relative w-full h-screen z-30">
+    <div className="relative h-screen z-30">
       <div
-        className="absolute top-0 left-0 w-full h-full z-10 transition-opacity duration-1000"
+        className="absolute w-full h-full z-10 transition-opacity duration-1000"
         style={{
           opacity: opacity,
           backgroundImage: `url(${gifUrl})`,
@@ -49,7 +49,7 @@ const MainPageDesign = () => {
           backgroundPosition: 'center',
         }}
       />
-      <div className="relative z-20 flex items-center justify-center w-full h-full p-4">
+      <div className="relative z-20 flex items-center justify-center h-full p-4">
         <p className="text-4xl mb-4 border-t-4 border-b-4 border-white text-white pt-10 pb-10 px-4">
           GAMESNAP에서 게임의 새로운 즐거움을 만나세요!
         </p>
