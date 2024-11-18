@@ -43,7 +43,7 @@ public class MemberController {
             Cookie sessionCookie = new Cookie("JSESSIONID", session.getId());
             sessionCookie.setPath("/"); // 모든 경로에서 이 쿠키 사용가능
             sessionCookie.setMaxAge(3600); // 1시간 유효
-            sessionCookie.setHttpOnly(true); // 클라이언트 측에서 접근할 수 있게 함
+            sessionCookie.setHttpOnly(false); // 클라이언트 측에서 접근할 수 있게 함
             response.addCookie(sessionCookie);
         }
 
