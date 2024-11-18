@@ -114,11 +114,8 @@ public class MemberService {
         }
 
         // memberUpdate 메서드 호출하여 회원 정보 업데이트
-        member.MemberUpdate(updateProfileRequestDto.getEmail(),
-                updateProfileRequestDto.getPassword(),
+        member.MemberUpdate(
                 updateProfileRequestDto.getName(),
-                updateProfileRequestDto.getTel(),
-                member.getImage(),
                 updateProfileRequestDto.getContent(),
                 preferredGameList);
 

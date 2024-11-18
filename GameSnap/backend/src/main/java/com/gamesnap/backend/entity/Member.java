@@ -55,12 +55,8 @@ public class Member {
         this.createdate = LocalDate.now();
     }
 
-    public void MemberUpdate(String email, String password, String name, String tel, String image, String content, List<MemberGame> memberGames) {
-        this.email = email;
-        this.password = password;
+    public void MemberUpdate(String name, String content, List<MemberGame> memberGames) {
         this.name = name;
-        this.tel = tel;
-        this.image = image;
         this.content = content;
         this.memberGames = memberGames;
     }

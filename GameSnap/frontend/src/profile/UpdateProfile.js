@@ -5,17 +5,11 @@ import { useAuth } from "../context/AuthContext";
 
 const SetProfile = () => {
   const { userData, setUserData } = useAuth();
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [userInfo, setUserInfo] = useState({
     id: "",
     name: "",
-    email: "",
-    tel: "",
-    likeGamesId: [], // 선택된 게임 ID 저장
     content: "",
-    password: "",
+    likeGamesId: [], // 선택된 게임 ID 저장
   });
   const [gameOptions, setGameOptions] = useState([]); // 게임 리스트 상태
   const navigate = useNavigate();
@@ -42,44 +36,42 @@ const SetProfile = () => {
       setUserInfo({
         id: userData.id,
         name: userData.name,
-        email: userData.email,
-        tel: userData.tel || "",
-        likeGamesId: userData.likeGamesId || [],
         content: userData.content || "",
-        password: "",
+        likeGamesId: userData.likeGamesId || [],
       });
     } else {
       console.log("유저 데이터를 불러오길 실패하였습니다");
     }
   }, [userData]);
 
-  // 비밀번호 유효성 검사
-  useEffect(() => {
-    setIsPasswordValid(password === passwordConfirm);
-  }, [password, passwordConfirm]);
-
   const handleCheckboxChange = (gameId) => {
     setUserInfo((prevUserInfo) => {
       const updatedIds = prevUserInfo.likeGamesId.includes(gameId)
         ? prevUserInfo.likeGamesId.filter((id) => id !== gameId)
         : [...prevUserInfo.likeGamesId, gameId];
+
       return { ...prevUserInfo, likeGamesId: updatedIds };
     });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // 서버로 전송할 데이터 준비
+    const likeGamesName = gameOptions
+      .filter((game) => userInfo.likeGamesId.includes(game.id))
+      .map((game) => game.name);
+
     try {
       const updatedUserInfo = {
         id: userInfo.id,
-        email: userInfo.email,
         name: userInfo.name,
-        tel: userInfo.tel,
-        likeGamesId: userInfo.likeGamesId, // 게임 ID 배열로 전송
         content: userInfo.content,
-        password: password || "", // 비밀번호가 없으면 빈 문자열
+        likeGamesId: userInfo.likeGamesId, // 게임 ID 배열로 전송
+        likeGamesName, // 게임 이름 배열로 동적 생성 후 전송
       };
-      console.log(updatedUserInfo); 
+
+      console.log("전송 데이터:", updatedUserInfo);
 
       const response = await ProfilePage.updateProfile(updatedUserInfo);
 
@@ -114,34 +106,6 @@ const SetProfile = () => {
             />
           </div>
 
-          {/* 이메일 필드 */}
-          <div className="flex items-center space-x-6">
-            <label className="font-semibold w-28">이메일:</label>
-            <input
-              type="email"
-              name="email"
-              value={userInfo.email}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, email: e.target.value })
-              }
-              className="flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none"
-            />
-          </div>
-
-          {/* 전화번호 필드 */}
-          <div className="flex items-center space-x-6">
-            <label className="font-semibold w-28">전화번호:</label>
-            <input
-              type="tel"
-              name="tel"
-              value={userInfo.tel}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, tel: e.target.value })
-              }
-              className="flex-grow border border-gray-300 rounded-lg p-2 focus:outline-none"
-            />
-          </div>
-
           {/* 선호 게임 체크박스 */}
           <div>
             <label className="font-semibold">선호 게임:</label>
@@ -158,31 +122,6 @@ const SetProfile = () => {
                 </label>
               ))}
             </div>
-          </div>
-
-          {/* 비밀번호 필드 */}
-          <div className="flex items-center space-x-6">
-            <label className="font-semibold w-28">비밀번호:</label>
-            <input
-              type="password"
-              placeholder="새로운 비밀번호 입력"
-              onChange={(e) => setPassword(e.target.value)}
-              className="flex-grow border border-gray-300 rounded-lg p-2"
-            />
-          </div>
-
-          {/* 비밀번호 확인 */}
-          <div className="flex items-center space-x-6">
-            <label className="font-semibold w-28">비밀번호 확인:</label>
-            <input
-              type="password"
-              placeholder="비밀번호 확인"
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-              className="flex-grow border border-gray-300 rounded-lg p-2"
-            />
-            {!isPasswordValid && (
-              <p className="text-red-500 text-xs mt-1">비밀번호가 일치하지 않습니다.</p>
-            )}
           </div>
 
           {/* 자기소개 */}
@@ -204,7 +143,6 @@ const SetProfile = () => {
           <button
             type="submit"
             className="bg-blue-500 text-white px-6 py-3 rounded-lg"
-            disabled={!isPasswordValid}
           >
             저장
           </button>
