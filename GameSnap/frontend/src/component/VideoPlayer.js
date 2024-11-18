@@ -48,13 +48,13 @@ const VideoPlayer = ({ video, onLike, isLiked, likes, onCommentClick, commentCou
             <span className="text-sm">{commentCount}</span>
           </button>
   
-          <button
+          {/* <button
             onClick={onShare}
             className="flex flex-col items-center text-gray-600 hover:opacity-75 transition-colors"
           >
             <Share2 className="w-8 h-8" />
             <span className="text-sm">공유</span>
-          </button>
+          </button> */}
         </div>
       </div>
     );
