@@ -66,9 +66,11 @@ const FriendAxios = {
   // },
 
   // 친구 삭제
-  async removeFriend(friendId) {
+  async removeFriend(myId, targetUserId) {
     try {
-      await axios.delete(`${BASE_URL}/api/friends/${friendId}`);
+      await axios.post(`${BASE_URL}/friend/delete`, null, {
+        params: { myId, targetUserId }
+      });
     } catch (error) {
       console.error('친구 삭제 실패:', error);
       throw error;
