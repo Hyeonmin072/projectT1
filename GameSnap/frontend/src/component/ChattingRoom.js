@@ -5,52 +5,6 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
   // messages 상태를 사용자별로 관리하는 객체로 변경
   const [messagesByUser, setMessagesByUser] = useState({
 
-
-    // DB도 대충 이런 형태로 구성해야할듯 ?
-    // 초기 더미 데이터를 사용자별로 구성
-    1: [
-      {
-        id: 1,
-        sender: 'user',
-        text: '안녕하세요! 김현민님',
-        timestamp: '오후 2:30'
-      },
-      {
-        id: 2,
-        sender: 'friend',
-        text: '네, 반갑습니다!',
-        timestamp: '오후 2:31'
-      }
-    ],
-
-    2: [
-      {
-        id: 1,
-        sender: 'user',
-        text: '안녕하세요! 김정훈님',
-        timestamp: '오후 3:30'
-      },
-      {
-        id: 2,
-        sender: 'friend',
-        text: '네, 안녕하세요~',
-        timestamp: '오후 3:31'
-      }
-    ],
-    3: [
-      {
-        id: 1,
-        sender: 'user',
-        text: '안녕하세요! 김형섭님',
-        timestamp: '오후 4:30'
-      },
-      {
-        id: 2,
-        sender: 'friend',
-        text: '반갑습니다!',
-        timestamp: '오후 4:31'
-      }
-    ]
   });
   
   const [newMessage, setNewMessage] = useState('');
