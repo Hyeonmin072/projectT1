@@ -103,7 +103,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
             <button 
                 onClick={handleFileUploadClick}
                 className="flex items-center w-full p-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors
-                transition-transform duration-700 ease-in-out "
+                 "
             >
                 <MonitorUp className="mr-3" size={20} />
                 업로드하기

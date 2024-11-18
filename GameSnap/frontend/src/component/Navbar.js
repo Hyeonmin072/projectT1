@@ -12,14 +12,34 @@ import { useNavigate } from 'react-router-dom';
 import loginAxios from '../axios/LoginAxios';
 
 const Navbar = () => {  
-  const { isLoggedIn, setIsLoggedIn, userData, isSliding } = useAuth();
+  const { isLoggedIn, setIsLoggedIn, userData, initialRender  } = useAuth();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentForm, setCurrentForm] = useState('none');
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isFirstMount, setIsFirstMount] = useState(true);
+  const [enableTransition, setEnableTransition] = useState(false);
+  
   const navigate = useNavigate();
-  
-  
+
+
+  useEffect(() => {
+    if (!localStorage.getItem('hasLoaded')) {
+      // 첫 로드 시에는 애니메이션 없음
+      localStorage.setItem('hasLoaded', 'true');
+    } else {
+      // 이후 상태 변경 시에만 애니메이션 활성화
+      setEnableTransition(true);
+    }
+  }, []);
+
+  // 로그인/로그아웃 시에만 애니메이션 활성화
+  useEffect(() => {
+    if (isLoggedIn !== undefined) {
+      setEnableTransition(true);
+    }
+  }, [isLoggedIn]);
+
 
   const handleSwitchToRegister = useCallback(() => {
     console.log('레지스터 스위칭 핸들 실행');
@@ -37,6 +57,17 @@ const Navbar = () => {
     try {
       await loginAxios.logout();
       console.log('로그아웃 성공');
+      setShowUserMenu(false);
+      
+      // 애니메이션이 끝난 후 상태 변경
+      setTimeout(() => {
+        setIsLoggedIn(false);
+        setIsSidebarOpen(false);
+        sessionStorage.removeItem('token'); // localStorage 대신 sessionStorage 사용
+        sessionStorage.removeItem('user');
+        navigate('/');
+      }, 300); // 애니메이션 시간만큼 대기
+
     } catch (error) {
       console.error('로그아웃 에러 상세 : ', error);
     }
@@ -81,11 +112,11 @@ const Navbar = () => {
           <div className="flex items-center space-x-4 flex-shrink-0">
             {/* 로그인/프로필 버튼 컨테이너 */}
             <div className="relative h-12 w-40">
-              <div className={`absolute w-full transition-all duration-1000 ease-in-out transform
-                ${!isLoggedIn 
-                  ? 'translate-x-0 opacity-100' 
-                  : '-translate-x-full opacity-0 pointer-events-none'
-                }`}
+              <div className={`absolute w-full transform
+                  ${enableTransition ? 'transition-all duration-500' : ''}
+                  ${!isLoggedIn 
+                    ? 'translate-x-0 opacity-100' 
+                    : '-translate-x-full opacity-0 pointer-events-none'}`}
               >
                 <button
                   onClick={() => {
@@ -93,28 +124,27 @@ const Navbar = () => {
                     setIsLoginOpen(true);
                   }}
                   className="w-full px-6 py-3 bg-white text-black-600 font-semibold rounded-md 
-                  hover:bg-green-700 hover:text-white transition-all duration-200"
+                  hover:bg-green-700 hover:text-white transition-all duration-600"
                 >
                   회원 로그인
                 </button>
               </div>
   
-              <div className={`absolute w-full transition-all duration-1000 ease-in-out transform
+              <div className={`absolute w-full transform
+                ${enableTransition ? 'transition-all duration-700' : ''}
                 ${isLoggedIn 
                   ? 'translate-x-0 opacity-100'
-                  : 'translate-x-full opacity-0 pointer-events-none'
-                }`}
+                  : 'translate-x-full opacity-0 pointer-events-none'}`}
               >
-                <div className="relative">
-                  <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 
-                    bg-green-600 text-white rounded-md hover:bg-green-900 transition-all duration-400"
-                  >
-                    <User size={20} />
-                    <span>{userData?.name || '사용자'}</span>
-                  </button>
-  
+              <div className="relative">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="w-full flex items-center justify-center space-x-2 px-4 py-3 
+                  bg-green-600 text-white rounded-md hover:bg-green-900 transition-all duration-400"
+                >
+                  <User size={20} />
+                  <span>{userData?.name || '사용자'}</span>
+                </button>
                   {showUserMenu && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                       <button
@@ -136,14 +166,14 @@ const Navbar = () => {
               </div>
             </div>
   
-            <div className={`
-              transform transition-all duration-500 ease-in-out
-              ${isLoggedIn ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0 pointer-events-none'}
-            `}>
+            <div className={`transform 
+                ${enableTransition ? 'transition-all duration-300' : ''}
+                ${isLoggedIn ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0 pointer-events-none'}`}
+            >
               {isLoggedIn && (
                 <button
                   onClick={() => setIsSidebarOpen(true)}
-                  className="p-2 hover:bg-green-800 rounded-full transition-colors duration-200"
+                  className="p-2 hover:bg-green-800 rounded-full transition-colors duration-600"
                 >
                   <Menu size={24} color="white" />
                 </button>
