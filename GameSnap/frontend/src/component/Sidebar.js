@@ -102,11 +102,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               <LogOut className="mr-3" size={20} />
               로그아웃
             </button>
-            <button 
-              className="flex right-4 p-3 mt-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              계정삭제
-            </button>
+            
           </div>
         </div>
       </div>
