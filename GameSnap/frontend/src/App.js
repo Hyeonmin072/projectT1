@@ -15,11 +15,16 @@ import FreeBoardPage from './page/FreeBoardPage';
 import ChatList from './page/ChatList';
 import ModifyPage from './page/ModifyPage';
 import PageTransition from './component/PageTransition';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+
+//React Query Client 생성
+const queryClient = new QueryClient()
 
 // AnimatePresence를 사용하기 위한 래퍼 컴포넌트
 function AnimatedRoutes() {
-  
-    const location = useLocation();
+  const location = useLocation();
   
   return (
     <AnimatePresence mode="sync" initial={false}>
@@ -42,16 +47,19 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="min-h-screen bg-gray-100 text-gray-900">
-          <Navbar />
-          <div className="pt-[73px]">
-            <AnimatedRoutes />
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-100 text-gray-900">
+            <Navbar />
+            <div className="pt-[73px]">
+              <AnimatedRoutes />
+            </div>
           </div>
-        </div>
-      </Router>
-    </AuthProvider>
+        </Router>
+      </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 export default App;
