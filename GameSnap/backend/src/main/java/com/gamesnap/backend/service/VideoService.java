@@ -11,6 +11,7 @@ import com.gamesnap.backend.repository.VideoLikeRepository;
 import com.gamesnap.backend.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -26,7 +27,6 @@ public class VideoService {
     private VideoRepository videoRepository;
     @Autowired
     private MemberRepository memberRepository;
-
 
 
     public List<Video> getRandomVideos() {
@@ -55,6 +55,7 @@ public class VideoService {
 
         return new ArrayList<>(randomVideos);
     }
+
     public List<Video> getPreferenceRandomVideos(List<Integer> gamesId) {
 
 

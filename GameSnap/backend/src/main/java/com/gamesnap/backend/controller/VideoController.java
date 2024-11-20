@@ -1,6 +1,8 @@
 package com.gamesnap.backend.controller;
 
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.gamesnap.backend.dto.LikeStatusRequestDto;
 import com.gamesnap.backend.dto.LikeStatusResponseDto;
 import com.gamesnap.backend.dto.VideoRequestDto;
@@ -10,9 +12,13 @@ import com.gamesnap.backend.repository.VideoLikeRepository;
 import com.gamesnap.backend.service.VideoLikeService;
 import com.gamesnap.backend.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,11 +26,43 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/video")
 public class VideoController {
+
+    @Autowired
+    private AmazonS3Client amazonS3Client;
     @Autowired
     private VideoService videoService;
     @Autowired
     private VideoLikeService videoLikeService;
 
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("file")MultipartFile file){
+
+
+        // 비디오 파일인지 확인
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("video/")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비디오 파일만 업로드 가능합니다.");
+        }
+
+        try{
+            String fileName = file.getOriginalFilename();
+            String fileUrl = "https://"+bucket+"/test"+fileName;
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(file.getContentType());
+            metadata.setContentLength(file.getSize());
+
+            amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
+            return ResponseEntity.ok(fileUrl);
+
+        } catch (IOException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @PostMapping("/random")
     public List<VideoResponseDto> getPreferenceVideos(@RequestBody VideoRequestDto videoRequestDto){
@@ -72,6 +110,8 @@ public class VideoController {
         LikeStatusResponseDto likeStatusResponseDto = videoLikeService.toggleLike(videoId,likeStatusRequestDto.getUserId());
         return ResponseEntity.ok(likeStatusResponseDto);
     }
+
+
 
 
 
