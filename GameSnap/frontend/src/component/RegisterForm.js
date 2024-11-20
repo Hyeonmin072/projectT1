@@ -181,6 +181,7 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
       show: !!formData.tel
     });
   }, [formData.tel]);
+  
 
   useEffect(() => {
     // 비밀번호 유효성 검사
