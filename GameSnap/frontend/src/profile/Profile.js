@@ -17,6 +17,11 @@ const Profile = () => {
     navigate("/profile/edit");
   };
 
+  // 비밀번호 수정 화면으로 이동
+  const handlePasswordEdit = () => {
+    navigate("/profile/edit-password");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8">
       <div className="bg-white shadow-md rounded-lg w-full max-w-md p-6">
@@ -51,6 +56,12 @@ const Profile = () => {
             </span>
           </div>
 
+          {/* 소개글 */}
+          <div className="flex justify-between items-center">
+            <label className="font-semibold">자기소개:</label>
+            <span>{userData?.content || "정보 없음"}</span>
+          </div>
+
           {/* 비밀번호 */}
           <div className="flex justify-between items-center">
             <label className="font-semibold">비밀번호:</label>
@@ -60,10 +71,10 @@ const Profile = () => {
                 : "*".repeat(userData?.password?.length || 8)}
             </span>
             <button
-              onClick={togglePasswordVisibility}
-              className="text-sm text-green-500 hover:text-green-700 px-3 py-1 rounded border border-green-500"
+              onClick={handlePasswordEdit}
+              className="text-sm text-blue-500 hover:text-blue-700 px-3 py-1 rounded border border-blue-500"
             >
-              {showPassword ? "숨기기" : "보기"}
+              비밀번호 수정
             </button>
           </div>
         </div>

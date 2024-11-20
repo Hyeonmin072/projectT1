@@ -55,10 +55,9 @@ public class Member {
         this.createdate = LocalDate.now();
     }
 
-    public void MemberUpdate(String name, String content, List<MemberGame> memberGames) {
+    public void MemberUpdate(String name, String content) {
         this.name = name;
         this.content = content;
-        this.memberGames = memberGames;
     }
 
     // 친구 추가 메서드

@@ -7,7 +7,9 @@ import com.gamesnap.backend.dto.MemberSimpleDto;
 import com.gamesnap.backend.dto.UpdateProfileRequestDto;
 import com.gamesnap.backend.dto.UpdateProfileResponseDto;
 import com.gamesnap.backend.entity.Friend;
+import com.gamesnap.backend.entity.Game;
 import com.gamesnap.backend.entity.MemberGame;
+import com.gamesnap.backend.repository.GameRepository;
 import com.gamesnap.backend.repository.MemberGameRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ import com.gamesnap.backend.repository.MemberRepository;
 @Slf4j
 public class MemberService {
 
+    @Autowired
+    private GameRepository gameRepository;
     @Autowired
     private MemberGameRepository memberGameRepository;
     @Autowired
@@ -107,25 +111,47 @@ public class MemberService {
     public ResponseEntity<UpdateProfileResponseDto> updateProfile(UpdateProfileRequestDto updateProfileRequestDto) {
         // ID로 회원을 찾기
         Member member = findId(updateProfileRequestDto.getId());
+        //기존에 있던 해당 멤버가 좋아하는 게임 리스트 찾기
+        List<MemberGame> prevMemberGameList = memberGameRepository.findAllByMember(member);
+        // 응답으로보내는 용도
+        List<Integer> gameIdList = new ArrayList<>();
+        List<String> gameNameList = new ArrayList<>();
 
-        List<MemberGame> preferredGameList = new ArrayList<>();
-        for(Integer memberGameId  : updateProfileRequestDto.getLikeGamesId()){
-            MemberGame memberGame = memberGameRepository.findById(memberGameId).orElse(null);
-            preferredGameList.add(memberGame);
+        // 기존 선호게임 리스트가
+        // 요청이 들어온 선호게임 리스트에 포함이 안되면 삭제하기
+        for (MemberGame prevMemberGame : prevMemberGameList){
+            int prevMemberGameId = prevMemberGame.getGame().getId();
+            if(!updateProfileRequestDto.getLikeGamesId().contains(prevMemberGameId)){
+                memberGameRepository.delete(prevMemberGame);
+            }else{
+                gameIdList.add(prevMemberGame.getGame().getId());
+                gameNameList.add(prevMemberGame.getGame().getName());
+            }
+        }
+
+        // 요청이 들어온 선호 게임 리스트가
+        // 기존 리스트에 포함이 안되어있으면 추가하기
+        for(Integer GameId  : updateProfileRequestDto.getLikeGamesId()){
+            Game game = gameRepository.findById(GameId).orElse(null);
+            if(!memberGameRepository.findByGameAndMember(game,member).isPresent()){
+                MemberGame memberGame = new MemberGame(member,game);
+                memberGameRepository.save(memberGame);
+                gameIdList.add(game.getId());
+                gameNameList.add(game.getName());
+            }
         }
 
         // memberUpdate 메서드 호출하여 회원 정보 업데이트
         member.MemberUpdate(
                 updateProfileRequestDto.getName(),
-                updateProfileRequestDto.getContent(),
-                preferredGameList);
+                updateProfileRequestDto.getContent());
 
 
         UpdateProfileResponseDto responseDto = new UpdateProfileResponseDto(member.getName(),
                 member.getContent(),
-                updateProfileRequestDto.getLikeGamesId(),
-                updateProfileRequestDto.getLikeGamesName());
-        return ResponseEntity.ok(responseDto);
+                gameIdList,
+                gameNameList);
+        return ResponseEntity.status(200).body(responseDto);
 
     }
 

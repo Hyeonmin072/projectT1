@@ -75,10 +75,14 @@ const SetProfile = () => {
 
       const response = await ProfilePage.updateProfile(updatedUserInfo);
       console.log("response.data",response);
+      console.log("response.status", response.status);
 
-      if (response.status === 200) {
-        const updatedUserData = { ...userInfo, ...response.data };
-        setUserData(updatedUserData);
+      if (response) {
+        setUserData((prevUserData) => ({
+          ...prevUserData,   // 기존 데이터 유지
+          ...response // 새로운 값 병합
+        }));
+        console.log("userData:",userData);
         alert("프로필이 성공적으로 업데이트되었습니다.");
         navigate("/profile");
       }
