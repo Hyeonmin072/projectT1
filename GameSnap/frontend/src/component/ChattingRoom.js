@@ -25,7 +25,10 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
     const createOrJoinChatRoom = async () => {
       try {
         const checkResponse = await axios.get('http://localhost:1111/checkMessageRoom', {
-          params: { makerId: 1, guestId: 2 },
+          params: {
+            makerId: userData.id,
+            guestId: friend.id 
+          },
           withCredentials: true,
         });
 
@@ -37,8 +40,8 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
         } else {
           console.log('채팅방 개설 로직 실행');
           const response = await axios.post('http://localhost:1111/personal', {
-            makerId: 1,
-            guestId: 2,
+            makerId: userData.id,
+            guestId: friend.id,
           });
           setMessageRoomId(response.data.messageRoomId);
           connectWebSocket(response.data.messageRoomId);

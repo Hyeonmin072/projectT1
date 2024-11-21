@@ -19,6 +19,12 @@ const Community = ({ isOpen, onClose }) => {
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [friendRequests, setFriendRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  
+
+  const handleFriendClick = (friend) => {
+    setSelectedFriend(friend);
+    setIsChatOpen(true);
+  };
 
   // 친구 목록 불러오기
   useEffect(() => {
@@ -44,6 +50,7 @@ const Community = ({ isOpen, onClose }) => {
       alert("검색어를 입력해주세요."); // 공백만 입력한 경우 경고 메시지
       return; // 검색을 막음
     }
+    
     
     try {
       const results = await FriendAxios.searchMember(searchNickname, userData.id);
@@ -116,41 +123,7 @@ const Community = ({ isOpen, onClose }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [chats, setChats] = useState([]);
 
-  useEffect(() => {
-    // 더미 채팅 데이터
-    setChats([
-      {
-        id: 1,
-        name: "김정훈",
-        lastMessage: "네, 알겠습니다. 다음에 봐요!",
-        unreadCount: 3
-      },
-      {
-        id: 2,
-        name: "김현민",
-        lastMessage: "오늘 회의 몇시에 하나요?",
-        unreadCount: 1
-      },
-      {
-        id: 3,
-        name: "김형섭",
-        lastMessage: "API 문서는 안쓰나요?",
-        unreadCount: 2
-      }
-    ]);
-  }, []);
   
-  useEffect(() => {
-    // 예시 데이터
-    setLastChatMessage({
-      sender: "홍길동",
-      content: "네, 알겠습니다. 다음에 봐요!",
-      time: "방금",
-      isNew: true
-    });
-    setUnreadCount(3);
-  }, []);
-
   return (
     
     <>
@@ -228,7 +201,9 @@ const Community = ({ isOpen, onClose }) => {
             {/* 친구 목록 */}
             <div className="space-y-2">
               {filteredFriends.map(friend => (
-                <div key={friend.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 group">
+                <div key={friend.id} 
+                onClick={() => handleFriendClick(friend)}
+                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 group">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gray-200 rounded-full" />
                     <div>
