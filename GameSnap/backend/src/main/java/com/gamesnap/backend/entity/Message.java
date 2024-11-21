@@ -1,43 +1,41 @@
 package com.gamesnap.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Message {
+
     @Id @GeneratedValue
     @Column(name = "ms_id")
-    private int id;
+    private Long id;
 
     @Column(name = "ms_content")
     private String content;
 
-    @Column(name = "ms_createdate")
-    private LocalDateTime createdate;
+    @Column(name = "ms_created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "send_id")
-    private Member sendMember;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receive_id")
-    private Member receiveMember;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "msr_id")
+    @JoinColumn(name="ms_room_id")
     private MessageRoom messageRoom;
 
-    protected Message() {
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ms_member_id")
+    private Member member;
 
-    public Message(String content, LocalDateTime createdate, Member sendMember, Member receiveMember, MessageRoom messageRoom) {
+    public Message(String content, MessageRoom messageRoom, Member member) {
         this.content = content;
-        this.createdate = LocalDateTime.now();
-        this.sendMember = sendMember;
-        this.receiveMember = receiveMember;
+        this.createdAt = LocalDateTime.now();
         this.messageRoom = messageRoom;
+        this.member = member;
     }
 }
