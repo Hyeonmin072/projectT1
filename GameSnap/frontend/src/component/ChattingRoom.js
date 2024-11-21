@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Send } from 'lucide-react';
 import axios from 'axios';
 import SockJS from 'sockjs-client';
@@ -17,6 +17,15 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const updateMessages = useCallback((newMessage) => {
+    setMessages(prev => {
+      const isDuplicate = prev.some(msg => msg.id === newMessage.id);
+      if (isDuplicate) return prev;
+      return [...prev, newMessage];
+    });
+  }, []);
+
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -24,6 +33,10 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
   useEffect(() => {
     const createOrJoinChatRoom = async () => {
       try {
+        console.log('현재 사용자 ID:', userData?.id);
+        console.log('선택된 친구 ID:', friend?.id);
+        console.log('전체 userData:', userData);
+        console.log('전체 friend 정보:', friend);
         const checkResponse = await axios.get('http://localhost:1111/checkMessageRoom', {
           params: {
             makerId: userData.id,
@@ -47,6 +60,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
           connectWebSocket(response.data.messageRoomId);
         }
       } catch (error) {
+        
           console.error('Error checking or creating chat room:', error);
       }
     };
@@ -67,17 +81,18 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
       const client = Stomp.over(socket);
 
       client.connect({}, () => {
+        console.log('WebSocket Connected');
         client.subscribe(`/sub/channel/${roomId}`, (messageOutput) => {
           const message = JSON.parse(messageOutput.body);
-
-          setMessages((prev) => {
-            const isDuplicate = prev.some((msg) => msg.id === message.id);
-            if (isDuplicate) return prev;
-            return [...prev, message];
-          });
+          // 메시지 수신 시간 로깅
+          console.log('Message received at:', new Date().toISOString());
+          
+          updateMessages(message);
         });
+      }, (error) => {
+        console.error('WebSocket connection error:', error);
       });
-
+    
       stompClientRef.current = client;
     };
 
