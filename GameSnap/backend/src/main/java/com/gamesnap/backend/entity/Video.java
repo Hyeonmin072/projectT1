@@ -28,7 +28,7 @@ public class Video {
     @Column(name = "v_createdate")
     LocalDateTime createDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "m_id")
     Member member;
 
@@ -42,19 +42,19 @@ public class Video {
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
     List<VideoComment> videoComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<VideoLike> videoLikes = new ArrayList<>();
 
 
 
     public Video(){}
 
-    public Video(String title,String desc,String url,Integer view,LocalDateTime createDate,Member member,Game game){
+    public Video(String title,String desc,String url,Integer view,Member member,Game game){
         this.title = title;
         this.desc=desc;
         this.url=url;
         this.view=view;
-        this.createDate=createDate;
+        this.createDate=LocalDateTime.now();
         this.member=member;
         this.game=game;
 

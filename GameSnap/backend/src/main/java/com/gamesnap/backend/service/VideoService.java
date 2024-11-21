@@ -1,5 +1,7 @@
 package com.gamesnap.backend.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.gamesnap.backend.dto.LikeStatusResponseDto;
 import com.gamesnap.backend.entity.Game;
 import com.gamesnap.backend.entity.Member;
@@ -10,14 +12,28 @@ import com.gamesnap.backend.repository.MemberRepository;
 import com.gamesnap.backend.repository.VideoLikeRepository;
 import com.gamesnap.backend.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
+@Transactional
 public class VideoService {
 
-
+    @Autowired
+    private AmazonS3Client amazonS3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+    @Autowired
+    private MemberService memberService;
+    @Autowired
+    private GameService gameService;
     @Autowired
     private VideoLikeRepository videoLikeRepository;
     @Autowired
@@ -26,7 +42,6 @@ public class VideoService {
     private VideoRepository videoRepository;
     @Autowired
     private MemberRepository memberRepository;
-
 
 
     public List<Video> getRandomVideos() {
@@ -55,6 +70,7 @@ public class VideoService {
 
         return new ArrayList<>(randomVideos);
     }
+
     public List<Video> getPreferenceRandomVideos(List<Integer> gamesId) {
 
 
@@ -91,6 +107,24 @@ public class VideoService {
         }
 
         return new ArrayList<>(randomVideos);
+    }
+    public ResponseEntity<String> uploadFile(MultipartFile file, String fileUrl, String fileName, Integer userId){
+        Member member = memberService.findId(userId);
+        Game game = gameService.findId(3);
+        try{
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(file.getContentType());
+            metadata.setContentLength(file.getSize());
+            amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
+
+            Video video = new Video(fileName,"테스트영상",fileUrl,10,member,game);
+            videoRepository.save(video);
+
+            return ResponseEntity.ok(fileUrl);
+        }catch (IOException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 

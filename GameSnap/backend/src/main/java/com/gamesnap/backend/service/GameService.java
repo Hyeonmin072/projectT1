@@ -25,4 +25,6 @@ public class GameService {
         }
         return gameListDtos;
     }
+
+    public Game findId(Integer gameId){return gameRepository.findById(gameId).orElse(null);}
 }

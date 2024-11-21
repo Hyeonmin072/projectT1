@@ -11,9 +11,15 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
+<<<<<<< HEAD
                 .allowedOrigins("*")
                 .allowedMethods("*")
+=======
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")  // 명시적으로 HTTP 메소드 설정
+>>>>>>> S3Connection
                 .allowedHeaders("*")
                 .allowCredentials(true);
+
     }
 }

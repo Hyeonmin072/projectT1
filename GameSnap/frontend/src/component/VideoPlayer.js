@@ -3,6 +3,7 @@ import { Heart, MessageCircle, Share2 } from "lucide-react";
 
 const VideoPlayer = ({ video, onLike, isLiked, likes, onCommentClick, commentCount, onShare }) => {
     return (
+      
       <div className="flex gap-4 w-[1200px] -mt-20">
         {/* 동영상 플레이어 */}
         <div className="relative flex-1 bg-black aspect-video rounded-lg overflow-hidden">
@@ -17,6 +18,7 @@ const VideoPlayer = ({ video, onLike, isLiked, likes, onCommentClick, commentCou
                   loop
                 >
                   <source src={video.streamUrl} type="video/mp4" />
+                
                   동영상을 재생할 수 없습니다.
                 </video>
               )}
@@ -58,6 +60,6 @@ const VideoPlayer = ({ video, onLike, isLiked, likes, onCommentClick, commentCou
         </div>
       </div>
     );
-  };
+  console.log("videoStreamUrl:",video.streamUrl);};
   
   export default VideoPlayer;

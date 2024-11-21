@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class VideoCommentController {
     private MemberService memberService;
 
     @GetMapping("/{videoId}/comments")
+    @Transactional
     public ResponseEntity<List<VideoCommentResponseDto>> getComments(@PathVariable Integer videoId){
         List<VideoComment> comments = videoCommentService.getCommentsByVideoId(videoId);
 
