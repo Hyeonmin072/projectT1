@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface MessageRoomRepository extends JpaRepository<MessageRoom, Integer> {
     Optional<MessageRoom> findById(String roomId);
 
-    @Query("select msr from MessageRoom msr join msr.messageRoomMembers msrm1 join msr.messageRoomMembers msrm2 where msrm1.member.id = :makerId and  msrm2.member.id = :guestId")
+    @Query("select msr from MessageRoom msr join msr.messageRoomMembers msrm1 join msr.messageRoomMembers msrm2 where (msrm1.member.id = :makerId and msrm2.member.id = :guestId) or (msrm1.member.id = :guestId and msrm2.member.id = :makerId)")
     Optional<MessageRoom> findByMembers(@Param("makerId") Integer makerId,@Param("guestId") Integer guestId);
 
 
