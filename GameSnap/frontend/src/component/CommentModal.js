@@ -68,7 +68,7 @@ const CommentModal = ({ isOpen, onClose, videoId }) => {
     return (
         <div className={`
             fixed inset-0 bg-black/50 flex items-center justify-center z-50
-            transition-all duration-300 ease-in-out
+            transition-all duration-300 ease-in-out pt-[150px]
             ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
         `}>
             <div className={`
