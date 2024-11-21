@@ -37,6 +37,8 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
           fetchMessages(checkResponse.data);
           connectWebSocket(checkResponse.data);
           console.log("채팅방 아이디 : ", checkResponse.data)
+          console.log("내 아이디 : ", userData.id)
+          console.log("상대 아이디 : ", friend.id)
         } else {
           console.log('채팅방 개설 로직 실행');
           const response = await axios.post('http://localhost:1111/personal', {
