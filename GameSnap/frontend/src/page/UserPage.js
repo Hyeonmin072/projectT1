@@ -29,6 +29,7 @@ const UserPage = () => {
     const fetchVideos = async () => {
       try {
         if (userData?.likeGamesId?.length > 0) {
+          console.log("비디오 가져오는중");
           const fetchedVideos = await VideoAxios.getPreferenceRandomVideo(userData.likeGamesId, userData.id); // 선호게임 랜덤 비디오 요청
           console.log("PreferenceRandomVideo:Data",fetchedVideos);
           if (fetchedVideos.length === 0) {

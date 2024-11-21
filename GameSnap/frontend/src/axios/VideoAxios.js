@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:1111'+'/video', // 백엔드 URL
+    baseURL: 'http://localhost:1111/video', // 백엔드 URL
 });
 
 const handleError = (error) => {
@@ -23,6 +23,8 @@ export const ToggleLike = async (videoId, memberId) => {
 };
 
 export const getPreferenceRandomVideo = async (likeGamesId, userId) => {
+    console.log("likeGamesId:",likeGamesId,);
+    console.log("userId:",userId);
     try {
         const response = await apiClient.post('/preferenceRandom', {
             gamesId: likeGamesId,
@@ -65,10 +67,12 @@ export const addComment = async (commentData) => {
 };
 
 // 파일 업로드 기능 추가
-export const uploadFile = async (file) => {
+export const uploadFile = async (file,userId) => {
     const formData = new FormData();
     formData.append('file', file);  // 파일을 FormData에 첨부
-    console.log("파일 보내기전");
+    formData.append('userId', userId);
+    console.log("userId:",userId);
+    console.log("formData:",formData.values);
     try {
         const response = await apiClient.post('/upload', formData);
         console.log("파일 보낸후");

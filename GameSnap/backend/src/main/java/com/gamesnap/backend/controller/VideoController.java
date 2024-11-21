@@ -34,12 +34,12 @@ public class VideoController {
     @Autowired
     private VideoLikeService videoLikeService;
 
-
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file")MultipartFile file){
+    public ResponseEntity<String> uploadFile(@RequestParam("file")MultipartFile file,
+                                             @RequestParam("userId")Integer userId){
 
 
         // 비디오 파일인지 확인
@@ -48,20 +48,10 @@ public class VideoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비디오 파일만 업로드 가능합니다.");
         }
 
-        try{
-            String fileName = file.getOriginalFilename();
-            String fileUrl = "https://"+bucket+"/test"+fileName;
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType(file.getContentType());
-            metadata.setContentLength(file.getSize());
+        String fileName = file.getOriginalFilename();
+        String fileUrl = "https://"+bucket+"/test"+fileName;
+        return videoService.uploadFile(file,fileUrl,fileName,userId);
 
-            amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
-            return ResponseEntity.ok(fileUrl);
-
-        } catch (IOException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
     }
 
     @PostMapping("/random")
@@ -85,6 +75,9 @@ public class VideoController {
     }
 
     @PostMapping("/preferenceRandom")
+//    public ResponseEntity<String> getRandomVideos(@RequestBody VideoRequestDto videoRequestDto) {
+//        return ResponseEntity.status(200).body("됐다");
+//    }
     public List<VideoResponseDto> getRandomVideos(@RequestBody VideoRequestDto videoRequestDto) {
         // 랜덤 비디오 목록을 가져옴
         List<Video> videos = videoService.getPreferenceRandomVideos(videoRequestDto.getGamesId());

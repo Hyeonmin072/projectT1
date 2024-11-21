@@ -49,12 +49,12 @@ public class Video {
 
     public Video(){}
 
-    public Video(String title,String desc,String url,Integer view,LocalDateTime createDate,Member member,Game game){
+    public Video(String title,String desc,String url,Integer view,Member member,Game game){
         this.title = title;
         this.desc=desc;
         this.url=url;
         this.view=view;
-        this.createDate=createDate;
+        this.createDate=LocalDateTime.now();
         this.member=member;
         this.game=game;
 

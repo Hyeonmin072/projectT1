@@ -2,12 +2,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { MonitorUp, X } from 'lucide-react';
 import * as VideoAxios from '../axios/VideoAxios';  // apiClient import
+import { useAuth } from '../context/AuthContext';
 
 const FileUploadModal = ({ isOpen, onClose }) => {
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [uploadError, setUploadError] = useState(null);  // 업로드 오류 상태 추가
+  const { userData } = useAuth();
 
   useEffect(() => {
     if (isOpen) {
@@ -36,9 +38,10 @@ const FileUploadModal = ({ isOpen, onClose }) => {
 
   const handleFileSelect = async (e) => {
     const file = e.target.files[0];
+    console.log(file);
     if (file) {
       try {
-        const fileUrl = await VideoAxios.uploadFile(file);  // 파일 업로드
+        const fileUrl = await VideoAxios.uploadFile(file,userData.id);  // 파일 업로드
         console.log("파일 업로드 성공:", fileUrl);
       } catch (error) {
         setUploadError('파일 업로드 중 오류 발생. 다시 시도해 주세요.');
