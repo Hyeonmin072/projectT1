@@ -48,8 +48,10 @@ export const AuthProvider = ({ children }) => {
     console.log("Saving user data:", userData); // 디버깅용
     sessionStorage.setItem('token', token);
     sessionStorage.setItem('user', JSON.stringify(userData));
+    
     setIsLoggedIn(true);
     setUserData(userData);
+    
   };
 
   // 로그아웃 함수
