@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
+@Transactional
 public class VideoService {
 
     @Autowired
@@ -116,8 +117,8 @@ public class VideoService {
             metadata.setContentLength(file.getSize());
             amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
 
-//            Video video = new Video(fileName,"테스트영상",fileUrl,10,member,game);
-//            videoRepository.save(video);
+            Video video = new Video(fileName,"테스트영상",fileUrl,10,member,game);
+            videoRepository.save(video);
 
             return ResponseEntity.ok(fileUrl);
         }catch (IOException e){

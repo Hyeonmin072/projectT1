@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,12 +50,13 @@ public class VideoController {
         }
 
         String fileName = file.getOriginalFilename();
-        String fileUrl = "https://"+bucket+"/test"+fileName;
+        String fileUrl = "https://"+bucket+".s3.ap-northeast-2.amazonaws.com/"+fileName;
         return videoService.uploadFile(file,fileUrl,fileName,userId);
 
     }
 
     @PostMapping("/random")
+    @Transactional
     public List<VideoResponseDto> getPreferenceVideos(@RequestBody VideoRequestDto videoRequestDto){
 
         List<Video> videos = videoService.getRandomVideos();
@@ -75,6 +77,7 @@ public class VideoController {
     }
 
     @PostMapping("/preferenceRandom")
+    @Transactional
 //    public ResponseEntity<String> getRandomVideos(@RequestBody VideoRequestDto videoRequestDto) {
 //        return ResponseEntity.status(200).body("됐다");
 //    }

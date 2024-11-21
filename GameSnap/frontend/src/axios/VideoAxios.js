@@ -30,6 +30,7 @@ export const getPreferenceRandomVideo = async (likeGamesId, userId) => {
             gamesId: likeGamesId,
             memberId: userId,
         });
+        console.log(response.data);
         return response.data;
     } catch (error) {
         handleError(error);
@@ -42,6 +43,7 @@ export const getRandomVideo = async (userId) => {
         const response = await apiClient.post('/random', {
             memberId: userId,
         });
+        console.log(response.data);
         return response.data;
     } catch (error) {
         handleError(error);
