@@ -88,13 +88,13 @@ class BackendApplicationTests {
 
 
             videoRepository.save(new Video(
-                    "테스트영상1","테스트영상설명","testurl",100,LocalDateTime.now(),member,game)
+                    "테스트영상1","테스트영상설명","testurl",100,member,game)
             );
             videoRepository.save(new Video(
-                    "테스트영상2","테스트영상설명2","testurl2",114,LocalDateTime.now(),findMember2.get(),findGame2.get())
+                    "테스트영상2","테스트영상설명2","testurl2",114,findMember2.get(),findGame2.get())
             );
             videoRepository.save(new Video(
-                    "테스트영상3","테스트영상설명3","testurl3",37,LocalDateTime.now(),findMember3.get(),findGame3.get())
+                    "테스트영상3","테스트영상설명3","testurl3",37,findMember3.get(),findGame3.get())
             );
 
         }
