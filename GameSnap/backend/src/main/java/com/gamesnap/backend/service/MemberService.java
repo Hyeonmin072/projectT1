@@ -6,20 +6,14 @@ import com.gamesnap.backend.dto.MemberResponseDto;
 import com.gamesnap.backend.dto.MemberSimpleDto;
 import com.gamesnap.backend.dto.UpdateProfileRequestDto;
 import com.gamesnap.backend.dto.UpdateProfileResponseDto;
-import com.gamesnap.backend.entity.Friend;
-import com.gamesnap.backend.entity.Game;
-import com.gamesnap.backend.entity.MemberGame;
-import com.gamesnap.backend.repository.GameRepository;
-import com.gamesnap.backend.repository.MemberGameRepository;
+import com.gamesnap.backend.entity.*;
+import com.gamesnap.backend.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.gamesnap.backend.entity.Member;
-import com.gamesnap.backend.repository.MemberRepository;
 
 
 @Service
@@ -33,6 +27,12 @@ public class MemberService {
     private MemberGameRepository memberGameRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private MessageRoomRepository messageRoomRepository;
+    @Autowired
+    private MessageRepository messageRepository;
+    @Autowired
+    private MessageRoomMemberRepository messageRoomMemberRepository;
 //    @Autowired
 //    private ImageService imageService;
 
@@ -243,6 +243,17 @@ public class MemberService {
     }
 
     public ResponseEntity<String> deleteFriend(Integer myId, Integer friendId) {
+        //친구와 관련된 채팅방 찾기
+        Optional<MessageRoom> optionalFindMessageRoom = messageRoomRepository.findByMembers(myId, friendId);
+        if (optionalFindMessageRoom.isPresent()) {
+            MessageRoom findMessageRoom = optionalFindMessageRoom.get(); // 채팅방 꺼내기
+            findMessageRoom.changeLastMsg(null); //채팅방의 마지막 메시지를 널로 바꿔주면서, 제약조건을 제거한다
+            messageRepository.deleteByMessageRoom(findMessageRoom); // 채팅방의 모든 메시지 삭제
+            messageRoomMemberRepository.deleteByMessageRoom(findMessageRoom); // 채팅방의 모든 멤버 삭제
+            messageRoomRepository.delete(findMessageRoom); // 채팅방 삭제
+        }
+
+
         Optional<Member> optionalFirstMember = memberRepository.findById(myId);
         Optional<Member> optionalSecondMember = memberRepository.findById(friendId);
         if (optionalFirstMember.isEmpty() || optionalSecondMember.isEmpty()) {

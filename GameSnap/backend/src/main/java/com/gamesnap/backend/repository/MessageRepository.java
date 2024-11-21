@@ -9,4 +9,6 @@ import java.util.List;
 public interface MessageRepository extends JpaRepository<Message, Integer> {
 
     List<Message> findByMessageRoom(MessageRoom messageRoom);
+
+    void deleteByMessageRoom(MessageRoom findMessageRoom);
 }
