@@ -6,11 +6,10 @@ import Navbar from './component/Navbar';
 import Footer from './component/Footer';  
 import MainPage from './page/MainPage'; 
 import UserPage from './page/UserPage';  
+import ProfilePage from './page/ProfilePage';
 import { AuthProvider } from './context/AuthContext';
 import FreeBoardList from './page/FreeBoardList';  
 import FreeBoardWrite from './page/FreeBoardWrite';
-import Profile from './profile/Profile';
-import SetProfile from './profile/UpdateProfile';
 import FreeBoardPage from './page/FreeBoardPage';
 import ChatList from './page/ChatList';
 import ModifyPage from './page/ModifyPage';
@@ -37,8 +36,7 @@ function AnimatedRoutes() {
         <Route path="/board/:postId" element={<FreeBoardPage />} />
         <Route path="/chatList" element={<ChatList />} />
         <Route path="/board/modify/:postId" element={<ModifyPage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/edit" element={<SetProfile />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
       <Footer />
     </AnimatePresence>
