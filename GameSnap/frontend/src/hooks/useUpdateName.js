@@ -12,8 +12,8 @@ export const useUpdateName = () => {
     mutationKey: ['updateName'],
     mutationFn: async (name) => {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:1111/updataName', 
-        {   name, 
+      const response = await axios.post('http://localhost:1111/profile/updateName', 
+        {   userName: name, 
             userId: userData.id,
         },
         {

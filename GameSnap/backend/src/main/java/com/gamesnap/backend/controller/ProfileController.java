@@ -26,13 +26,13 @@ public class ProfileController {
     }
 
     @PostMapping("/updateName")
-    public ResponseEntity<String> updateName(@RequestParam("name")String name,
+    public ResponseEntity<String> updateName(@RequestParam("userName")String name,
                                              @RequestParam("userId")Integer memberId){
 
         return memberService.updateName(name,memberId);
     }
 
-    @PostMapping("/uploadImage")
+    @PostMapping("/uploadImg")
     public ResponseEntity<String> updateImage(@RequestParam("image")MultipartFile file,
                                               @RequestParam("userId")Integer memberId){
 

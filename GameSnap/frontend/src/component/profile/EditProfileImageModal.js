@@ -21,7 +21,7 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
         formData.append('userId', userData.id);
 
         const token = localStorage.getItem('token');
-         const response = await axios.post('http://localhost:8080/Profile/uploadImg', 
+         const response = await axios.post('http://localhost:8080/profile/uploadImg', 
         formData,
         {
           headers: {
