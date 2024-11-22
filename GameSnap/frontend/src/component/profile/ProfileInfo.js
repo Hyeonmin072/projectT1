@@ -6,6 +6,8 @@ import { useUpdateContent } from '../../hooks/useUpdateContent';
 import ProfileItem from './ProfileItem';
 import EditContentModal from './EditContentModal';
 import EditNameModal from './EditNameModal';
+import EditProfileImageModal from './EditProfileImageModal';
+
 
 const ProfileInfo = ({ handlePasswordEdit }) => {
   const { userData } = useAuth();

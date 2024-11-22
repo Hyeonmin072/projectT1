@@ -1,18 +1,26 @@
 // components/profile/ProfileHeader.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Camera, Edit } from 'lucide-react';
 import { useAuth } from "../../context/AuthContext"; // 경로는 실제 위치에 맞게 수정
 import EditProfileImageModal from './EditProfileImageModal';
 
 const ProfileHeader = ({handleEditProfile }) => {
-  const { userData } = useAuth(); // AuthContext에서 직접 userData 가져오기
+  const { userData } = useAuth();
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  
+  useEffect(() => {
+    console.log('ProfileHeader userData 변경:', userData);
+}, [userData]);
+  
+  console.log('profileImage:', userData?.image);  
+  console.log('userData:', userData);
+  
   return (
     <div className="p-6">
       <div className="flex flex-col items-center">
         <div className="relative">
           <div className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden">
-            {userData?.image ? (
+            {userData?.image ? ( 
               <img 
                 src={userData.image} 
                 alt="프로필 사진" 
@@ -37,7 +45,7 @@ const ProfileHeader = ({handleEditProfile }) => {
       <EditProfileImageModal
         isOpen={isImageModalOpen}
         onClose={() => setIsImageModalOpen(false)}
-        currentImage={userData?.profileImage}
+        currentImage={userData?.image}  // 이미 profileImage로 되어있음
       />
     </div>
   );
