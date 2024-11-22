@@ -318,8 +318,9 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
 
   // 채팅방 생성 또는 참여
   const createOrJoinChatRoom = async () => {
+    
     try {
-      console.log('Creating/Joining chat room...');
+      console.log('채팅방에 생성/참여 중....');
       console.log('User ID:', userData?.id);
       console.log('Friend ID:', friend?.id);
 
@@ -332,22 +333,22 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
       });
 
       if (checkResponse.status === 200 && checkResponse.data !== "해당 멤버들로 개설된 채팅방을 찾을 수 없습니다.") {
-        console.log('Existing chat room found:', checkResponse.data);
+        console.log('이미 존재하는 채팅방을 찾았어요 :', checkResponse.data);
         setMessageRoomId(checkResponse.data);
         await fetchMessages(checkResponse.data);
         connectWebSocket(checkResponse.data);
       } else {
-        console.log('Creating new chat room...');
+        console.log('새 채팅방 생성중...');
         const response = await axios.post('http://localhost:1111/personal', {
           makerId: userData.id,
           guestId: friend.id,
         });
-        console.log('New chat room created:', response.data);
+        console.log('새 채팅방이 만들어졌어요:', response.data);
         setMessageRoomId(response.data.messageRoomId);
         connectWebSocket(response.data.messageRoomId);
       }
     } catch (error) {
-      console.error('Error in createOrJoinChatRoom:', error);
+      console.error('createOrJoinChatRoom에 에러 존재 :', error);
     }
   };
 
