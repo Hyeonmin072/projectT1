@@ -177,42 +177,44 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
             </div>
           </div>
 
-          {/* 버튼 영역 */}
-          <div className="flex justify-between">
+            <div className="flex justify-between items-center mt-6">
+            {/* 삭제 버튼 */}
             <button
-              type="button"
-              onClick={handleDelete}
-              disabled={!currentImage && !preview}
-              className={`flex items-center px-4 py-2 rounded-lg
+                type="button"
+                onClick={handleDelete}
+                disabled={!currentImage && !preview}
+                className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200
                 ${currentImage || preview
-                  ? 'text-red-600 hover:text-red-700 border border-red-600 hover:bg-red-50'
-                  : 'text-gray-400 border border-gray-300 cursor-not-allowed'}`}
+                    ? 'text-red-600 hover:text-red-700 border border-red-600 hover:bg-red-50'
+                    : 'text-gray-400 border border-gray-300 cursor-not-allowed'}`}
             >
-              <Trash className="w-4 h-4 mr-2" />
-              삭제
+                <Trash className="w-4 h-4 mr-2" />
+                삭제
             </button>
-            
-            <div className="space-x-2">
-              <button
+
+            {/* 저장/취소 버튼 그룹 */}
+            <div className="flex items-center gap-3">
+                <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg"
-              >
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg
+                            transition-colors duration-200 hover:bg-gray-50"
+                >
                 취소
-              </button>
-              <button
+                </button>
+                <button
                 type="submit"
                 disabled={!imageFile || uploadImageMutation.isPending}
-                className={`flex items-center px-4 py-2 rounded-lg
-                  ${imageFile && !uploadImageMutation.isPending
+                className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200
+                    ${imageFile && !uploadImageMutation.isPending
                     ? 'bg-blue-600 text-white hover:bg-blue-700'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-              >
+                >
                 <Upload className="w-4 h-4 mr-2" />
                 {uploadImageMutation.isPending ? '업로드 중...' : '저장'}
-              </button>
+                </button>
             </div>
-          </div>
+            </div>
         </form>
       </div>
     </div>

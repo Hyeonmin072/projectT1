@@ -43,7 +43,7 @@ const EditContentModal = ({ isOpen, onClose, onSubmit, initialContent }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg"
+              className="px-5 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg"
             >
               취소
             </button>
