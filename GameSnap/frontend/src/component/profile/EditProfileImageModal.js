@@ -24,13 +24,6 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
         for (let pair of formData.entries()) {
             console.log('FormData entry:', pair[0], pair[1]);
         }
-<<<<<<< HEAD
-      );
-      console.log(response.data);
-      return response.data;
-      
-
-=======
 
         // 파일 정보도 확인
         console.log('File info:', {
@@ -43,7 +36,6 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
         console.log(response.data);
         console.log(response);
         return response.data;
->>>>>>> 5601f1c61d122d4025617bfe7eed696a3e319c67
     },
     onSuccess: (data) => {
       updateUserData({
