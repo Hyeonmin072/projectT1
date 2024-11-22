@@ -25,20 +25,39 @@ apiClient.interceptors.request.use((config) => {
 export const profileAPI = {
 
   fetchUserProfile: async (userId) => {
-    return await apiClient.get(`/profile/uploadImg`, { params: { userId } });
+    const response = await apiClient.get(`/profile/`, { 
+      params: { userId } 
+    });
+    return response.data;
   },
 
   fetchUserVideos: async (userId) => {
-    return await apiClient.get(`/profile/uploadImg/videos`, { params: { userId } });
+    const response = await apiClient.get(`/profile/videos`, { 
+      params: { userId } 
+    });
+    return response.data;
   },
+
   // 프로필 이미지 업로드
   uploadImage: async (formData) => {
-    return await apiClient.post('/profile/uploadImg', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      }
-    });
-  },
+    try {
+        console.log('전송하는 formData:', formData);
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+        
+        const response = await apiClient.post('/profile/uploadImg', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+        console.log('응답:', response);
+        return response;
+    } catch (error) {
+        console.error('Error details:', error.response?.data || error);
+        throw error;
+    }
+},
 
   // 프로필 이미지 삭제
   deleteImage: async (userId) => {

@@ -16,31 +16,33 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
   const uploadImageMutation = useMutation({
     mutationFn: async (file) => {
         const formData = new FormData();
-
         formData.append('image', file);
         formData.append('userId', userData.id);
 
-        const token = localStorage.getItem('token');
-         const response = await profileAPI.uploadImage(FormData, 
-
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
+        // FormData 내용 확인
+        for (let pair of formData.entries()) {
+            console.log('FormData entry:', pair[0], pair[1]);
         }
-      );
-      return response.data;
+
+        // 파일 정보도 확인
+        console.log('File info:', {
+            name: file.name,
+            type: file.type,
+            size: file.size
+        });
+
+        const response = await profileAPI.uploadImage(formData);
+        return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-      onClose();
+        queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+        onClose();
     },
     onError: (error) => {
-      console.error('이미지 업로드 실패:', error);
-      alert('이미지 업로드에 실패했습니다.');
+        console.error('이미지 업로드 실패:', error);
+        alert('이미지 업로드에 실패했습니다.');
     }
-  });
+});
 
   // 이미지 삭제 mutation
   const deleteImageMutation = useMutation({

@@ -5,16 +5,17 @@ import { useAuth } from "../../context/AuthContext"; // 경로는 실제 위치�
 import EditProfileImageModal from './EditProfileImageModal';
 
 const ProfileHeader = ({handleEditProfile }) => {
-  const { userData } = useAuth(); // AuthContext에서 직접 userData 가져오기
+  const { userData } = useAuth();
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  
   return (
     <div className="p-6">
       <div className="flex flex-col items-center">
         <div className="relative">
           <div className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden">
-            {userData?.image ? (
+            {userData?.profileImage ? (   // .image를 .profileImage로 변경
               <img 
-                src={userData.image} 
+                src={userData.profileImage} 
                 alt="프로필 사진" 
                 className="w-full h-full object-cover"
               />
@@ -37,7 +38,7 @@ const ProfileHeader = ({handleEditProfile }) => {
       <EditProfileImageModal
         isOpen={isImageModalOpen}
         onClose={() => setIsImageModalOpen(false)}
-        currentImage={userData?.profileImage}
+        currentImage={userData?.profileImage}  // 이미 profileImage로 되어있음
       />
     </div>
   );

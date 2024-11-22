@@ -1,6 +1,7 @@
 // components/profile/EditContentModal.jsx
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { profileAPI } from '../../axios/UserProfileAxios';
 
 const EditContentModal = ({ isOpen, onClose, onSubmit, initialContent }) => {
   const [content, setContent] = useState(initialContent || '');
