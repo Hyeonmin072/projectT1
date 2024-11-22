@@ -115,6 +115,15 @@ public class MemberController {
         return memberService.searchFriend(myId);
     }
     
+    //친구 요청 조회
+    @GetMapping("/friend/request")
+
+    //친구 요청 보내기
+    @PostMapping("/friend/request/{name}")
+    public requestFriend(@PathVariable("name") String name) {
+        
+    }
+    
     //친구 추가
     @PostMapping("/friend")
     public ResponseEntity<String> addFriends(@RequestParam("myId") Integer myId, @RequestParam("targetUserId") Integer friendId) {
