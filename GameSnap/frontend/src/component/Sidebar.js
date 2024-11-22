@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import { X, Home, User, Settings, MessagesSquare, LogOut, SquareMenu, Users, MonitorUp } from 'lucide-react';
 import { Link, useHistory } from 'react-router-dom';
-import Profile from '../profile/Profile';
+import Profile from '../component/profile/ProfileInfo';
 import Community from './Community';
 import DeleteUser from './DeleteUser';
 import FileUploadModal from './FileUploadModal';
