@@ -100,6 +100,8 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
         onSubmit={handleNameSubmit}
         initialName={userData?.name}
       />
+
+      
     </div>
   );
 };
