@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { X, Upload, Camera, Trash } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import { profileAPI } from '../../axios/UserProfileAxios';
 
 const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
   const [preview, setPreview] = useState(currentImage);
@@ -21,8 +21,8 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
         formData.append('userId', userData.id);
 
         const token = localStorage.getItem('token');
-         const response = await axios.post('http://localhost:1111/profile/uploadImg', 
-        formData,
+         const response = await profileAPI.uploadImage(FormData, 
+
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -46,7 +46,7 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
   const deleteImageMutation = useMutation({
     mutationFn: async () => {
       const token = localStorage.getItem('token');
-      const response = await axios.delete('http://localhost:1111/api/users/me/profile-image',
+      const response = await profileAPI.deleteImage(userData.name,userData.id,
         {
           headers: {
             'Authorization': `Bearer ${token}`

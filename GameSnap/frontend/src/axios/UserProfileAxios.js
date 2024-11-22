@@ -1,73 +1,65 @@
-// import axios from 'axios';
-// const BaseURL= 'http://localhost:1111';
-
-// const apiClient = axios.create({
-//     baseURL: BaseURL,
-//           headers: {
-//           "Content-Type": "application/json",
-//           "Accept": 'application/json'}
-// });
-
-
-// const ProfilePage = {
-//     // 사용자 프로필 가져오기
-//     async getProfile (userid){
-//         try {
-//             const response = await apiClient.get('/getProfile' , { params: { userid } });
-//             return response.data;
-//         } catch (error) {
-//             console.error('Error fetching profile data:', error);
-//             return null; // 오류 발생 시 null 반환
-//         }
-//     },
-
-//     // 사용자 프로필 변경하기
-//     async updateProfile (updatedUserInfo){
-//         try {
-//             // PUT 요청을 사용하여 사용자 정보를 업데이트
-//             const response = await apiClient.put('/updateProfile', updatedUserInfo
-//             );
-//             return response.data;      // 서버 응답 데이터를 반환
-//         } catch (error) {
-//             console.error("Error updating profile data:", error);
-//             throw error; // 오류 발생 시 에러를 던져 상세 확인 가능
-//         }
-//     },
-
-//     async getGameList (){
-//         try{
-//             return await apiClient.get('/game');
-//         } catch(error){
-//             console.error(error);
-//         }
-//     }
-// }
-
-
-// export default ProfilePage;
-
-
-// api/profileApi.js
+// src/axios/profileAPI.js
 import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = "http://localhost:1111";
 
-export const fetchUserProfile = async (userId) => {
-  const response = await axios.get(`${BASE_URL}/users/${userId}`);
-  return response.data;
+// API 클라이언트 인스턴스 생성
+const apiClient = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  }
+});
+
+// 인증 토큰이 필요한 요청을 위한 인터셉터
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+
+
+export const profileAPI = {
+
+  fetchUserProfile: async (userId) => {
+    return await apiClient.get(`/profile/uploadImg`, { params: { userId } });
+  },
+
+  fetchUserVideos: async (userId) => {
+    return await apiClient.get(`/profile/uploadImg/videos`, { params: { userId } });
+  },
+  // 프로필 이미지 업로드
+  uploadImage: async (formData) => {
+    return await apiClient.post('/profile/uploadImg', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+  },
+
+  // 프로필 이미지 삭제
+  deleteImage: async (userId) => {
+    return await apiClient.delete(`/profile/deleteImg/${userId}`);
+  },
+
+  // 프로필 내용 업데이트
+  updateContent: async (content, userId) => {
+    return await apiClient.post('/profile/updateContent', {
+      content,
+      userId
+    });
+  },
+
+  // 프로필 이름 업데이트
+  updateName: async (userName, userId) => {
+    return await apiClient.post('/profile/updateName', {
+      userName,
+      userId
+    });
+  }
 };
 
-export const fetchUserVideos = async (userId) => {
-  const response = await axios.get(`${BASE_URL}/users/${userId}/videos`);
-  return response.data;
-};
-
-export const updateProfile = async (userId, updateData) => {
-  const response = await axios.put(`${BASE_URL}/users/${userId}`, updateData);
-  return response.data;
-};
-
-export const updatePassword = async (userId, passwordData) => {
-  const response = await axios.put(`${BASE_URL}/users/${userId}/password`, passwordData);
-  return response.data;
-};
+export default profileAPI;

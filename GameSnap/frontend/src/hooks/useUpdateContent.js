@@ -13,7 +13,7 @@ export const useUpdateContent = () => {
     mutationFn: async (content) => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.post('http://localhost:1111//Profile/updataContent', 
+        const response = await axios.post('http://localhost:1111//profile/updataContent', 
           { content,
             userId: userData.id,
           }, 
