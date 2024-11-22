@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
 
@@ -54,16 +54,6 @@ export const AuthProvider = ({ children }) => {
     
   };
 
-  const updateUserData = useCallback((newData) => {
-    console.log('AuthContext 업데이트 전:', userData);
-    console.log('새로운 데이터:', newData);
-    
-    setUserData(newData);
-    
-    // 상태 업데이트 확인
-    console.log('AuthContext 업데이트 후:', newData);
-}, []);
-
   // 로그아웃 함수
   const logout = () => {
     sessionStorage.removeItem('token');
@@ -84,7 +74,6 @@ export const AuthProvider = ({ children }) => {
       login,
       logout,
       initialRender,
-      updateUserData,
       setInitialRender
     }}>
       {children}

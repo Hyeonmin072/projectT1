@@ -1,12 +1,9 @@
 // src/axios/profileAPI.js
 import axios from 'axios';
-import { useAuth } from "../context/AuthContext";
 
 const BASE_URL = "http://localhost:1111";
 
 // API 클라이언트 인스턴스 생성
-
-
 const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -26,21 +23,21 @@ apiClient.interceptors.request.use((config) => {
 
 
 export const profileAPI = {
-  
+
   fetchUserProfile: async (userId) => {
     const response = await apiClient.get(`/profile/`, { 
       params: { userId } 
     });
     return response.data;
   },
-  
+
   fetchUserVideos: async (userId) => {
     const response = await apiClient.get(`/profile/videos`, { 
       params: { userId } 
     });
     return response.data;
   },
-  
+
   // 프로필 이미지 업로드
   uploadImage: async (formData) => {
     try {
