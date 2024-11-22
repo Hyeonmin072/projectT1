@@ -1,7 +1,10 @@
 package com.gamesnap.backend.service;
 
+import java.io.IOException;
 import java.util.*;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.gamesnap.backend.dto.MemberResponseDto;
 import com.gamesnap.backend.dto.MemberSimpleDto;
 import com.gamesnap.backend.dto.UpdateProfileRequestDto;
@@ -10,10 +13,12 @@ import com.gamesnap.backend.entity.*;
 import com.gamesnap.backend.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -33,8 +38,10 @@ public class MemberService {
     private MessageRepository messageRepository;
     @Autowired
     private MessageRoomMemberRepository messageRoomMemberRepository;
-//    @Autowired
-//    private ImageService imageService;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+    @Autowired
+    private AmazonS3Client amazonS3Client;
 
     public ResponseEntity<MemberResponseDto> login(String email, String password) {
         MemberResponseDto memberResponseDto;
@@ -107,6 +114,42 @@ public class MemberService {
         }
         return ResponseEntity.ok(response);
     }
+
+    public ResponseEntity<String> updateContent(String content,Integer memberId){
+        Member member = findId(memberId);
+
+        member.MemberUpdateContent(content);
+        return ResponseEntity.status(200).body(member.getContent());
+    }
+
+    public ResponseEntity<String> updateName(String name, Integer memberId){
+        Member member = findId(memberId);
+
+        member.MemberUpdateName(name);
+        return ResponseEntity.status(200).body(member.getName());
+    }
+
+    public ResponseEntity<String> updateImage(MultipartFile file,Integer memberId){
+        Member member = findId(memberId);
+
+        String fileName = file.getOriginalFilename();
+        String fileUrl = "https://"+bucket+".s3.ap-northeast-2.amazonaws.com/Image/"+fileName;
+        try{
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(file.getContentType());
+            metadata.setContentLength(file.getSize());
+            amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
+
+            member.MemberUpdateImage(fileUrl);
+            return ResponseEntity.status(200).body(fileUrl);
+        } catch (IOException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+
+    }
+
 
     public ResponseEntity<UpdateProfileResponseDto> updateProfile(UpdateProfileRequestDto updateProfileRequestDto) {
         // ID로 회원을 찾기

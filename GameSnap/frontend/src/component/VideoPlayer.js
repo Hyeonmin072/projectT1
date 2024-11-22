@@ -14,7 +14,7 @@ const VideoPlayer = ({ video, onLike, isLiked, likes, onCommentClick, commentCou
                   className="w-full h-full object-contain"
                   controls
                   autoPlay
-                  muted
+                  volume={0.5}
                   loop
                 >
                   <source src={video.streamUrl} type="video/mp4" />

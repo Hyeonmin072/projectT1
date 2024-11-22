@@ -60,7 +60,7 @@ public class VideoService {
         Random random = new Random();
 
         // 중복되지 않도록 비디오를 랜덤하게 선택
-        while (randomVideos.size() < 3) {
+        while (randomVideos.size() < 6) {
             int randomIndex = random.nextInt(responseVideos.size());
             Video video = responseVideos.get(randomIndex);
 

@@ -43,6 +43,8 @@ const FileUploadModal = ({ isOpen, onClose }) => {
       try {
         const fileUrl = await VideoAxios.uploadFile(file,userData.id);  // 파일 업로드
         console.log("파일 업로드 성공:", fileUrl);
+        alert("성공적으로 파일을 업로드 했습니다");
+        onClose();
       } catch (error) {
         setUploadError('파일 업로드 중 오류 발생. 다시 시도해 주세요.');
       }

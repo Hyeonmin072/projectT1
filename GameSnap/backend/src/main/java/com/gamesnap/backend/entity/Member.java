@@ -60,6 +60,18 @@ public class Member {
         this.content = content;
     }
 
+    public void MemberUpdateContent(String content){
+        this.content = content;
+    }
+
+    public void MemberUpdateName(String name){
+        this.name = name;
+    }
+
+    public void MemberUpdateImage(String image){
+        this.image = image;
+    }
+
     // 친구 추가 메서드
     public void addFriend(Member friend) {
         Friend friendship = new Friend(this, friend); // 현재 멤버의 친구 관계 생성
