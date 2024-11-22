@@ -213,7 +213,10 @@ const Community = ({ isOpen, onClose }) => {
                   </div>
                   <div className="flex gap-2 items-center">
                     <button
-                      onClick={() => handleRemoveFriend(friend.id)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // 이벤트 전파 차단
+                        handleRemoveFriend(friend.id);
+                      }}
                       className="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                     >
                       <X size={16} />
