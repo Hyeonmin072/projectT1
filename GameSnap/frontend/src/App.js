@@ -13,6 +13,7 @@ import FreeBoardWrite from './page/FreeBoardWrite';
 import FreeBoardPage from './page/FreeBoardPage';
 import ChatList from './page/ChatList';
 import ModifyPage from './page/ModifyPage';
+import UserVideosPage from './page/UserVideoPage';
 import PageTransition from './component/PageTransition';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -37,6 +38,7 @@ function AnimatedRoutes() {
         <Route path="/chatList" element={<ChatList />} />
         <Route path="/board/modify/:postId" element={<ModifyPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/videos" element={<UserVideosPage />} />
       </Routes>
       <Footer />
     </AnimatePresence>
