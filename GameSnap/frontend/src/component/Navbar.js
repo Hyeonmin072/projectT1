@@ -145,23 +145,6 @@ const Navbar = () => {
                   <User size={20} />
                   <span>{userData?.name || '사용자'}</span>
                 </button>
-                  {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                      <button
-                        onClick={() => {/* 프로필 페이지로 이동 */}}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        프로필
-                      </button>
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                      >
-                        <LogOut size={16} className="mr-2" />
-                        로그아웃
-                      </button>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
