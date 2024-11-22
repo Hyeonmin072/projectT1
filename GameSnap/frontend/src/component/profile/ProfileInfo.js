@@ -1,11 +1,30 @@
+// components/profile/ProfileInfo.jsx
 import React, { useState } from "react";
-import { useAuth } from "../../context/AuthContext"; // 경로는 실제 위치에 맞게 수정
+import { useAuth } from "../../context/AuthContext";
 import { User, Mail, Phone, Gamepad, FileText, Lock } from 'lucide-react';
+import { useUpdateContent } from '../../hooks/useUpdateContent';
 import ProfileItem from './ProfileItem';
+import EditContentModal from './EditContentModal';
 
 const ProfileInfo = ({ handlePasswordEdit }) => {
-  const { userData } = useAuth(); // AuthContext에서 직접 userData 가져오기
-  const [showPassword, setShowPassword] = useState(false); // 필요한 경우 상태 추가
+  const { userData } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const updateContentMutation = useUpdateContent();
+
+  const handleContentSubmit = (newContent) => {
+    updateContentMutation.mutate(newContent, {
+      onSuccess: () => {
+        setIsModalOpen(false);
+      },
+      onError: (error) => {
+        // 에러 처리
+        console.error('자기소개 수정 실패:', error);
+        alert('자기소개 수정에 실패했습니다.');
+      }
+    });
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
@@ -33,7 +52,12 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
         <ProfileItem 
           icon={FileText} 
           label="자기소개" 
-          value={userData?.content} 
+          value={userData?.content}
+          isContent={true}
+          action={{
+            label: "수정",
+            onClick: () => setIsModalOpen(true)
+          }}
         />
         <ProfileItem 
           icon={Lock} 
@@ -45,6 +69,13 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
           }}
         />
       </div>
+
+      <EditContentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleContentSubmit}
+        initialContent={userData?.content}
+      />
     </div>
   );
 };
