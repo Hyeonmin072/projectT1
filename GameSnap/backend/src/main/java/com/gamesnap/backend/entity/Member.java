@@ -81,7 +81,7 @@ public class Member {
     // 친구 관계 찾기 메서드
     private Friend findFriendship(Member member, Member friend) {
         for (Friend friendship : member.getFriends()) {
-            if (friendship.getSecondMember().equals(friend)) {
+            if (friendship.getSecondMember().getId() == friend.getId()) {
                 return friendship;
             }
         }
