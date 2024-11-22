@@ -5,7 +5,7 @@ import {
   User, 
   Mail, 
   Phone, 
-  GamepadTwo, 
+  Gamepad, 
   FileText, 
   Lock,
   Edit
@@ -83,7 +83,7 @@ const ProfilePage = () => {
             />
             
             <ProfileItem 
-              icon={GamepadTwo} 
+              icon={Gamepad} 
               label="선호 게임" 
               value={userData?.preferredGame?.join(", ")} 
             />
