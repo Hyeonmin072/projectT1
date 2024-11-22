@@ -30,7 +30,10 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
           }
         }
       );
+      console.log(response.data);
       return response.data;
+      
+
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userProfile'] });

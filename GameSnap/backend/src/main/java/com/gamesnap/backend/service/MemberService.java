@@ -132,9 +132,13 @@ public class MemberService {
     public ResponseEntity<String> updateImage(MultipartFile file,Integer memberId){
         Member member = findId(memberId);
 
-        String fileName = "Image/"+file.getOriginalFilename();
+        String fileName = "Image/"+member.getId()+"/"+file.getOriginalFilename();
         String fileUrl = "https://"+bucket+".s3.ap-northeast-2.amazonaws.com/"+fileName;
         try{
+            if(amazonS3Client.doesObjectExist(bucket,member.getImage())){
+                amazonS3Client.deleteObject(bucket,member.getImage());
+            }
+
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
             metadata.setContentLength(file.getSize());
