@@ -3,6 +3,7 @@ package com.gamesnap.backend.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.gamesnap.backend.dto.LikeStatusResponseDto;
+import com.gamesnap.backend.dto.UploadResponseDto;
 import com.gamesnap.backend.entity.Game;
 import com.gamesnap.backend.entity.Member;
 import com.gamesnap.backend.entity.Video;
@@ -108,7 +109,9 @@ public class VideoService {
 
         return new ArrayList<>(randomVideos);
     }
-    public ResponseEntity<String> uploadFile(MultipartFile file, String fileUrl, String fileName, Integer userId){
+
+    @Transactional
+    public ResponseEntity<UploadResponseDto> uploadFile(MultipartFile file, String fileUrl, String fileName, Integer userId){
         Member member = memberService.findId(userId);
         Game game = gameService.findId(3);
         try{
@@ -120,7 +123,8 @@ public class VideoService {
             Video video = new Video(fileName,"테스트영상",fileUrl,10,member,game);
             videoRepository.save(video);
 
-            return ResponseEntity.ok(fileUrl);
+            UploadResponseDto uploadResponseDto = new UploadResponseDto(video.getId(),video.getTitle(),video.getDesc(),video.getUrl(),video.getMember().getName());
+            return ResponseEntity.ok(uploadResponseDto);
         }catch (IOException e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -3,10 +3,7 @@ package com.gamesnap.backend.controller;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.gamesnap.backend.dto.LikeStatusRequestDto;
-import com.gamesnap.backend.dto.LikeStatusResponseDto;
-import com.gamesnap.backend.dto.VideoRequestDto;
-import com.gamesnap.backend.dto.VideoResponseDto;
+import com.gamesnap.backend.dto.*;
 import com.gamesnap.backend.entity.Video;
 import com.gamesnap.backend.repository.VideoLikeRepository;
 import com.gamesnap.backend.service.VideoLikeService;
@@ -39,14 +36,14 @@ public class VideoController {
     private String bucket;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file")MultipartFile file,
-                                             @RequestParam("userId")Integer userId){
+    public ResponseEntity<UploadResponseDto> uploadFile(@RequestParam("file")MultipartFile file,
+                                                        @RequestParam("userId")Integer userId){
 
 
         // 비디오 파일인지 확인
         String contentType = file.getContentType();
         if (contentType == null || !contentType.startsWith("video/")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비디오 파일만 업로드 가능합니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
         String fileName = file.getOriginalFilename();
