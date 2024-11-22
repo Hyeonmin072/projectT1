@@ -1,14 +1,13 @@
 package com.gamesnap.backend.controller;
 
 
+import com.gamesnap.backend.dto.ProfileUpdateContentRequestDto;
+import com.gamesnap.backend.dto.ProfileUpdateNameRequestDto;
 import com.gamesnap.backend.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -19,17 +18,15 @@ public class ProfileController {
 
 
     @PostMapping("/updateContent")
-    public ResponseEntity<String> updateContent(@RequestParam("content")String content,
-                                                @RequestParam("userId")Integer memberId){
+    public ResponseEntity<String> updateContent(@RequestBody ProfileUpdateContentRequestDto profileUpdateContentRequestDto){
 
-        return memberService.updateContent(content,memberId);
+        return memberService.updateContent(profileUpdateContentRequestDto.getContent(),profileUpdateContentRequestDto.getUserId());
     }
 
     @PostMapping("/updateName")
-    public ResponseEntity<String> updateName(@RequestParam("userName")String name,
-                                             @RequestParam("userId")Integer memberId){
+    public ResponseEntity<String> updateName(@RequestBody ProfileUpdateNameRequestDto profileUpdateNameRequestDto){
 
-        return memberService.updateName(name,memberId);
+        return memberService.updateName(profileUpdateNameRequestDto.getUserName(),profileUpdateNameRequestDto.getUserId());
     }
 
     @PostMapping("/uploadImg")

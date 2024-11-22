@@ -21,7 +21,7 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
         formData.append('userId', userData.id);
 
         const token = localStorage.getItem('token');
-         const response = await axios.post('http://localhost:8080/profile/uploadImg', 
+         const response = await axios.post('http://localhost:1111/profile/uploadImg', 
         formData,
         {
           headers: {
@@ -46,7 +46,7 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
   const deleteImageMutation = useMutation({
     mutationFn: async () => {
       const token = localStorage.getItem('token');
-      const response = await axios.delete('http://localhost:8080/api/users/me/profile-image',
+      const response = await axios.delete('http://localhost:1111/api/users/me/profile-image',
         {
           headers: {
             'Authorization': `Bearer ${token}`
