@@ -132,8 +132,8 @@ public class MemberService {
     public ResponseEntity<String> updateImage(MultipartFile file,Integer memberId){
         Member member = findId(memberId);
 
-        String fileName = file.getOriginalFilename();
-        String fileUrl = "https://"+bucket+".s3.ap-northeast-2.amazonaws.com/Image/"+fileName;
+        String fileName = "Image/"+file.getOriginalFilename();
+        String fileUrl = "https://"+bucket+".s3.ap-northeast-2.amazonaws.com/"+fileName;
         try{
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
