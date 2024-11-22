@@ -10,7 +10,8 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
   const [imageFile, setImageFile] = useState(null);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
-  const { userData } = useAuth();
+  const { userData, updateUserData } = useAuth();
+  
   
 
   const uploadImageMutation = useMutation({
@@ -39,12 +40,18 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
         });
 
         const response = await profileAPI.uploadImage(formData);
+        console.log(response.data);
+        console.log(response);
         return response.data;
 >>>>>>> 5601f1c61d122d4025617bfe7eed696a3e319c67
     },
-    onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-        onClose();
+    onSuccess: (data) => {
+      updateUserData({
+        ...userData,
+        image: data // 백엔드에서 반환하는 이미지 URL
+      });
+      console.log("onSuccess했을때:",userData);
+      console.log("onSuccess했을때 data:",data);
     },
     onError: (error) => {
         console.error('이미지 업로드 실패:', error);
