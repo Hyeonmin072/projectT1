@@ -12,6 +12,8 @@ const EditContentModal = ({ isOpen, onClose, onSubmit, initialContent }) => {
     onClose();
   };
 
+  
+
   if (!isOpen) return null;
 
   return (
