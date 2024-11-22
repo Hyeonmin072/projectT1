@@ -42,6 +42,8 @@ public class MemberService {
     private String bucket;
     @Autowired
     private AmazonS3Client amazonS3Client;
+    @Autowired
+    private FriendRequestRepository friendRequestRepository;
 
     public ResponseEntity<MemberResponseDto> login(String email, String password) {
         MemberResponseDto memberResponseDto;
@@ -312,5 +314,65 @@ public class MemberService {
         firstMember.removeFriend(secondMember);
 
         return ResponseEntity.ok("친구 삭제를 완료했어요!");
+    }
+
+    public ResponseEntity<List<MemberSimpleDto>> searchFriendRequests(Integer myId) {
+        Member member = null;
+        Optional<Member> optionalMember = memberRepository.findById(myId); // 아이디로 멤버 조회
+        if (optionalMember.isEmpty()) { // 찾지 못하면 오류 반환
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of());
+        } else { // 찾으면 실제 값 대입
+            member = optionalMember.get();
+        }
+
+        List<MemberSimpleDto> memberSimpleDtos = friendRequestRepository.findByReceiverId(myId); // 해당 멤버가 받은 친구 요청 찾기
+
+        return ResponseEntity.ok(memberSimpleDtos); // 찾은 결과를 ResponseEntity에 담아 반환
+    }
+
+    public ResponseEntity<String> sendFriendRequest(Integer myId, Integer receiveMemberId) { // 친구 요청 보내기
+        Member me = null; // 나
+        Member targetMember = null; // 보낼 상대
+        if (memberRepository.findById(myId).isEmpty() || memberRepository.findById(receiveMemberId).isEmpty()) { // 둘 중 하나를 찾지 못하면 오류 반환
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("유저 조회 중 오류가 발생하였습니다.");
+        } else { // 둘 다 성공적으로 찾으면 변수에 실제 값 대입
+            me = memberRepository.findById(myId).get();
+            targetMember = memberRepository.findById(receiveMemberId).get();
+        }
+
+        Optional<FriendRequest> findResult = friendRequestRepository.findBySenderAndReceiver(myId, receiveMemberId);// 이미 요청이 있는지 확인
+        log.info("결과값 : {}",findResult);
+        if(findResult.isPresent()) { //이미 요청이 있으면 오류 반환
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 친구 요청을 보냈습니다.");
+        }
+
+        FriendRequest friendRequest = new FriendRequest(me, targetMember); // 요청이 없으므로, 친구 요청 객체 생성
+
+        friendRequestRepository.save(friendRequest); // 객체를 저장
+
+        return ResponseEntity.ok("친구 요청이 완료되었습니다."); // 성공 결과 반환
+    }
+
+    public ResponseEntity<String> deleteFriendRequest(Integer myId, Integer sendMemberId) { // 나에게 온 친구 요청 삭제하기
+        Member me = null; // 나
+        Member sendMember = null; //
+        if (memberRepository.findById(myId).isEmpty() || memberRepository.findById(sendMemberId).isEmpty()) { // 둘 중 하나를 찾지 못하면 오류 반환
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("유저 조회 중 오류가 발생하였습니다.");
+        } else { // 둘 다 있으면 실제 값 대입
+            me = memberRepository.findById(myId).get();
+            sendMember = memberRepository.findById(sendMemberId).get();
+        }
+
+        Optional<FriendRequest> findResult = friendRequestRepository.findBySenderAndReceiver(sendMemberId, myId);// 해당 friendRequest 찾기
+
+        if (findResult.isEmpty()) { // 찾지 못하면 오류 반환
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 요청을 찾을 수 없습니다.");
+        } else { // 찾았다면, 해당 친구 요청 삭제
+            friendRequestRepository.delete(findResult.get());
+        }
+
+
+        return ResponseEntity.ok("삭제가 성공적으로 진행되었습니다.");
+
     }
 }
