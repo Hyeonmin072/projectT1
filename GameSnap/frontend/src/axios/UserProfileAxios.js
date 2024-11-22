@@ -27,19 +27,19 @@ apiClient.interceptors.request.use((config) => {
 
 export const profileAPI = {
   
-  fetchUserProfile: async (userId) => {
-    const response = await apiClient.get(`/profile/`, { 
-      params: { userId } 
-    });
-    return response.data;
-  },
+  // fetchUserProfile: async (userId) => {
+  //   const response = await apiClient.get(`/profile/`, { 
+  //     params: { userId } 
+  //   });
+  //   return response.data;
+  // },
   
-  fetchUserVideos: async (userId) => {
-    const response = await apiClient.get(`/profile/videos`, { 
-      params: { userId } 
-    });
-    return response.data;
-  },
+  // fetchUserVideos: async (userId) => {
+  //   const response = await apiClient.get(`/profile/videos`, { 
+  //     params: { userId } 
+  //   });
+  //   return response.data;
+  // },
   
   // 프로필 이미지 업로드
   uploadImage: async (formData) => {
