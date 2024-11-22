@@ -1,16 +1,21 @@
 // hooks/useUpdateName.js
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+
 
 export const useUpdateName = () => {
   const queryClient = useQueryClient();
+  const { userData } = useAuth();
 
   return useMutation({
     mutationKey: ['updateName'],
     mutationFn: async (name) => {
       const token = localStorage.getItem('token');
       const response = await axios.post('http://localhost:1111/유저이름변경엔드포인트', 
-        { name },
+        {   name, 
+            userId: userData.id,
+        },
         {
           headers: {
             'Content-Type': 'application/json',
