@@ -5,10 +5,11 @@ import {
   User, 
   Mail, 
   Phone, 
-  Gamepad, 
+  Gamepad,
   FileText, 
   Lock,
-  Edit
+  Edit,
+  Camera
 } from "lucide-react";
 
 const ProfilePage = () => {
@@ -47,13 +48,37 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md">
         <div className="p-6">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">프로필</h2>
-              <p className="text-sm text-gray-500 mt-1">
-                {userData?.email}님의 프로필 정보
-              </p>
+          {/* 프로필 사진 섹션 */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="relative">
+              <div className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden">
+                {userData?.profileImage ? (
+                  <img 
+                    src={userData.profileImage} 
+                    alt="프로필 사진" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <User className="w-16 h-16 text-gray-400" />
+                  </div>
+                )}
+              </div>
+              <button 
+                onClick={handleEditProfile}
+                className="absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-200"
+              >
+                <Camera className="w-5 h-5" />
+              </button>
             </div>
+            <h2 className="text-2xl font-bold text-gray-900 mt-4">{userData?.name || "사용자"}</h2>
+            <p className="text-sm text-gray-500">
+              {userData?.email}
+            </p>
+          </div>
+
+          {/* 프로필 수정 버튼 */}
+          <div className="flex justify-end mb-8">
             <button
               onClick={handleEditProfile}
               className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200"
