@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -109,20 +108,31 @@ public class MemberController {
         return memberService.searchFriendsByName(nickName, memberId);
     }
 
-    //친구 조회
+    //내 친구 조회
     @GetMapping("/friend")
     public List<MemberSimpleDto> findFriends(@RequestParam Integer myId){
         return memberService.searchFriend(myId);
     }
     
-    //친구 요청 조회
-    @GetMapping("/friend/request")
 
     //친구 요청 보내기
-    @PostMapping("/friend/request/{name}")
-    public requestFriend(@PathVariable("name") String name) {
-        
+    @PostMapping("/friend/request")
+    public ResponseEntity<String> sendFriendRequest(@RequestParam("myId") Integer myId, @RequestParam("receiveMemberId") Integer receiveMemberId) {
+        return memberService.sendFriendRequest(myId, receiveMemberId);
     }
+
+    //나에게 온 친구 요청 조회
+    @GetMapping("/friend/request")
+    public ResponseEntity<List<MemberSimpleDto>> findFriendRequests(@RequestParam Integer myId){
+        return memberService.searchFriendRequests(myId);
+    }
+    
+    //나에게 온 친구 요청 삭제(거부)
+    @PostMapping("/friend/request/delete")
+    public ResponseEntity<String> deleteFriendRequest(@RequestParam("myId") Integer myId, @RequestParam("sendMemberId") Integer sendMemberId){
+        return memberService.deleteFriendRequest(myId, sendMemberId);
+    }
+
     
     //친구 추가
     @PostMapping("/friend")
