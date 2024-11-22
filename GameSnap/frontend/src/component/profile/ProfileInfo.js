@@ -1,17 +1,20 @@
-// components/profile/ProfileInfo.jsx
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { User, Mail, Phone, Gamepad, FileText, Lock } from 'lucide-react';
+import { useUpdateName } from '../../hooks/useUpdateName';
 import { useUpdateContent } from '../../hooks/useUpdateContent';
 import ProfileItem from './ProfileItem';
 import EditContentModal from './EditContentModal';
+import EditNameModal from './EditNameModal';
 
 const ProfileInfo = ({ handlePasswordEdit }) => {
   const { userData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   
   const updateContentMutation = useUpdateContent();
+  const updateNameMutation = useUpdateName();
 
   const handleContentSubmit = (newContent) => {
     updateContentMutation.mutate(newContent, {
@@ -25,6 +28,16 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
       }
     });
   };
+  const handleNameSubmit = (newName) => {
+    updateNameMutation.mutate(newName, {
+      onSuccess: () => {
+        setIsNameModalOpen(false);
+      },
+      onError: () => {
+        alert('이름 수정에 실패했습니다.');
+      }
+    });
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
@@ -32,7 +45,11 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
         <ProfileItem 
           icon={User} 
           label="이름" 
-          value={userData?.name} 
+          value={userData?.name}
+          action={{
+            label: "수정",
+            onClick: () => setIsNameModalOpen(true)
+          }}
         />
         <ProfileItem 
           icon={Mail} 
@@ -75,6 +92,13 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleContentSubmit}
         initialContent={userData?.content}
+      />
+
+      <EditNameModal
+        isOpen={isNameModalOpen}
+        onClose={() => setIsNameModalOpen(false)}
+        onSubmit={handleNameSubmit}
+        initialName={userData?.name}
       />
     </div>
   );

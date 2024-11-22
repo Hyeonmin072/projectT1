@@ -10,7 +10,7 @@ export const useUpdateContent = () => {
     mutationFn: async (content) => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.post('http://localhost:8080/api/users/me/content', 
+        const response = await axios.post('http://localhost:1111//Profile/content', 
           { content }, 
           {
             headers: {
