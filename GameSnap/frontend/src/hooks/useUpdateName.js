@@ -12,7 +12,7 @@ export const useUpdateName = () => {
     mutationKey: ['updateName'],
     mutationFn: async (name) => {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:1111/유저이름변경엔드포인트', 
+      const response = await axios.post('http://localhost:1111/updataName', 
         {   name, 
             userId: userData.id,
         },

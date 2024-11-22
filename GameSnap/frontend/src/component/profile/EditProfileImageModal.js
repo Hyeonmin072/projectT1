@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { X, Upload, Camera, Trash } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 
 const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
@@ -9,15 +10,18 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
   const [imageFile, setImageFile] = useState(null);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
+  const { userData } = useAuth();
+  
 
-  // 이미지 업로드 mutation
   const uploadImageMutation = useMutation({
     mutationFn: async (file) => {
-      const formData = new FormData();
-      formData.append('image', file);
-      
-      const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:8080/api/users/me/profile-image', 
+        const formData = new FormData();
+
+        formData.append('image', file);
+        formData.append('userId', userData.id);
+
+        const token = localStorage.getItem('token');
+         const response = await axios.post('http://localhost:8080/Profile/uploadImg', 
         formData,
         {
           headers: {
