@@ -20,6 +20,7 @@ public class Game {
     @Column(name = "g_name")
     private String name;
 
+
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
     private List<MemberGame> memberGames = new ArrayList<>();
 

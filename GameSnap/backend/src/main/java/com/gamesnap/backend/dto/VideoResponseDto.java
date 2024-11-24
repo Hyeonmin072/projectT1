@@ -28,4 +28,14 @@ public class VideoResponseDto {
         this.name = name;
         this.isLiked = isLiked;
     }
+
+    public VideoResponseDto(Integer id, String title, String desc, String streamUrl, Integer like, LocalDateTime createDate, String name) {
+        this.id = id;
+        this.title = title;
+        this.desc = desc;
+        this.streamUrl = streamUrl;
+        this.like = like;
+        this.createDate = createDate;
+        this.name = name;
+    }
 }

@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.gamesnap.backend.dto.LikeStatusResponseDto;
 import com.gamesnap.backend.dto.UploadResponseDto;
+import com.gamesnap.backend.dto.VideoResponseDto;
 import com.gamesnap.backend.entity.Game;
 import com.gamesnap.backend.entity.Member;
 import com.gamesnap.backend.entity.Video;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -129,6 +131,28 @@ public class VideoService {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @Transactional
+    public List<VideoResponseDto> getVideoListByMember(Integer memberId){
+
+        Member member = memberService.findId(memberId);
+
+        List<Video> videoList = videoRepository.findAllByMember(member);
+        if(videoList.isEmpty()){
+            return null;
+        }
+
+        return videoList.stream().map(video -> new VideoResponseDto(
+           video.getId(),
+           video.getTitle(),
+           video.getDesc(),
+           video.getUrl(),
+           video.getVideoLikes().size(),
+           video.getCreateDate(),
+           video.getMember().getName()
+        )).collect(Collectors.toList());
+
     }
 
 

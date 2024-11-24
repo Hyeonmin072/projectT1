@@ -95,12 +95,6 @@ public class MemberController {
 
 
 
-    @PutMapping("/updateProfile")
-    public ResponseEntity<UpdateProfileResponseDto> updateProfile(@RequestBody UpdateProfileRequestDto updateProfileRequestDto){
-
-        return memberService.updateProfile(updateProfileRequestDto);
-
-    }
 
     //이름으로 친구 조회
     @GetMapping("/search/member")

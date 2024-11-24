@@ -12,4 +12,5 @@ public interface MemberGameRepository extends JpaRepository<MemberGame,Integer> 
     Optional<MemberGame> findByGame(Game Game);
     Optional<MemberGame> findByGameAndMember(Game game, Member member);
     List<MemberGame> findAllByMember(Member member);
+    void deleteAllByMember(Member member);
 }
