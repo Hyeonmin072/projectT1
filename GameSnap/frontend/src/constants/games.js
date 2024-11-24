@@ -10,6 +10,7 @@ import mapleImg from '../assets/games/maple.png';
 import eternalreturnImg from '../assets/games/eternal.png';
 import minecraftImg from '../assets/games/mine.png';
 import df from '../assets/games/df.jpg';
+import poket from '../assets/games/poket.png';
 
 export const GAME_LIST = [
     { 
@@ -53,7 +54,7 @@ export const GAME_LIST = [
         id: 8, 
         name: '이터널리턴', 
         image: eternalreturnImg,
-        description: 'MMORPG'
+        description: 'MOBA 게임'
       },
     { 
         id: 9, 
@@ -71,6 +72,12 @@ export const GAME_LIST = [
         id: 11, 
         name: '던전앤파이터', 
         image: df,
+        description: 'MMORPG'
+      },
+    { 
+        id: 12, 
+        name: '포켓몬 카드 게임', 
+        image: poket,
         description: 'MMORPG'
       },
 
