@@ -17,68 +17,79 @@ export const GAME_LIST = [
       id: 6, 
       name: '애니팡', 
       image: anipangImg,
-      description: '매칭 퍼즐 게임'
+      description: '매칭 퍼즐 게임',
+      genre: 'PUZZLE'
     },
 
     { 
       id: 5, 
       name: '캔디크러시사가', 
       image: candyImg,
-      description: '매칭 퍼즐 게임'
+      description: '매칭 퍼즐 게임',
+      genre: 'PUZZLE'
     },
     { 
       id: 4, 
       name: '리그오브레전드', 
       image: lolImg,
-      description: 'MOBA 게임'
+      description: 'MOBA 게임',
+      genre: 'AOS'
     },
     { 
       id: 3, 
       name: '로스트아크', 
       image: lostarkImg,
-      description: 'MMORPG'
+      description: 'MMORPG',
+      genre: 'RPG'
     },
     { 
       id: 2, 
       name: '스타크래프트', 
       image: starcraftImg,
-      description: 'RTS 게임'
+      description: 'RTS 게임',
+      genre: 'STRATEGY'
     },
     { 
       id: 7, 
       name: '오스', 
       image: osuImg,
-      description: '리듬 게임'
+      description: '리듬 게임',
+      genre: 'RHYTHM'
     },
     { 
         id: 8, 
         name: '이터널리턴', 
         image: eternalreturnImg,
-        description: 'MOBA 게임'
+        description: 'MOBA 게임',
+        genre: 'AOS'
       },
     { 
         id: 9, 
         name: '마인크래프트', 
         image: minecraftImg,
-        description: 'MMORPG'
+        description: 'MMORPG',
+        genre: 'SANDBOX'
       },
     { 
         id: 10, 
         name: '메이플스토리', 
         image: mapleImg,
-        description: 'MMORPG'
+        description: 'MMORPG',
+        genre : 'RPG'
       },
     { 
         id: 11, 
         name: '던전앤파이터', 
         image: df,
-        description: 'MMORPG'
+        description: 'MMORPG',
+        genre: 'RPG'
       },
     { 
         id: 12, 
         name: '포켓몬 카드 게임', 
         image: poket,
-        description: 'MMORPG'
+        description: 'MMORPG',
+        genre: 'TCG'
       },
 
   ];
