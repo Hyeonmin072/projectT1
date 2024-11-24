@@ -104,9 +104,9 @@ const Navbar = () => {
           </div>
   
           {/* 검색바 */}
-          <div className="flex-grow max-w-2xl mx-4">
+          {/* <div className="flex-grow max-w-2xl mx-4">
             <SearchBar />
-          </div>
+          </div> */}
   
           {/* 우측 버튼들 */}
           <div className="flex items-center space-x-4 flex-shrink-0">
