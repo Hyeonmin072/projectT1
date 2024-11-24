@@ -9,19 +9,6 @@ const EditPreferredGameModal = ({ isOpen, onClose, onSubmit, initialGames = [] }
   const [currentPage, setCurrentPage] = useState(0);
   const [direction, setDirection] = useState(0);
 
-  useEffect(() => {
-    // initialGames가 문자열(게임 이름)인 경우 해당하는 게임 ID로 변환
-    const convertedGames = initialGames.map(game => {
-      if (typeof game === 'string') {
-        const foundGame = GAME_LIST.find(g => g.name === game);
-        return foundGame ? foundGame.id : null;
-      }
-      return game;
-    }).filter(id => id !== null);
-
-    setSelectedGames(convertedGames);
-  }, [initialGames]);
-
   if (!isOpen) return null;
 
   const ITEMS_PER_PAGE = 6;

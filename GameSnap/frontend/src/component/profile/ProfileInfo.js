@@ -1,5 +1,5 @@
 // components/profile/ProfileInfo.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { User, Mail, Phone, Gamepad, FileText, Lock } from 'lucide-react';
 import { useUpdateName } from '../../hooks/useUpdateName';
@@ -17,10 +17,20 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
+  const [gameDisplay, setGameDisplay] = useState("");
   
   const updateContentMutation = useUpdateContent();
   const updateNameMutation = useUpdateName();
   const updateGamesMutation = useUpdateGames();
+
+  useEffect(() => {
+    // 선호 게임 정보가 변경될 때마다 gameDisplay 업데이트
+    setGameDisplay(
+      userData?.preferredGame
+        ?.map(gameId => getGameNameById(gameId))
+        .join(", ") || "선택된 게임 없음"
+    );
+  }, [userData?.preferredGame]);
 
   const handleContentSubmit = (newContent) => {
     updateContentMutation.mutate(newContent, {
@@ -48,6 +58,11 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
   const handleGameSubmit = (selectedGames) => {
     updateGamesMutation.mutate(selectedGames, {
       onSuccess: () => {
+        setGameDisplay(
+          selectedGames
+            .map(gameId => getGameNameById(gameId))
+            .join(", ")
+        );
         setIsGameModalOpen(false);
       },
       onError: () => {
@@ -55,11 +70,6 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
       }
     });
   };
-
-  // 게임 이름으로 변환하여 표시
-  const gameDisplay = userData?.preferredGame
-    ?.map(gameId => getGameNameById(gameId))
-    .join(", ") || "선택된 게임 없음";
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
