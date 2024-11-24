@@ -2,6 +2,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { GAME_LIST } from '../constants/games';
 
 export const useUpdateGames = () => {
   const queryClient = useQueryClient();
@@ -9,15 +10,34 @@ export const useUpdateGames = () => {
 
   return useMutation({
     mutationKey: ['updateGames'],
-    mutationFn: async (games) => {
+    mutationFn: async (gameIds) => {
       try {
         const token = localStorage.getItem('token');
-        console.log('Updating preferred games:', games);
+        
+        // 받은 게임 ID 로그
+        console.log('Received gameIds:', gameIds);
+        
+        // 선택된 게임들의 id와 name만 매핑
+        const selectedGames = gameIds.map(id => {
+          const game = GAME_LIST.find(g => g.id === id);
+          console.log('Found game:', game); // 각 게임 정보 로그
+          return {
+            id: game.id,
+            name: game.name
+          };
+        });
 
-        const response = await axios.post('http://localhost:1111/profile/updateGames',
+        // 서버로 보낼 데이터 로그
+        console.log('Request payload:', {
+          userId: userData.id,
+          games: selectedGames
+        });
+
+        const response = await axios.post(
+          'http://localhost:1111/profile/updateGames',
           {
-            preferredGame: games,
             userId: userData.id,
+            games: selectedGames
           },
           {
             headers: {
@@ -27,30 +47,39 @@ export const useUpdateGames = () => {
           }
         );
 
+        // 서버 응답 로그
         console.log('Server response:', response.data);
+
         return response.data;
       } catch (error) {
         console.error('Error updating games:', error);
+        console.error('Error details:', {
+          message: error.message,
+          response: error.response?.data
+        });
         throw error;
       }
     },
     onSuccess: (data) => {
-      console.log('Update success:', data);
+      // 성공 시 데이터 로그
+      console.log('Mutation success data:', data);
+      console.log('Current userData:', userData);
       
       // Auth Context 업데이트
-      updateUserData({
+      const updatedUserData = {
         ...userData,
-        preferredGame: data.preferredGame || data
-      });
+        preferredGame: data.games
+      };
+      
+      console.log('Updated userData:', updatedUserData);
+      
+      updateUserData(updatedUserData);
 
       // React Query 캐시 업데이트
-      queryClient.invalidateQueries({ queryKey: ['profile', userData.id] });
+      queryClient.invalidateQueries(['profile', userData.id]);
     },
     onError: (error) => {
-      console.error('Games update error details:', error);
-      if (error.response) {
-        console.error('Server error response:', error.response.data);
-      }
+      console.error('Mutation error:', error);
     }
   });
 };
