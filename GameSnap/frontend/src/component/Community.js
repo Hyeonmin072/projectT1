@@ -7,6 +7,7 @@ import ChattingRoom from './ChattingRoom';
 import FriendAxios from '../axios/FriendAxios';
 import { useAuth } from '../context/AuthContext'; // 인증 컨텍스트 추가
 import LoadFriends from './LoadFriends';
+import axios from 'axios';
 
 const Community = ({ isOpen, onClose }) => {
   const { userData } = useAuth();
@@ -19,7 +20,7 @@ const Community = ({ isOpen, onClose }) => {
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [friendRequests, setFriendRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [chats, setChats] = useState([]);
 
   const handleFriendClick = (friend) => {
     setSelectedFriend(friend);
@@ -113,6 +114,21 @@ const Community = ({ isOpen, onClose }) => {
     }
   };
 
+  //채팅 목록 불러오기 
+  useEffect(() => {
+    const fetchChats = async() => {
+      try {
+        const url = "http://localhost:1111/" + userData.id + "/messageRooms";
+        const response = await axios.get(url);
+        setChats(response.data);
+      } catch (error) {
+        console.error("채팅방을 조회하는중에 오류가 발생했습니다.")
+      }
+    }
+
+    fetchChats();
+  }, [])
+
   // 친구 필터링
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -121,7 +137,6 @@ const Community = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('friends');
   const [lastChatMessage, setLastChatMessage] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [chats, setChats] = useState([]);
 
   
   return (
@@ -246,26 +261,22 @@ const Community = ({ isOpen, onClose }) => {
           </div>
         ) : (
           // 채팅 목록
-          <div className="space-y-2">
+          <div className="space-y-4">
             {chats.map(chat => (
-              <div key={chat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
-                <div className="flex items-center gap-3">
+              <div key={chat.makerId} className="flex items-center justify-between p-4 bg-white shadow-md rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out">
+                <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-gray-200 rounded-full" />
                   <div>
-                    <div className="font-medium">{chat.name}</div>
+                    <div className="font-semibold text-gray-700">{chat.makerId} 님과 {chat.guestId}의 채팅방</div>
                     <div className="text-sm text-gray-500 truncate">
-                      {chat.lastMessage}
+                      {chat.lastMsg || "새 메시지가 없습니다"}
                     </div>
                   </div>
                 </div>
-                {chat.unreadCount > 0 && (
-                  <span className="px-2 py-1 bg-red-500 text-white text-xs rounded-full">
-                    {chat.unreadCount}
-                  </span>
-                )}
               </div>
             ))}
           </div>
+
         )}
 
 

@@ -1,5 +1,6 @@
 package com.gamesnap.backend.service;
 
+import com.gamesnap.backend.dto.MemberResponseDto;
 import com.gamesnap.backend.dto.MessageRoomRequestDto;
 import com.gamesnap.backend.dto.MessageRoomResponseDto;
 import com.gamesnap.backend.entity.Member;
@@ -64,16 +65,38 @@ public class MessageRoomService {
 
         List<MessageRoom> findMessageRooms = messageRoomRepository.findByOneMember(memberId);
         List<MessageRoomResponseDto> messageRoomResponseDtos = new ArrayList<>();
+
+
+
+
+
+
+
         for (MessageRoom messageRoom : findMessageRooms) {
-            MessageRoomResponseDto messageRoomResponseDto = new MessageRoomResponseDto(
+            MessageRoomResponseDto messageRoomResponseDto = getMessageRoomResponseDto(messageRoom);
+            messageRoomResponseDtos.add(messageRoomResponseDto);
+        }
+
+        return ResponseEntity.ok(messageRoomResponseDtos);
+    }
+
+    private MessageRoomResponseDto getMessageRoomResponseDto(MessageRoom messageRoom) {
+        MessageRoomResponseDto messageRoomResponseDto;
+        if (messageRoom.getLastMsg() == null) {
+            messageRoomResponseDto = new MessageRoomResponseDto(
+                    messageRoom.getMessageRoomMembers().get(0).getId(),
+                    messageRoom.getMessageRoomMembers().get(1).getId(),
+                    messageRoom.getId(),
+                    ""
+            );
+        } else {
+            messageRoomResponseDto = new MessageRoomResponseDto(
                     messageRoom.getMessageRoomMembers().get(0).getId(),
                     messageRoom.getMessageRoomMembers().get(1).getId(),
                     messageRoom.getId(),
                     messageRoom.getLastMsg().getContent()
             );
-            messageRoomResponseDtos.add(messageRoomResponseDto);
         }
-
-        return ResponseEntity.ok(messageRoomResponseDtos);
+        return messageRoomResponseDto;
     }
 }
