@@ -114,14 +114,14 @@ public class MemberService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<ProfileUpdateGamesResponseDto> updateGames(List<String> gamesName, Integer memberId){
+    public ResponseEntity<ProfileUpdateGamesResponseDto> updateGames(List<Integer> gamesId, Integer memberId){
         Member member = findId(memberId); // 해당맴버찾기
         List<Integer> responseId = new ArrayList<>();  //응답할 Id
         List<String> responseName = new ArrayList<>(); //응답할 name
         memberGameRepository.deleteAllByMember(member); //기존 맴버게임리스트 전부삭제
 
-        for (int i = 0; i < gamesName.size(); i++) {
-            Optional<Game> game = gameRepository.findByName(gamesName.get(i));
+        for (int i = 0; i < gamesId.size(); i++) {
+            Optional<Game> game = gameRepository.findById(gamesId.get(i));
             if(game.isEmpty()){continue;}
 
             memberGameRepository.save(new MemberGame(member,game.get())); //디비저장
