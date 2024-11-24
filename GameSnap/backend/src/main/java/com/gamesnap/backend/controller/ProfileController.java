@@ -44,7 +44,7 @@ public class ProfileController {
     @PostMapping("/updateLikeGames")
     public ResponseEntity<ProfileUpdateGamesResponseDto> updateLikeGames(@RequestBody ProfileUpdateGamesRequestDto profileUpdateGamesRequestDto){
 
-        return memberService.updateGames(profileUpdateGamesRequestDto.getLikeGamesName(),profileUpdateGamesRequestDto.getUserId());
+        return memberService.updateGames(profileUpdateGamesRequestDto.getLikeGamesId(),profileUpdateGamesRequestDto.getUserId());
     }
 
     @GetMapping("/getVideoList")

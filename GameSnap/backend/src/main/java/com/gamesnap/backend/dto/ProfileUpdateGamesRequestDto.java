@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class ProfileUpdateGamesRequestDto {
     private Integer userId;
-    private List<String> likeGamesName;
+    private List<Integer> likeGamesId;
 }
