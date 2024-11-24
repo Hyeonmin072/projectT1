@@ -10,7 +10,7 @@ import CandyCrashSagaImg from '../assets/candycrashsaga.png';
 import AniPangImg from '../assets/anipang.png';
 
 function FreeBoardList() {
-  
+
   const [gameCategories, setGameCategories] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
   const [posts, setPosts] = useState([]);

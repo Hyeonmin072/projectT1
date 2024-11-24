@@ -7,6 +7,9 @@ import lostarkImg from '../assets/games/lostark.png';
 import starcraftImg from '../assets/games/starcraft.png';
 import osuImg from '../assets/games/osu.png';
 import mapleImg from '../assets/games/maple.png';
+import eternalreturnImg from '../assets/games/eternal.png';
+import minecraftImg from '../assets/games/mine.png';
+import df from '../assets/games/df.jpg';
 
 export const GAME_LIST = [
     { 
@@ -47,11 +50,30 @@ export const GAME_LIST = [
       description: '리듬 게임'
     },
     { 
+        id: 'eternalreturn', 
+        name: '이터널리턴', 
+        image: eternalreturnImg,
+        description: 'MMORPG'
+      },
+    { 
+        id: 'minecraft', 
+        name: '마인크래프트', 
+        image: minecraftImg,
+        description: 'MMORPG'
+      },
+    { 
         id: 'maple', 
         name: '메이플스토리', 
         image: mapleImg,
         description: 'MMORPG'
       },
+    { 
+        id: 'df', 
+        name: '던전앤파이터', 
+        image: df,
+        description: 'MMORPG'
+      },
+
   ];
   
   export const getGameNameById = (gameId) => {

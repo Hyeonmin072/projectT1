@@ -1,166 +1,178 @@
 // components/profile/EditPreferredGameModal.jsx
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { GAME_LIST } from '../../constants/games';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const EditPreferredGameModal = ({ isOpen, onClose, onSubmit, initialGames = [] }) => {
   const [selectedGames, setSelectedGames] = useState(initialGames);
   const [currentPage, setCurrentPage] = useState(0);
-  const sliderRef = useRef(null);
+  const [direction, setDirection] = useState(0);
 
-  // 한 페이지에 보여줄 게임 수
-  const GAMES_PER_PAGE = 6;
-  const TOTAL_PAGES = Math.ceil(GAME_LIST.length / GAMES_PER_PAGE);
+  if (!isOpen) return null;
 
+  const ITEMS_PER_PAGE = 6;
+  const totalPages = Math.ceil(GAME_LIST.length / ITEMS_PER_PAGE);
+  
   const handleGameToggle = (gameId) => {
     setSelectedGames(prev => {
       if (prev.includes(gameId)) {
         return prev.filter(id => id !== gameId);
       }
-      if (prev.length >= 3) {
-        alert('최대 3개의 게임만 선택할 수 있습니다.');
-        return prev;
-      }
       return [...prev, gameId];
     });
   };
 
-  const handleNext = () => {
-    if (currentPage < TOTAL_PAGES - 1) {
+  const nextPage = () => {
+    setDirection(1);
+    if (currentPage < totalPages - 1) {
       setCurrentPage(prev => prev + 1);
     }
   };
 
-  const handlePrev = () => {
+  const prevPage = () => {
+    setDirection(-1);
     if (currentPage > 0) {
       setCurrentPage(prev => prev - 1);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(selectedGames);
-  };
-
-  if (!isOpen) return null;
-
-  // 현재 페이지에 표시할 게임들
   const currentGames = GAME_LIST.slice(
-    currentPage * GAMES_PER_PAGE,
-    (currentPage + 1) * GAMES_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
+    (currentPage + 1) * ITEMS_PER_PAGE
   );
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-4xl p-6 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-        >
-          <X className="w-6 h-6" />
-        </button>
-        
-        <h2 className="text-2xl font-bold mb-6">선호 게임 선택</h2>
-        <p className="text-sm text-gray-500 mb-4">
-          최대 3개까지 선택 가능합니다 (현재 {selectedGames.length}/3)
-        </p>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="relative">
-            {/* 이전 버튼 */}
-            <button
-              type="button"
-              onClick={handlePrev}
-              disabled={currentPage === 0}
-              className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 
-                p-2 rounded-full bg-white shadow-lg
-                ${currentPage === 0 ? 'text-gray-300' : 'text-gray-600 hover:text-gray-800'}`}
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className="bg-white rounded-lg w-full max-w-md"
+      >
+        {/* 헤더 */}
+        <div className="flex items-center justify-between px-6 py-4 border-b">
+          <h2 className="text-lg">선호 게임 선택</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <X size={20} />
+          </button>
+        </div>
 
-            {/* 게임 그리드 */}
-            <div 
-              ref={sliderRef}
-              className="grid grid-cols-2 md:grid-cols-3 gap-4 overflow-hidden"
-            >
-              {currentGames.map((game) => (
-                <div
-                  key={game.id}
-                  onClick={() => handleGameToggle(game.id)}
-                  className={`
-                    cursor-pointer rounded-lg p-4 border-2 transition-all
-                    hover:shadow-md
-                    ${selectedGames.includes(game.id) 
-                      ? 'border-blue-500 bg-blue-50' 
-                      : 'border-gray-200 hover:border-gray-300'}
-                  `}
+        {/* 게임 선택 영역 */}
+        <div className="relative px-12 py-6">
+          {/* 네비게이션 버튼 */}
+          <div className="absolute inset-y-0 left-0 flex items-center">
+            {currentPage > 0 && (
+              <button 
+                onClick={prevPage}
+                className="p-2 rounded-full bg-white shadow-md hover:bg-gray-50 
+                         transition-colors focus:outline-none"
+              >
+                <ChevronLeft size={20} />
+              </button>
+            )}
+          </div>
+
+          <div className="absolute inset-y-0 right-0 flex items-center">
+            {currentPage < totalPages - 1 && (
+              <button 
+                onClick={nextPage}
+                className="p-2 rounded-full bg-white shadow-md hover:bg-gray-50 
+                         transition-colors focus:outline-none"
+              >
+                <ChevronRight size={20} />
+              </button>
+            )}
+          </div>
+
+          {/* 게임 그리드 */}
+          <div className="overflow-hidden p-1">
+            <div className="relative h-[300px]"> {/* 고정 높이로 레이아웃 안정화 */}
+              <AnimatePresence initial={false} custom={direction}>
+                <motion.div
+                  key={currentPage}
+                  custom={direction}
+                  initial={{ x: direction * 100 + '%' }}
+                  animate={{ 
+                    x: 0,
+                    transition: { type: "spring", stiffness: 300, damping: 30 }
+                  }}
+                  exit={{ 
+                    x: direction * -100 + '%',
+                    transition: { type: "spring", stiffness: 300, damping: 30 }
+                  }}
+                  className="grid grid-cols-3 gap-4 absolute w-full"
                 >
-                  <div className="relative pb-[100%]">
-                    <img 
-                      src={game.image} 
-                      alt={game.name} 
-                      className="absolute inset-0 w-full h-full object-contain"
-                    />
-                  </div>
-                  <div className="mt-2">
-                    <p className="text-center font-medium">{game.name}</p>
-                    <p className="text-center text-sm text-gray-500">{game.description}</p>
-                  </div>
-                </div>
-              ))}
+                  {currentGames.map((game) => (
+                    <div 
+                      key={game.id} 
+                      onClick={() => handleGameToggle(game.id)}
+                      className={`
+                        relative p-1 cursor-pointer rounded-xl
+                        ${selectedGames.includes(game.id) 
+                          ? 'ring-2 ring-blue-500 bg-blue-50' 
+                          : 'hover:bg-gray-50'
+                        }
+                      `}
+                    >
+                      <div className="w-full aspect-square p-2">
+                        <img 
+                          src={game.image} 
+                          alt={game.name} 
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <p className="text-sm text-center mt-1">{game.name}</p>
+                    </div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
             </div>
-
-            {/* 다음 버튼 */}
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={currentPage === TOTAL_PAGES - 1}
-              className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 
-                p-2 rounded-full bg-white shadow-lg
-                ${currentPage === TOTAL_PAGES - 1 ? 'text-gray-300' : 'text-gray-600 hover:text-gray-800'}`}
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
           </div>
 
           {/* 페이지 인디케이터 */}
-          <div className="flex justify-center gap-2 mt-4">
-            {Array.from({ length: TOTAL_PAGES }).map((_, index) => (
-              <button
+          <div className="flex justify-center mt-6 gap-1">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <motion.div
                 key={index}
-                type="button"
-                onClick={() => setCurrentPage(index)}
-                className={`w-2 h-2 rounded-full transition-all
-                  ${currentPage === index ? 'bg-blue-500 w-4' : 'bg-gray-300'}`}
+                initial={false}
+                animate={{
+                  width: currentPage === index ? 12 : 6,
+                  backgroundColor: currentPage === index ? "#3B82F6" : "#D1D5DB"
+                }}
+                className="h-1.5 rounded-full"
+                transition={{ duration: 0.2 }}
               />
             ))}
           </div>
-          
-          {/* 하단 버튼 */}
-          <div className="flex justify-end space-x-3 mt-6">
+        </div>
+
+        {/* 하단 버튼 */}
+        <div className="px-6 py-4 border-t flex justify-between items-center">
+          <div className="text-sm text-gray-500">
+            {selectedGames.length}개 선택됨
+          </div>
+          <div className="flex gap-2">
             <button
-              type="button"
               onClick={onClose}
-              className="px-5 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg"
+              className="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50 
+                       transition-colors"
             >
               취소
             </button>
             <button
-              type="submit"
-              disabled={selectedGames.length === 0}
-              className={`
-                px-4 py-2 text-white rounded-lg
-                ${selectedGames.length === 0 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700'}
-              `}
+              onClick={() => {
+                onSubmit(selectedGames);
+                onClose();
+              }}
+              className="px-4 py-2 text-sm text-white bg-blue-500 rounded-lg 
+                       hover:bg-blue-600 transition-colors"
             >
-              저장 ({selectedGames.length}/3)
+              선택 완료
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </motion.div>
     </div>
   );
 };
