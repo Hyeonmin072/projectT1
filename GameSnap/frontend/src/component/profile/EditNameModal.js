@@ -86,7 +86,7 @@ const EditNameModal = ({ isOpen, onClose, onSubmit, initialName }) => {
                     }
                   }}
                   placeholder="닉네임을 입력해주세요"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent
                     ${isNameLocked ? 
                       'bg-gray-100 cursor-not-allowed opacity-70 border-gray-300' : 
                       'bg-white'}`}
@@ -154,7 +154,7 @@ const EditNameModal = ({ isOpen, onClose, onSubmit, initialName }) => {
               disabled={!isNameLocked}
               className={`px-4 py-2 rounded-lg
                 ${isNameLocked
-                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-green-600 text-white hover:bg-green-700'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             >
               저장

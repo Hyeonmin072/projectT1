@@ -14,7 +14,7 @@ const ProfileItem = ({ icon: Icon, label, value, action, isContent }) => (
     {action && (
       <button
         onClick={action.onClick}
-        className="ml-4 flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 rounded-full border border-blue-200 hover:border-blue-300 transition-all duration-200"
+        className="ml-4 flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-green-600 hover:text-green-700 rounded-full border border-green-200 hover:border-green-300 transition-all duration-200"
       >
         <Edit className="w-4 h-4" />
         {action.label}

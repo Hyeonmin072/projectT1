@@ -31,6 +31,7 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
         .join(", ") || "선택된 게임 없음"
     );
   }, [userData?.preferredGame]);
+  
 
   const handleContentSubmit = (newContent) => {
     updateContentMutation.mutate(newContent, {

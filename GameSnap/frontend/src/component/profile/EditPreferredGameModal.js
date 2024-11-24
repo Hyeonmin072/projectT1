@@ -115,7 +115,7 @@ const EditPreferredGameModal = ({ isOpen, onClose, onSubmit, initialGames = [] }
                       className={`
                         relative p-1 cursor-pointer rounded-xl
                         ${selectedGames.includes(game.id) 
-                          ? 'ring-2 ring-blue-500 bg-blue-50' 
+                          ? 'ring-2 ring-green-500 bg-green-50' 
                           : 'hover:bg-gray-50'
                         }
                       `}
@@ -170,8 +170,8 @@ const EditPreferredGameModal = ({ isOpen, onClose, onSubmit, initialGames = [] }
                 onSubmit(selectedGames);
                 onClose();
               }}
-              className="px-4 py-2 text-sm text-white bg-blue-500 rounded-lg 
-                       hover:bg-blue-600 transition-colors"
+              className="px-4 py-2 text-sm text-white bg-green-500 rounded-lg 
+                       hover:bg-green-600 transition-colors"
             >
               선택 완료
             </button>

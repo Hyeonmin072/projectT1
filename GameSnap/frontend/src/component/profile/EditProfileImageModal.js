@@ -153,7 +153,7 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
           <div 
             className="border-2 border-dashed border-gray-300 rounded-lg p-4
                        flex flex-col items-center justify-center space-y-2
-                       hover:border-blue-500 transition-colors duration-200"
+                       hover:border-green-500 transition-colors duration-200"
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
@@ -220,7 +220,7 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
                 disabled={!imageFile || uploadImageMutation.isPending}
                 className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200
                     ${imageFile && !uploadImageMutation.isPending
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    ? 'bg-green-600 text-white hover:bg-green-700'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
                 >
                 <Upload className="w-4 h-4 mr-2" />

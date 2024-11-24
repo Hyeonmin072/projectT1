@@ -34,7 +34,7 @@ const EditContentModal = ({ isOpen, onClose, onSubmit, initialContent }) => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="자기소개를 입력해주세요"
-              className="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
               maxLength={500}
             />
             <p className="text-sm text-gray-500 text-right mt-2">
@@ -52,7 +52,7 @@ const EditContentModal = ({ isOpen, onClose, onSubmit, initialContent }) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
             >
               저장
             </button>

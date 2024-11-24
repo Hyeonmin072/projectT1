@@ -34,7 +34,7 @@ const ProfileHeader = ({handleEditProfile }) => {
           </div>
           <button 
             onClick={() => setIsImageModalOpen(true)}
-            className="absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-200"
+            className="absolute bottom-0 right-0 p-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-all duration-200"
           >
             <Camera className="w-5 h-5" />
           </button>
