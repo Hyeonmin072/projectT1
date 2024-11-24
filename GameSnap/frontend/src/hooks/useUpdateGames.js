@@ -1,4 +1,3 @@
-// hooks/useUpdateGames.js
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -8,37 +7,43 @@ export const useUpdateGames = () => {
   const queryClient = useQueryClient();
   const { userData, updateUserData } = useAuth();
 
+  // 게임 이름으로 ID를 찾는 헬퍼 함수
+  const getGameIdByName = (gameName) => {
+    const game = GAME_LIST.find(g => g.name === gameName);
+    return game ? game.id : null;
+  };
+
   return useMutation({
     mutationKey: ['updateGames'],
     mutationFn: async (gameIds) => {
       try {
         const token = localStorage.getItem('token');
         
-        // 받은 게임 ID 로그
-        console.log('Received gameIds:', gameIds);
+        // gameIds를 변환 - 문자열인 경우 해당하는 게임 ID를 찾아서 변환
+        const normalizedGameIds = gameIds.map(id => {
+          if (typeof id === 'string') {
+            const gameId = getGameIdByName(id);
+            console.log(`게임 이름 "${id}"에 대한 ID 변환 결과:`, gameId);
+            return gameId;
+          }
+          return id;
+        }).filter(id => id !== null); // null 값 제거
         
-        // 선택된 게임들의 id와 name만 매핑
-        const selectedGames = gameIds.map(id => {
-          const game = GAME_LIST.find(g => g.id === id);
-          console.log('Found game:', game); // 각 게임 정보 로그
-          return {
-            id: game.id,
-            name: game.name
-          };
+        console.log('변환 결과:', {
+          원본_데이터: gameIds,
+          변환된_ID: normalizedGameIds
         });
-
-        // 서버로 보낼 데이터 로그
-        console.log('Request payload:', {
+        
+        const requestData = {
           userId: userData.id,
-          games: selectedGames
-        });
+          likeGamesId: normalizedGameIds
+        };
 
+        console.log('서버 요청 데이터:', requestData);
+        
         const response = await axios.post(
           'http://localhost:1111/profile/updateGames',
-          {
-            userId: userData.id,
-            games: selectedGames
-          },
+          requestData,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -46,40 +51,34 @@ export const useUpdateGames = () => {
             }
           }
         );
-
-        // 서버 응답 로그
-        console.log('Server response:', response.data);
+        
+        console.log('서버 응답:', response.data);
 
         return response.data;
       } catch (error) {
-        console.error('Error updating games:', error);
-        console.error('Error details:', {
-          message: error.message,
-          response: error.response?.data
+        console.error('에러 발생:', error);
+        console.error('에러 상세:', {
+          메시지: error.message,
+          응답: error.response?.data
         });
         throw error;
       }
     },
     onSuccess: (data) => {
-      // 성공 시 데이터 로그
-      console.log('Mutation success data:', data);
-      console.log('Current userData:', userData);
+      console.log('처리 성공 데이터:', data);
       
-      // Auth Context 업데이트
       const updatedUserData = {
         ...userData,
         preferredGame: data.games
       };
       
-      console.log('Updated userData:', updatedUserData);
-      
+      console.log('업데이트될 사용자 데이터:', updatedUserData);
       updateUserData(updatedUserData);
 
-      // React Query 캐시 업데이트
       queryClient.invalidateQueries(['profile', userData.id]);
     },
     onError: (error) => {
-      console.error('Mutation error:', error);
+      console.error('처리 실패:', error);
     }
   });
 };
