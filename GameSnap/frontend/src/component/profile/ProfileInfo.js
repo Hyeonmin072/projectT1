@@ -1,22 +1,26 @@
+// components/profile/ProfileInfo.jsx
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { User, Mail, Phone, Gamepad, FileText, Lock } from 'lucide-react';
 import { useUpdateName } from '../../hooks/useUpdateName';
 import { useUpdateContent } from '../../hooks/useUpdateContent';
+import { useUpdateGames } from '../../hooks/useUpdateGames';
+import { getGameNameById } from '../../constants/games';
 import ProfileItem from './ProfileItem';
 import EditContentModal from './EditContentModal';
 import EditNameModal from './EditNameModal';
-import EditProfileImageModal from './EditProfileImageModal';
-
+import EditPreferredGameModal from './EditPreferredGameModal';
 
 const ProfileInfo = ({ handlePasswordEdit }) => {
   const { userData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
+  const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   
   const updateContentMutation = useUpdateContent();
   const updateNameMutation = useUpdateName();
+  const updateGamesMutation = useUpdateGames();
 
   const handleContentSubmit = (newContent) => {
     updateContentMutation.mutate(newContent, {
@@ -24,12 +28,12 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
         setIsModalOpen(false);
       },
       onError: (error) => {
-        // 에러 처리
         console.error('자기소개 수정 실패:', error);
         alert('자기소개 수정에 실패했습니다.');
       }
     });
   };
+
   const handleNameSubmit = (newName) => {
     updateNameMutation.mutate(newName, {
       onSuccess: () => {
@@ -41,6 +45,22 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
     });
   };
 
+  const handleGameSubmit = (selectedGames) => {
+    updateGamesMutation.mutate(selectedGames, {
+      onSuccess: () => {
+        setIsGameModalOpen(false);
+      },
+      onError: () => {
+        alert('선호 게임 수정에 실패했습니다.');
+      }
+    });
+  };
+
+  // 게임 이름으로 변환하여 표시
+  const gameDisplay = userData?.preferredGame
+    ?.map(gameId => getGameNameById(gameId))
+    .join(", ") || "선택된 게임 없음";
+
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
       <div className="space-y-3">
@@ -49,7 +69,7 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
           label="이름" 
           value={userData?.name}
           action={{
-            label: "수정",
+            label: updateNameMutation.isPending ? "수정 중..." : "수정",
             onClick: () => setIsNameModalOpen(true)
           }}
         />
@@ -66,7 +86,11 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
         <ProfileItem 
           icon={Gamepad} 
           label="선호 게임" 
-          value={userData?.preferredGame?.join(", ")} 
+          value={gameDisplay}
+          action={{
+            label: updateGamesMutation.isPending ? "수정 중..." : "수정",
+            onClick: () => setIsGameModalOpen(true)
+          }}
         />
         <ProfileItem 
           icon={FileText} 
@@ -103,7 +127,12 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
         initialName={userData?.name}
       />
 
-      
+      <EditPreferredGameModal
+        isOpen={isGameModalOpen}
+        onClose={() => setIsGameModalOpen(false)}
+        onSubmit={handleGameSubmit}
+        initialGames={userData?.preferredGame || []}
+      />
     </div>
   );
 };
