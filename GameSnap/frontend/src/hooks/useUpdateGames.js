@@ -42,7 +42,7 @@ export const useUpdateGames = () => {
         console.log('서버 요청 데이터:', requestData);
         
         const response = await axios.post(
-          'http://localhost:1111/profile/updateGames',
+          'http://localhost:1111/profile/updateLikeGames',
           requestData,
           {
             headers: {
