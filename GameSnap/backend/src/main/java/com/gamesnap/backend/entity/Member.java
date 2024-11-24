@@ -55,10 +55,6 @@ public class Member {
         this.createdate = LocalDate.now();
     }
 
-    public void MemberUpdate(String name, String content) {
-        this.name = name;
-        this.content = content;
-    }
 
     public void MemberUpdateContent(String content){
         this.content = content;
