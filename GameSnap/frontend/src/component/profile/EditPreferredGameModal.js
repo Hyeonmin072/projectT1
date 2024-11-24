@@ -1,5 +1,5 @@
 // components/profile/EditPreferredGameModal.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { GAME_LIST } from '../../constants/games';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,6 +8,19 @@ const EditPreferredGameModal = ({ isOpen, onClose, onSubmit, initialGames = [] }
   const [selectedGames, setSelectedGames] = useState(initialGames);
   const [currentPage, setCurrentPage] = useState(0);
   const [direction, setDirection] = useState(0);
+
+  useEffect(() => {
+    // initialGames가 문자열(게임 이름)인 경우 해당하는 게임 ID로 변환
+    const convertedGames = initialGames.map(game => {
+      if (typeof game === 'string') {
+        const foundGame = GAME_LIST.find(g => g.name === game);
+        return foundGame ? foundGame.id : null;
+      }
+      return game;
+    }).filter(id => id !== null);
+
+    setSelectedGames(convertedGames);
+  }, [initialGames]);
 
   if (!isOpen) return null;
 
@@ -41,6 +54,11 @@ const EditPreferredGameModal = ({ isOpen, onClose, onSubmit, initialGames = [] }
     currentPage * ITEMS_PER_PAGE,
     (currentPage + 1) * ITEMS_PER_PAGE
   );
+
+
+  
+  
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
