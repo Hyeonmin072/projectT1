@@ -13,62 +13,62 @@ import df from '../assets/games/df.jpg';
 
 export const GAME_LIST = [
     { 
-      id: 'anipang', 
+      id: 6, 
       name: '애니팡', 
       image: anipangImg,
       description: '매칭 퍼즐 게임'
     },
 
     { 
-      id: 'candycrushsaga', 
+      id: 5, 
       name: '캔디크러시사가', 
       image: candyImg,
       description: '매칭 퍼즐 게임'
     },
     { 
-      id: 'lol', 
+      id: 4, 
       name: '리그오브레전드', 
       image: lolImg,
       description: 'MOBA 게임'
     },
     { 
-      id: 'lostark', 
+      id: 3, 
       name: '로스트아크', 
       image: lostarkImg,
       description: 'MMORPG'
     },
     { 
-      id: 'starcraft', 
+      id: 2, 
       name: '스타크래프트', 
       image: starcraftImg,
       description: 'RTS 게임'
     },
     { 
-      id: 'osu', 
+      id: 7, 
       name: '오스', 
       image: osuImg,
       description: '리듬 게임'
     },
     { 
-        id: 'eternalreturn', 
+        id: 8, 
         name: '이터널리턴', 
         image: eternalreturnImg,
         description: 'MMORPG'
       },
     { 
-        id: 'minecraft', 
+        id: 9, 
         name: '마인크래프트', 
         image: minecraftImg,
         description: 'MMORPG'
       },
     { 
-        id: 'maple', 
+        id: 10, 
         name: '메이플스토리', 
         image: mapleImg,
         description: 'MMORPG'
       },
     { 
-        id: 'df', 
+        id: 11, 
         name: '던전앤파이터', 
         image: df,
         description: 'MMORPG'
