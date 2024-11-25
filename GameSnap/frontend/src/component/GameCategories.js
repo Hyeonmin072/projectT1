@@ -40,7 +40,7 @@ const GameCategories = ({ gameCategories, selectedGame, setSelectedGame }) => {
                 onClick={() => setSelectedGame(game.id)}
                 className={`
                   px-4 py-2 rounded-lg border transition-all duration-300 
-                  flex items-center gap-2 whitespace-nowrap pr-8
+                  flex items-center gap-2 whitespace-nowrap pr-10
                   ${selectedGame === game.id
                     ? 'bg-white text-black border-green-500'
                     : 'border-gray-300 hover:bg-green-400'
