@@ -37,7 +37,10 @@ public class VideoController {
 
     @PostMapping("/upload")
     public ResponseEntity<UploadResponseDto> uploadFile(@RequestParam("file")MultipartFile file,
-                                                        @RequestParam("userId")Integer userId){
+                                                        @RequestParam("userId")Integer userId,
+                                                        @RequestParam("title")String title,
+                                                        @RequestParam("desc")String desc,
+                                                        @RequestParam("gameId")Integer gameId){
 
 
         // 비디오 파일인지 확인
@@ -46,9 +49,9 @@ public class VideoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-        String fileName = file.getOriginalFilename();
+        String fileName = title;
         String fileUrl = "https://"+bucket+".s3.ap-northeast-2.amazonaws.com/"+fileName;
-        return videoService.uploadFile(file,fileUrl,fileName,userId);
+        return videoService.uploadFile(file,fileUrl,fileName,userId,desc,gameId);
 
     }
 
