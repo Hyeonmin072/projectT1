@@ -1,5 +1,6 @@
 package com.gamesnap.backend.repository;
 
+import com.gamesnap.backend.entity.Member;
 import com.gamesnap.backend.entity.MessageRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

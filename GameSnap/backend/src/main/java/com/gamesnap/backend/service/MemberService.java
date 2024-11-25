@@ -246,7 +246,7 @@ public class MemberService {
     }
 
     public List<MemberSimpleDto> searchFriendsByName(String memberName, Integer myId) {
-        List<Member> findResult = memberRepository.findByNameContaining(memberName);
+        List<Member> findResult = memberRepository.findByNameContainingAndNotFriends(memberName, myId);
         if (findResult.isEmpty()) {
             return List.of();
         }

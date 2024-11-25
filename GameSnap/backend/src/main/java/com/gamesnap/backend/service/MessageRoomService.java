@@ -2,9 +2,11 @@ package com.gamesnap.backend.service;
 
 import com.gamesnap.backend.dto.MessageRoomRequestDto;
 import com.gamesnap.backend.dto.MessageRoomResponseDto;
+import com.gamesnap.backend.dto.MessageRoomSearchDto;
 import com.gamesnap.backend.entity.Member;
 import com.gamesnap.backend.entity.MessageRoom;
 import com.gamesnap.backend.repository.MemberRepository;
+import com.gamesnap.backend.repository.MessageRoomMemberRepository;
 import com.gamesnap.backend.repository.MessageRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import java.util.Optional;
 public class MessageRoomService {
     private final MessageRoomRepository messageRoomRepository;
     private final MemberRepository memberRepository;
+    private final MessageRoomMemberRepository messageRoomMemberRepository;
 
     //1대1 채팅방 생성
     public MessageRoomResponseDto createMessageRoomForPersonal(MessageRoomRequestDto request) {
@@ -56,24 +59,34 @@ public class MessageRoomService {
         }
     }
 
-    public ResponseEntity<List<MessageRoomResponseDto>> getMessageRooms(Integer memberId) {
+    public ResponseEntity<List<MessageRoomSearchDto>> getMessageRooms(Integer memberId) {
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         if (optionalMember.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         List<MessageRoom> findMessageRooms = messageRoomRepository.findByOneMember(memberId);
-        List<MessageRoomResponseDto> messageRoomResponseDtos = new ArrayList<>();
-        for (MessageRoom messageRoom : findMessageRooms) {
-            MessageRoomResponseDto messageRoomResponseDto = new MessageRoomResponseDto(
-                    messageRoom.getMessageRoomMembers().get(0).getId(),
-                    messageRoom.getMessageRoomMembers().get(1).getId(),
-                    messageRoom.getId(),
-                    messageRoom.getLastMsg().getContent()
-            );
-            messageRoomResponseDtos.add(messageRoomResponseDto);
+        List<Member> partners = messageRoomMemberRepository.findPartnerByMyId(memberId);
+
+        List<MessageRoomSearchDto> MessageRoomSearchDtos = new ArrayList<>();
+
+
+
+        for (int i = 0; i < findMessageRooms.size(); i++) {
+            MessageRoomSearchDto messageRoomSearchDto = getMessageRoomSearchDto(findMessageRooms.get(i), partners.get(i));
+            MessageRoomSearchDtos.add(messageRoomSearchDto);
         }
 
-        return ResponseEntity.ok(messageRoomResponseDtos);
+        return ResponseEntity.ok(MessageRoomSearchDtos);
+    }
+
+    private MessageRoomSearchDto getMessageRoomSearchDto(MessageRoom messageRoom, Member partner) {
+        MessageRoomSearchDto messageRoomSearchDto;
+        if (messageRoom.getLastMsg() == null) {
+            messageRoomSearchDto = new MessageRoomSearchDto(partner.getId(), partner.getName(), "");
+        } else {
+            messageRoomSearchDto = new MessageRoomSearchDto(partner.getId(), partner.getName(), messageRoom.getLastMsg().getContent());
+        }
+        return messageRoomSearchDto;
     }
 }

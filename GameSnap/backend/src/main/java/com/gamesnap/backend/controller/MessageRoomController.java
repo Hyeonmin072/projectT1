@@ -2,6 +2,7 @@ package com.gamesnap.backend.controller;
 
 import com.gamesnap.backend.dto.MessageRoomRequestDto;
 import com.gamesnap.backend.dto.MessageRoomResponseDto;
+import com.gamesnap.backend.dto.MessageRoomSearchDto;
 import com.gamesnap.backend.repository.MessageRepository;
 import com.gamesnap.backend.repository.MessageRoomRepository;
 import com.gamesnap.backend.service.MessageRoomService;
@@ -30,7 +31,7 @@ public class MessageRoomController {
     }
 
     @GetMapping("/{memberId}/messageRooms") // 해당 멤버의 개설된 채팅방들을 가져오는 API
-    public ResponseEntity<List<MessageRoomResponseDto>> getMessageRooms(@PathVariable Integer memberId) {
+    public ResponseEntity<List<MessageRoomSearchDto>> getMessageRooms(@PathVariable Integer memberId) {
         return messageRoomService.getMessageRooms(memberId);
     }
 }
