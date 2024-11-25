@@ -113,16 +113,17 @@ public class VideoService {
     }
 
     @Transactional
-    public ResponseEntity<UploadResponseDto> uploadFile(MultipartFile file, String fileUrl, String fileName, Integer userId){
+    public ResponseEntity<UploadResponseDto> uploadFile(MultipartFile file, String fileUrl, String fileName, Integer userId,
+                                                        String desc, Integer gameId){
         Member member = memberService.findId(userId);
-        Game game = gameService.findId(3);
+        Game game = gameService.findId(gameId);
         try{
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
             metadata.setContentLength(file.getSize());
             amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
 
-            Video video = new Video(fileName,"테스트영상",fileUrl,10,member,game);
+            Video video = new Video(fileName,desc,fileUrl,0,member,game);
             videoRepository.save(video);
 
             UploadResponseDto uploadResponseDto = new UploadResponseDto(video.getId(),video.getTitle(),video.getDesc(),video.getUrl(),video.getMember().getName());
