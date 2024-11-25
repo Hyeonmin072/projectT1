@@ -75,7 +75,8 @@ const Community = ({ isOpen, onClose }) => {
       setSearchNickname('');
       setShowAddFriend(false);
       // 친구 목록 새로고침
-      // loadFriends();
+      const friendsList = await FriendAxios.getFriendsList(userData.id);
+      setFriends(friendsList);
     } catch (error) {
       console.error('친구 추가 실패:', error);
       alert('친구 추가에 실패했습니다.');
@@ -118,6 +119,9 @@ const Community = ({ isOpen, onClose }) => {
             }
         }); 
         alert('친구 요청 보내기에 성공했습니다.');
+        setSearchResults([]);
+        setSearchNickname('');
+        setShowAddFriend(false);
     } catch (error) {
         console.error('친구 요청 보내기 실패', error);
         alert('친구 요청 보내기에 실패했습니다.');
