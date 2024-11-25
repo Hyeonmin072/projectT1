@@ -3,7 +3,9 @@ package com.gamesnap.backend.service;
 import java.io.IOException;
 import java.util.*;
 
+import com.amazonaws.Response;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.gamesnap.backend.dto.*;
 import com.gamesnap.backend.entity.*;
@@ -173,6 +175,25 @@ public class MemberService {
         }
 
 
+    }
+
+    public ResponseEntity<String> deleteImage(Integer memberId){
+
+        Member member = findId(memberId);
+
+        try{
+            if(amazonS3Client.doesObjectExist(bucket,member.getImage())){
+                amazonS3Client.deleteObject(bucket,member.getImage());
+                member.MemberDeleteImage();
+            }
+
+            return ResponseEntity.status(200).body("프로필 삭제 성공");
+        } catch (AmazonS3Exception e){
+            return ResponseEntity.status(400).body("프로필이 존재하지 않습니다");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 

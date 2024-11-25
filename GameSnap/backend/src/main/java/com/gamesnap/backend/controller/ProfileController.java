@@ -41,6 +41,12 @@ public class ProfileController {
        return memberService.updateImage(file,memberId);
     }
 
+    @DeleteMapping("/deleteImg")
+    public ResponseEntity<String> deleteImage(@RequestParam("userId")Integer memberId){
+
+        return memberService.deleteImage(memberId);
+    }
+
     @PostMapping("/updateLikeGames")
     public ResponseEntity<ProfileUpdateGamesResponseDto> updateLikeGames(@RequestBody ProfileUpdateGamesRequestDto profileUpdateGamesRequestDto){
 
