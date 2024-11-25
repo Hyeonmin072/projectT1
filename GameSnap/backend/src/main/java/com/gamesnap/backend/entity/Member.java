@@ -68,6 +68,8 @@ public class Member {
         this.image = image;
     }
 
+    public void MemberDeleteImage(){this.image = null;}
+
     // 친구 추가 메서드
     public void addFriend(Member friend) {
         Friend friendship = new Friend(this, friend); // 현재 멤버의 친구 관계 생성
