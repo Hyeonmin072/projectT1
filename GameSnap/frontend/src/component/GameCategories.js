@@ -31,7 +31,7 @@ const GameCategories = ({ gameCategories, selectedGame, setSelectedGame }) => {
   
         <div 
           ref={scrollContainerRef}
-          className="w-full overflow-x-auto scrollbar-hide px-8"
+          className="w-full overflow-x-auto no-scrollbar"
         >
           <div className="flex gap-2 py-4 min-w-min">
             {gameCategories.map((game) => (
@@ -40,7 +40,7 @@ const GameCategories = ({ gameCategories, selectedGame, setSelectedGame }) => {
                 onClick={() => setSelectedGame(game.id)}
                 className={`
                   px-4 py-2 rounded-lg border transition-all duration-300 
-                  flex items-center gap-2 whitespace-nowrap
+                  flex items-center gap-2 whitespace-nowrap pr-8
                   ${selectedGame === game.id
                     ? 'bg-white text-black border-green-500'
                     : 'border-gray-300 hover:bg-green-400'

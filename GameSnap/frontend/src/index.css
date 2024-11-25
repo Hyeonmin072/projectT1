@@ -40,6 +40,15 @@ code {
   animation: slideDown 0.3s ease-in-out;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

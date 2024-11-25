@@ -117,7 +117,7 @@ function FreeBoardList() {
             <h1 className="text-2xl font-bold text-gray-800">자유게시판</h1>
           </div>
 
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center">
             <form onSubmit={handleSearch} className="relative flex-1 max-w-md">
               <input
                 type="text"
