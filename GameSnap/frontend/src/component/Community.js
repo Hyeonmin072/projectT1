@@ -2,12 +2,13 @@
 /* eslint-disable */
 
 import React, { useState, useEffect } from 'react';
-import { X, Search, UserPlus, MessagesSquare } from 'lucide-react';
+import { X, Search, UserPlus, MessagesSquare, MessageSquarePlus, PlusCircle, Handshake, LucideHandshake, StopCircle, MonitorStop, Ban, Hand, UserRoundPlus, BellPlus, Check } from 'lucide-react';
 import ChattingRoom from './ChattingRoom';
 import FriendAxios from '../axios/FriendAxios';
 import { useAuth } from '../context/AuthContext'; // 인증 컨텍스트 추가
 import LoadFriends from './LoadFriends';
 import axios from 'axios';
+import { param } from 'framer-motion/client';
 
 const Community = ({ isOpen, onClose }) => {
   const { userData } = useAuth();
@@ -68,6 +69,7 @@ const Community = ({ isOpen, onClose }) => {
     try {
       console.log(userData.id, user.id)
       await FriendAxios.sendFriendRequest(userData.id, user.id);
+      handleRejectRequest(user)
       alert('친구 추가를 완료했습니다.');
       setSearchResults([]);
       setSearchNickname('');
@@ -86,6 +88,11 @@ const Community = ({ isOpen, onClose }) => {
     setIsChatOpen(true);
   };
 
+  const handleStartChat2 = (partnerId, partnerName) => {
+    const friend = { id:partnerId, name:partnerName };
+    handleStartChat(friend);
+  }
+
 
   // 친구 삭제
   const handleRemoveFriend = async (friendId) => {
@@ -101,18 +108,56 @@ const Community = ({ isOpen, onClose }) => {
     }
   };
 
-  // 친구 요청 수락
-  const handleAcceptRequest = async (requestId) => {
+  // 친구 요청 보내기
+  const handleSendRequest = async (user) => {
     try {
-      const newFriend = await FriendAxios.acceptFriendRequest(requestId);
-      setFriends(prev => [...prev, newFriend]);
-      setFriendRequests(prev => prev.filter(request => request.id !== requestId));
-      alert('친구 요청을 수락했습니다.');
+        const response = await axios.post("http://localhost:1111/friend/request", null, {
+            params: {
+                myId: userData.id,
+                receiveMemberId: user.id
+            }
+        }); 
+        alert('친구 요청 보내기에 성공했습니다.');
     } catch (error) {
-      console.error('친구 요청 수락 실패:', error);
-      alert('친구 요청 수락에 실패했습니다.');
+        console.error('친구 요청 보내기 실패', error);
+        alert('친구 요청 보내기에 실패했습니다.');
+    }
+  }
+
+  //친구 요청 목록 불러오기 
+  useEffect(() => {
+    const fetchRequests = async() => {
+      try {
+        const response = await axios.get("http://localhost:1111/friend/request", {
+          params: {
+            myId: userData.id
+          }
+        });
+        setFriendRequests(response.data);
+      } catch (error) {
+        console.error("친구 요청을 조회하는중에 오류가 발생했습니다.")
+      }
+    }
+
+    fetchRequests();
+  }, [isOpen])
+
+  //친구 요청 거절
+  const handleRejectRequest = async (user) => {
+    try {
+      await axios.post("http://localhost:1111/friend/request/delete", null, {
+        params: {
+          sendMemberId: user.id,
+          myId: userData.id
+        }
+      });
+      setFriendRequests(prev => prev.filter(request => request.id !== user.id));
+    } catch (error) {
+      console.error('친구 요청 거절 실패:', error);
+      alert('친구 요청 거절에 실패했습니다.');
     }
   };
+
 
   //채팅 목록 불러오기 
   useEffect(() => {
@@ -127,7 +172,7 @@ const Community = ({ isOpen, onClose }) => {
     }
 
     fetchChats();
-  }, [])
+  }, [isOpen])
 
   // 친구 필터링
   const filteredFriends = friends.filter(friend =>
@@ -258,18 +303,51 @@ const Community = ({ isOpen, onClose }) => {
               <UserPlus size={20} className="mr-2" />
               친구 추가하기
             </button>
+            
+            {/* 친구 요청 목록 */}
+            <div className="space-y-2 border-t mt-6">
+            <h2 className="text-base font-semibold mt-6 mb-4">친구 요청 목록</h2>
+              {friendRequests.map(request => (
+                <div key={request.id} 
+                // onClick={() => handleFriendClick(friend)}
+                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 group">
+                  <div className="flex items-center gap-3">
+                    <Handshake size={16} />
+                    <div>
+                      <div className="font-medium text-sm">{request.name}의 친구요청</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <button
+                      onClick={() => {
+                        handleRejectRequest(request);
+                      }}
+                      className="p-1.5 text-red-500 hover:bg-red-100 rounded-full"
+                    >
+                      <Ban size={16} />
+                    </button>
+                    <button
+                      onClick={() => handleAddFriend(request)}
+                      className="p-2 text-green-500 hover:bg-green-50 rounded-full"
+                    >
+                      <Check size={20} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           // 채팅 목록
           <div className="space-y-4">
             {chats.map(chat => (
-              <div key={chat.makerId} className="flex items-center justify-between p-4 bg-white shadow-md rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out">
+              <div key={chat.partnerId} className="flex items-center justify-between p-4 bg-white shadow-md rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out" onClick={() => handleStartChat2(chat.partnerId, chat.partnerName)}>
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-gray-200 rounded-full" />
                   <div>
-                    <div className="font-semibold text-gray-700">{chat.makerId} 님과 {chat.guestId}의 채팅방</div>
+                    <div className="font-semibold text-gray-700">{chat.partnerName}와의 채팅방</div>
                     <div className="text-sm text-gray-500 truncate">
-                      {chat.lastMsg || "새 메시지가 없습니다"}
+                      {chat.lastMsg || "최근 메시지가 없습니다"}
                     </div>
                   </div>
                 </div>
@@ -330,33 +408,10 @@ const Community = ({ isOpen, onClose }) => {
                 </button>
               </div>
 
+              {/* 검색 결과 */}
               <div className="mt-4 border-t pt-4">
                 <h3 className="text-lg font-semibold mb-2">검색 결과</h3>
-                {friendRequests.map(request => (
-                  <div key={request.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2">
-                    <div>
-                      <p className="font-medium">{request.senderName}</p>
-                      <p className="text-sm text-gray-500">{request.sentAt}</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleAcceptRequest(request.id)}
-                        className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600"
-                      >
-                        수락
-                      </button>
-                      <button
-                        onClick={() => handleRejectRequest(request.id)}
-                        className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                      >
-                        거절
-                      </button>
-                    </div>
-                  </div>
-                ))}
               </div>
-
-              {/* 검색 결과 */}
               <div 
                 className={`space-y-2 overflow-hidden transition-all duration-500 ease-in-out
                     ${searchResults.length > 0 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
@@ -376,7 +431,7 @@ const Community = ({ isOpen, onClose }) => {
                                 </div>
                             </div>
                             <button
-                                onClick={() => handleAddFriend(user)}
+                                onClick={() => handleSendRequest(user)}
                                 className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600
                                 transition-all duration-300 ease-in-out 
                                 hover:scale-105 active:scale-95"
