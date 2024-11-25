@@ -63,9 +63,9 @@ export const profileAPI = {
 },
 
   // 프로필 이미지 삭제
-  deleteImage: async (userId) => {
-    console.log("memberId 삭제 이미지 보내기 전 :",userId);
-    return await apiClient.delete("/profile/deleteImg",{ params : {userId : userId}});
+  deleteImage: async (memberId) => {
+    console.log("memberId 삭제 이미지 보내기 전 :",memberId);
+    return await apiClient.delete("/profile/deleteImg",{ params : {userId : memberId}});
   },
 
   // 프로필 내용 업데이트

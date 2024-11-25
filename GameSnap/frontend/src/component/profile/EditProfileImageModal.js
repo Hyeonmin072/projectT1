@@ -30,7 +30,7 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
             type: file.type,
             size: file.size
         });
-
+        console.log(userData.id);
         const response = await profileAPI.uploadImage(formData);
         console.log(response.data);
         console.log(response);
