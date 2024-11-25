@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 
+
 const apiClient = axios.create({
     baseURL: 'http://localhost:1111/video', // 백엔드 URL
 });
@@ -83,6 +84,27 @@ export const uploadFile = async (file,userId) => {
         handleError(error);
     }
 };
+
+export const saveVideoDetails = async (videoData) => {
+
+    const formData = new FormData();
+    console.log("받은 비디오 데이터:", videoData);
+    //요청
+    formData.append('title', videoData.title);
+    formData.append('desc', videoData.description);
+    formData.append('gameId', videoData.gameId);
+    formData.append('userId', videoData.userId);
+    formData.append('title', videoData.title);
+    formData.append('file', videoData.file);
+
+    console.log('=서버로 보내는 폼데이터 내용=');
+    for (let [key, value] of formData.entries()) {
+        console.log(key + ': ' + value);
+    }
+    
+    const response = await apiClient.post('/video/upload', formData);
+    return response.data;
+  };
 
 export default {
     ToggleLike,

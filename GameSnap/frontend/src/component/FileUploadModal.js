@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { MonitorUp, X } from 'lucide-react';
 import * as VideoAxios from '../axios/VideoAxios';  // apiClient import
 import { useAuth } from '../context/AuthContext';
+import VideoDetailsModal from './VideoDetailsModal';
 
 const FileUploadModal = ({ isOpen, onClose }) => {
   const fileInputRef = useRef(null);
@@ -10,6 +11,9 @@ const FileUploadModal = ({ isOpen, onClose }) => {
   const [mounted, setMounted] = useState(false);
   const [uploadError, setUploadError] = useState(null);  // 업로드 오류 상태 추가
   const { userData } = useAuth();
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -38,18 +42,41 @@ const FileUploadModal = ({ isOpen, onClose }) => {
 
   const handleFileSelect = async (e) => {
     const file = e.target.files[0];
-    console.log(file);
+    console.log("Selected file:", file);
     if (file) {
       try {
-        const fileUrl = await VideoAxios.uploadFile(file,userData.id);  // 파일 업로드
-        console.log("파일 업로드 성공:", fileUrl);
-        alert("성공적으로 파일을 업로드 했습니다");
-        onClose();
+        console.log("Uploading file...");
+        const fileUrl = await VideoAxios.uploadFile(file, userData.id);
+        console.log("File uploaded successfully:", fileUrl);
+
+
+        setTimeout(() => {
+          setUploadedFileUrl(fileUrl);
+          setShowDetailsModal(true);
+          setUploadedFile(file);
+        }, 300);
+
+
+        setUploadedFileUrl(fileUrl);
+        setShowDetailsModal(true);
+        console.log("ShowDetailsModal set to true");
       } catch (error) {
+        console.error("Upload error:", error);
         setUploadError('파일 업로드 중 오류 발생. 다시 시도해 주세요.');
       }
     }
   };
+
+  const handleVideoDetailsSubmit = async (formData) => {
+  try {
+    await VideoAxios.saveVideoDetails(formData);
+    alert("비디오가 성공적으로 업로드되었습니다.");
+    onClose();
+  } catch (error) {
+    setUploadError('비디오 정보 저장 중 오류가 발생했습니다.');
+    console.error('Error:', error);
+  }
+};
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -143,12 +170,22 @@ const FileUploadModal = ({ isOpen, onClose }) => {
               </button>
             </div>
 
+
             {uploadError && (
               <p className="text-red-500 text-sm mt-2">{uploadError}</p>
             )}
+
+            
           </div>
         </div>
       </div>
+            <VideoDetailsModal
+              isOpen={showDetailsModal}
+              onClose={() => setShowDetailsModal(false)}
+              fileUrl={uploadedFileUrl}
+              file={uploadedFile}
+              onSubmit={handleVideoDetailsSubmit}
+            />
     </>
   );
 };
