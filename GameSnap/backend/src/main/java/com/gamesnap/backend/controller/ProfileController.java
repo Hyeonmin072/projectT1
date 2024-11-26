@@ -59,4 +59,10 @@ public class ProfileController {
         return videoService.getVideoListByMember(memberId);
     }
 
+    @DeleteMapping("/deleteVideo")
+    public ResponseEntity<String> deleteVideo(@RequestParam("videoId")Integer videoId){
+
+        return videoService.deleteVideo(videoId);
+    }
+
 }

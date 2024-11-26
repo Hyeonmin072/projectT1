@@ -47,6 +47,7 @@ public class Video {
 
 
 
+
     public Video(){}
 
     public Video(String title,String desc,String url,Integer view,Member member,Game game){

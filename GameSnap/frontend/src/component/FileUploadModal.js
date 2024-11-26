@@ -1,18 +1,16 @@
-// FileUploadModal.js
 import React, { useRef, useState, useEffect } from 'react';
 import { MonitorUp, X } from 'lucide-react';
-import * as VideoAxios from '../axios/VideoAxios';  // apiClient import
 import { useAuth } from '../context/AuthContext';
 import VideoDetailsModal from './VideoDetailsModal';
+import VideoAxios from '../axios/VideoAxios';
 
 const FileUploadModal = ({ isOpen, onClose }) => {
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [uploadError, setUploadError] = useState(null);  // 업로드 오류 상태 추가
+  const [uploadError, setUploadError] = useState(null);
   const { userData } = useAuth();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
 
   useEffect(() => {
@@ -40,50 +38,32 @@ const FileUploadModal = ({ isOpen, onClose }) => {
     }, 300);
   };
 
-  const handleFileSelect = async (e) => {
+  const handleVideoUpload = async (formData) => {
+    console.log('업로드 데이터 확인 :', formData);
+    try{
+      const response = await VideoAxios.uploadFile(formData);
+      console.log(response);
+    }catch (error){
+      console.log(error);
+    }
+
+  }
+
+  const handleFileSelect = (e) => {
     const file = e.target.files[0];
-    console.log("Selected file:", file);
     if (file) {
-      try {
-        console.log("Uploading file...");
-        const fileUrl = await VideoAxios.uploadFile(file, userData.id);
-        console.log("File uploaded successfully:", fileUrl);
-
-
-        setTimeout(() => {
-          setUploadedFileUrl(fileUrl);
-          setShowDetailsModal(true);
-          setUploadedFile(file);
-        }, 300);
-
-
-        setUploadedFileUrl(fileUrl);
-        setShowDetailsModal(true);
-        console.log("ShowDetailsModal set to true");
-      } catch (error) {
-        console.error("Upload error:", error);
-        setUploadError('파일 업로드 중 오류 발생. 다시 시도해 주세요.');
-      }
+      console.log("Selected file:", file);
+      setUploadedFile(file);
+      setShowDetailsModal(true); // 세부정보 모달 열기
     }
   };
-
-  const handleVideoDetailsSubmit = async (formData) => {
-  try {
-    await VideoAxios.saveVideoDetails(formData);
-    alert("비디오가 성공적으로 업로드되었습니다.");
-    onClose();
-  } catch (error) {
-    setUploadError('비디오 정보 저장 중 오류가 발생했습니다.');
-    console.error('Error:', error);
-  }
-};
 
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
     if (file) {
-      handleFileSelect({ target: { files: [file] } });  // 드래그 앤 드롭 파일 업로드 처리
+      handleFileSelect({ target: { files: [file] } });
     }
   };
 
@@ -109,7 +89,7 @@ const FileUploadModal = ({ isOpen, onClose }) => {
           transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       />
-      
+
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
           id="modal-content"
@@ -147,20 +127,20 @@ const FileUploadModal = ({ isOpen, onClose }) => {
                 ref={fileInputRef}
                 onChange={handleFileSelect}
                 className="hidden"
-                accept="video/*"  // 비디오 파일만 선택할 수 있도록 설정
+                accept="video/*"
               />
-              
+
               <MonitorUp
                 size={48}
                 className={`mb-4 transform transition-transform duration-300
                   ${isDragging ? 'text-blue-500 scale-110' : 'text-gray-400'}`}
               />
-              
+
               <p className="text-xl text-gray-600 mb-2">
                 {isDragging ? '파일을 여기에 놓으세요!' : '파일을 이 영역에 드래그하세요'}
               </p>
               <p className="text-sm text-gray-500 mb-4">또는</p>
-              
+
               <button
                 onClick={() => fileInputRef.current.click()}
                 className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 
@@ -170,22 +150,22 @@ const FileUploadModal = ({ isOpen, onClose }) => {
               </button>
             </div>
 
-
             {uploadError && (
               <p className="text-red-500 text-sm mt-2">{uploadError}</p>
             )}
-
-            
           </div>
         </div>
       </div>
-            <VideoDetailsModal
-              isOpen={showDetailsModal}
-              onClose={() => setShowDetailsModal(false)}
-              fileUrl={uploadedFileUrl}
-              file={uploadedFile}
-              onSubmit={handleVideoDetailsSubmit}
-            />
+
+      {showDetailsModal && (
+        <VideoDetailsModal
+          isOpen={showDetailsModal}
+          onClose={() => setShowDetailsModal(false)}
+          file={uploadedFile} // 업로드된 파일 전달
+          userId={userData.id}
+          onSubmit={handleVideoUpload}
+        />
+      )}
     </>
   );
 };

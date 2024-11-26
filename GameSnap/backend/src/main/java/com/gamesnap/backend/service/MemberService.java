@@ -185,30 +185,29 @@ public class MemberService {
 
     public ResponseEntity<String> deleteImage(Integer memberId) {
         try {
-            // 1. 회원 정보 조회
+
             Member member = findId(memberId);
             String fileName = member.getImage().replace("https://"+bucket+".s3.ap-northeast-2.amazonaws.com/", "");
 
-            // 2. S3에서 파일 존재 여부 확인
+
+            // S3객체 확인하는거
             try {
-                // S3에서 객체를 가져옴
                 S3Object object = amazonS3Client.getObject(bucket, fileName);
             } catch (AmazonS3Exception e) {
-                // S3에서 객체가 존재하지 않으면 예외 발생
+
                 return ResponseEntity.status(400).body("프로필이 존재하지 않습니다");
             }
 
-            // 3. 이미지 삭제
+
             amazonS3Client.deleteObject(bucket, fileName);
 
-            // 4. DB에서 이미지 정보 삭제
+
             member.MemberDeleteImage();
             memberRepository.save(member);
 
             return ResponseEntity.status(200).body("프로필 삭제 성공");
 
         } catch (Exception e) {
-            // 예기치 않은 예외 처리
             return ResponseEntity.status(500).body("프로필 삭제 중 오류 발생");
         }
     }

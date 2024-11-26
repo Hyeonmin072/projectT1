@@ -4,23 +4,25 @@ import { profileAPI } from '../axios/UserProfileAxios';
 import { useAuth } from '../context/AuthContext'; 
 
 export const useProfile = (userId) => {
+
   const queryClient = useQueryClient();
   const { userData, updateUserData } = useAuth();
+  console.log("useProfile의 userId",userId);
 
   // 프로필 데이터 쿼리
-  const { data: profileData, isLoading: profileLoading, error: profileError } = useQuery({
-    queryKey: ['profile', userId],
-    queryFn: () => profileAPI.fetchUserProfile(userId),
-    onSuccess: (data) => {
-      updateUserData({
-        ...userData,
-        image: data.image
-      });
-    }
-  });
+  // const { data: profileData, isLoading: profileLoading, error: profileError } = useQuery({
+  //   queryKey: ['profile', userId],
+  //   queryFn: () => profileAPI.fetchUserProfile(userId),
+  //   onSuccess: (data) => {
+  //     updateUserData({
+  //       ...userData,
+  //       image: data.image
+  //     });
+  //   }
+  // });
 
   // 비디오 데이터 쿼리
-  const { data: videosData, isLoading: videosLoading, error: videosError } = useQuery({
+  const { data: videosData, isLoading: videosLoading, error: videosError, refetch: refetchVideos } = useQuery({
     queryKey: ['userVideos', userId],
     queryFn: () => profileAPI.fetchUserVideos(userId),
   });
@@ -70,9 +72,10 @@ const updateImageMutation = useMutation({
 });
 
   return {
-    profileData,
-    profileLoading,
-    profileError,
+    refetchVideos,
+    // profileData,
+    // profileLoading,
+    // profileError,
     videosData,
     videosLoading,
     videosError,
