@@ -2,6 +2,7 @@ package com.gamesnap.backend.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import com.gamesnap.backend.dto.LikeStatusResponseDto;
 import com.gamesnap.backend.dto.UploadResponseDto;
 import com.gamesnap.backend.dto.VideoResponseDto;
@@ -133,6 +134,26 @@ public class VideoService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    public ResponseEntity<String> deleteVideo(Integer videoId){
+
+        Video video = findId(videoId);
+        String videoName = video.getUrl().replace("https://"+bucket+".s3.ap-northeast-2.amazonaws.com/", "");
+
+
+
+        try{
+            S3Object s3Object = amazonS3Client.getObject(bucket,videoName);
+        }catch(Exception e){
+            return ResponseEntity.status(400).body("이미 존재하지않는 비디오입니다.");
+        }
+
+        amazonS3Client.deleteObject(bucket,videoName);
+        videoRepository.delete(video);
+
+        return ResponseEntity.status(200).body("성공적으로 삭제되었습니다.");
+    }
+
 
     @Transactional
     public List<VideoResponseDto> getVideoListByMember(Integer memberId){

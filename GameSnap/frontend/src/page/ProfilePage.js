@@ -12,7 +12,8 @@ import LoadingSpinner from "../component/common/LoadingSpinner";
 import ErrorMessage from "../component/common/ErrorMessage";
 
 const ProfilePage = () => {
-  const { user } = useAuth(); // 현재 로그인한 유저 정보
+  const { userData } = useAuth(); // 현재 로그인한 유저 정보
+  console.log("ProfilePage: user",userData);
   const { 
     profileData,
     profileLoading,
@@ -24,7 +25,7 @@ const ProfilePage = () => {
     updatePassword,
     isUpdating,
     isUpdatingPassword
-  } = useProfile(user?.id);
+  } = useProfile(userData?.id);
 
   const [activeTab, setActiveTab] = useState('info');
   const navigate = useNavigate();

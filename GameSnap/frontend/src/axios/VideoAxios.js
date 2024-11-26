@@ -70,12 +70,8 @@ export const addComment = async (commentData) => {
 };
 
 // 파일 업로드 기능 추가
-export const uploadFile = async (file,userId) => {
-    const formData = new FormData();
-    formData.append('file', file);  // 파일을 FormData에 첨부
-    formData.append('userId', userId);
-    console.log("userId:",userId);
-    console.log("formData:",formData.values);
+export const uploadFile = async (formData) => {
+    console.log('uploadFile 보내는중');
     try {
         const response = await apiClient.post('/upload', formData);
         console.log("파일 보낸후");

@@ -33,13 +33,23 @@ export const profileAPI = {
   //   });
   //   return response.data;
   // },
+
+  deleteVideo: async (videoId) =>{
+    console.log(videoId);
+    const response = await apiClient.delete('/profile/deleteVideo',{
+      params: {videoId : videoId}
+    });
+    return response.data;
+  },
   
-  // fetchUserVideos: async (userId) => {
-  //   const response = await apiClient.get(`/profile/videos`, { 
-  //     params: { userId } 
-  //   });
-  //   return response.data;
-  // },
+  fetchUserVideos: async (memberId) => {
+    console.log("내비디오 가져오기 유저아이디 : ",memberId);
+    const response = await apiClient.get('/profile/getVideoList', { 
+      params: { userId : memberId } 
+    });
+    console.log("getVideoList:",response);
+    return response.data;
+  },
   
   // 프로필 이미지 업로드
   uploadImage: async (formData) => {

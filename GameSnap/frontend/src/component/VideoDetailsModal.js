@@ -1,59 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import {useAuth} from '../context/AuthContext';
 import { GAME_LIST } from '../constants/games';
 
-const VideoDetailsModal = ({ isOpen, onClose, fileUrl, file, onSubmit }) => {
+const VideoDetailsModal = ({ isOpen, onClose, file, userId, onSubmit }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedGame, setSelectedGame] = useState('');
   const [mounted, setMounted] = useState(false);
-  const { userData } = useAuth();
-
 
   useEffect(() => {
     if (isOpen) {
       setMounted(true);
     } else {
-      // 모달이 닫힐 때는 애니메이션이 완료된 후에 mounted를 false로 설정
-      setTimeout(() => {
-        setMounted(false);
-      }, 300);
+      setTimeout(() => setMounted(false), 300);
     }
   }, [isOpen]);
 
   const handleSubmit = () => {
-    onSubmit({
-        title,
-        description,
-        gameId: Number(selectedGame),
-        videoUrl: fileUrl,
-        userId: userData.id,
-        file: file
-    });
+    if (!title || !selectedGame) {
+      alert('비디오 제목과 게임을 선택해야 합니다.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('title',title);
+    formData.append('desc',description);
+    formData.append('gameId',Number(selectedGame));
+    formData.append('file',file);
+    formData.append('userId',userId);
+
+    onSubmit(formData);
+
+    // 상태 초기화 및 모달 닫기
+    setTitle('');
+    setDescription('');
+    setSelectedGame('');
     onClose();
-};
+  };
 
   if (!mounted && !isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div 
-      className={`
-        fixed inset-0 bg-black transition-opacity duration-300
-        ${isOpen ? 'opacity-50' : 'opacity-0'}
-      `} 
-      onClick={onClose} 
-    />
-    
-    <div 
-      id="details-modal-content" 
-      className={`
-        relative bg-white rounded-lg shadow-xl w-full max-w-3xl p-3
-        transform transition-all duration-300 ease-in-out
-        ${isOpen ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-24 scale-90 opacity-0'}
-      `}
-    >
+      <div
+        className={`
+          fixed inset-0 bg-black transition-opacity duration-300
+          ${isOpen ? 'opacity-50' : 'opacity-0'}
+        `}
+        onClick={onClose}
+      />
+
+      <div
+        id="details-modal-content"
+        className={`
+          relative bg-white rounded-lg shadow-xl w-full max-w-3xl p-3
+          transform transition-all duration-300 ease-in-out
+          ${isOpen ? 'translate-y-0 scale-100 opacity-100' : 'translate-y-24 scale-90 opacity-0'}
+        `}
+      >
         <div className="flex justify-between items-center p-6 border-b">
           <h3 className="text-2xl font-semibold text-gray-800">비디오 정보 입력</h3>
           <button
@@ -114,9 +118,10 @@ const VideoDetailsModal = ({ isOpen, onClose, fileUrl, file, onSubmit }) => {
             onClick={handleSubmit}
             disabled={!title || !selectedGame}
             className={`px-4 py-2 rounded-md text-white
-              ${(!title || !selectedGame) 
-                ? 'bg-blue-300 cursor-not-allowed' 
-                : 'bg-blue-500 hover:bg-blue-600'}`}
+              ${(!title || !selectedGame)
+                ? 'bg-blue-300 cursor-not-allowed'
+                : 'bg-blue-500 hover:bg-blue-600'}
+            `}
           >
             업로드
           </button>

@@ -25,14 +25,23 @@ const VideoCard = ({ video }) => (
     </div>
     <div className="p-4">
       <h3 className="font-medium text-gray-900 truncate">{video.title}</h3>
+      <p className="mt-2 text-sm text-gray-600">{video.desc}</p>
       <div className="mt-2 flex items-center text-sm text-gray-500 space-x-4">
         <div className="flex items-center">
           <Eye className="w-4 h-4 mr-1" />
-          <span>{video.views.toLocaleString()}</span>
+          <span>{video.views ? video.views.toLocaleString() : 0}</span>
         </div>
         <div className="flex items-center">
           <Calendar className="w-4 h-4 mr-1" />
-          <span>{new Date(video.createdAt).toLocaleDateString()}</span>
+          <span>{new Date(video.createDate).toLocaleDateString()}</span>
+        </div>
+      </div>
+      <div className="mt-2 flex items-center text-sm text-gray-500 space-x-4">
+        <div className="flex items-center">
+          <span className="mr-1">Likes: {video.like}</span>
+        </div>
+        <div className="flex items-center">
+          <span className="mr-1">Liked: {video.liked ? 'Yes' : 'No'}</span>
         </div>
       </div>
     </div>
