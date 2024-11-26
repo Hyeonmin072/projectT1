@@ -38,6 +38,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
 
   // 메시지 업데이트 핸들러
   const updateMessages = useCallback((newMessage) => {
+    console.log('메시지 업데이트 핸들러')
     setMessages(prev => {
       const isDuplicate = prev.some(msg => 
         msg.id === newMessage.id || 
@@ -147,6 +148,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
 
   // 이전 메시지 로드
   const fetchMessages = async (roomId) => {
+    console.log('이전 메시지 로드')
     try {
       const response = await axios.get(`http://localhost:1111/messages/${roomId}`);
       if (response.status === 200 && response.data) {
@@ -160,6 +162,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
 
   // 메시지 전송
   const handleSendMessage = async (e) => {
+    console.log('메시지 전송')
     e.preventDefault();
 
     if (!newMessage.trim() || !friend) {
