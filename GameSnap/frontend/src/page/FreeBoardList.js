@@ -83,6 +83,28 @@ function FreeBoardList() {
     fetchPosts();
   }, [selectedGame, searchTerm, page, pageSize]);
 
+  // 마운트 시 조회를 위한 새로운 useEffect 훅 추가(자유게시판에 글 작성 후 돌아왔을 시 필요)
+  useEffect(() => { 
+    const fetchPosts = async () => { 
+      if (!selectedGame) return; 
+      setLoading(true); 
+      try { 
+        const boardsData = searchTerm 
+          ? await FreeBoardAxios.searchPosts(selectedGame, searchTerm, page, pageSize) 
+          : await FreeBoardAxios.getPosts(selectedGame, page, pageSize); 
+        
+        setPosts(boardsData.content || []); 
+        setTotalPages(boardsData.totalPages); 
+      } catch (error) { 
+        console.error('게시글을 불러오는데 실패했습니다:', error); 
+        setError('게시글을 불러오는데 실패했습니다.'); 
+      } finally { 
+        setLoading(false); 
+      } 
+    }; 
+    fetchPosts(); 
+  }, []);
+
   const handleSearch = async (e) => {
     e.preventDefault();
 

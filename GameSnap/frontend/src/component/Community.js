@@ -164,28 +164,31 @@ const Community = ({ isOpen, onClose }) => {
 
 
   //채팅 목록 불러오기 
-  useEffect(() => {
-    const fetchChats = async() => {
-      try {
-        const url = "http://localhost:1111/" + userData.id + "/messageRooms";
-        const response = await axios.get(url);
-        setChats(response.data);
-      } catch (error) {
-        console.error("채팅방을 조회하는중에 오류가 발생했습니다.")
-      }
+  const fetchChats = async() => {
+    try {
+      const url = "http://localhost:1111/" + userData.id + "/messageRooms";
+      const response = await axios.get(url);
+      setChats(response.data);
+    } catch (error) {
+      console.error("채팅방을 조회하는중에 오류가 발생했습니다.")
     }
-
-    fetchChats();
-  }, [isOpen])
+  };
 
   // 친구 필터링
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+
+  // 탭 변경 함수 
+  const handleTabChange = (tab) => { 
+    setActiveTab(tab); 
+    if (tab === 'chats') { 
+      fetchChats(); // 채팅 목록 탭으로 전환 시 채팅 목록 다시 불러오기 
+    } 
+  };
+
   const [activeTab, setActiveTab] = useState('friends');
-  const [lastChatMessage, setLastChatMessage] = useState(null);
-  const [unreadCount, setUnreadCount] = useState(0);
 
   
   return (
@@ -238,7 +241,7 @@ const Community = ({ isOpen, onClose }) => {
                   ${activeTab === 'chats' 
                     ? 'bg-white text-green-600 shadow-sm' 
                     : 'text-gray-500 hover:text-green-600 hover:bg-white/50'}`}
-                onClick={() => setActiveTab('chats')}
+                onClick={() => handleTabChange('chats')}
               >
                 채팅 목록
               </button>
