@@ -143,7 +143,7 @@ const Navbar = () => {
                   bg-green-600 text-white rounded-md hover:bg-green-900 transition-all duration-400"
                 >
                   <User size={20} />
-                  <span>{userData?.name || '사용자'}</span>
+                  <span className="max-w-[100px] truncate" >{userData?.name || '사용자'}</span>
                 </button>
                 </div>
               </div>
