@@ -15,6 +15,18 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
   const messagesEndRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
 
+  // 스크롤방지 useEffect
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   // 스크롤 자동 이동
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -27,7 +39,6 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
   // 메시지 업데이트 핸들러
   const updateMessages = useCallback((newMessage) => {
     setMessages(prev => {
-      // 중복 체크를 ID와 timestamp로 함께 수행
       const isDuplicate = prev.some(msg => 
         msg.id === newMessage.id || 
         (msg.content === newMessage.content && 
@@ -38,7 +49,6 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
       if (isDuplicate) return prev;
       
       const updated = [...prev, newMessage];
-      // 시간순 정렬
       return updated.sort((a, b) => 
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
@@ -56,7 +66,6 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
     const socket = new WebSocket('wss://c197-210-97-91-191.ngrok-free.app/chat/inbox');
     const client = Stomp.over(socket);
     
-    // 불필요한 로그 제거
     client.debug = () => {};
 
     socket.onopen = () => {
@@ -88,7 +97,6 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
         console.error('WebSocket Connection Error:', error);
         setIsConnected(false);
         
-        // 재연결 시도
         if (reconnectTimeoutRef.current) {
           clearTimeout(reconnectTimeoutRef.current);
         }
@@ -105,7 +113,6 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
 
   // 채팅방 생성 또는 참여
   const createOrJoinChatRoom = async () => {
-    
     try {
       console.log('채팅방에 생성/참여 중....');
       console.log('User ID:', userData?.id);
@@ -177,7 +184,6 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
       stompClientRef.current.send('/pub/message', {}, JSON.stringify(message));
       setNewMessage('');
 
-      // 메시지 즉시 표시 (옵티미스틱 업데이트)
       updateMessages({
         ...message,
         id: `temp-${Date.now()}`,
@@ -208,11 +214,25 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
     };
   }, [friend, isOpen, connectWebSocket]);
 
+  // 이벤트 전파 방지
+  const handleModalClick = (e) => {
+    e.stopPropagation();
+  };
+
   return (
     <>
-      {isOpen && <div className="fixed inset-0 bg-black bg-opacity-50" onClick={onClose} />}
+    {/* 오버레이 z인덱스 추가 및 구조 수정 */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-[100]" 
+          onClick={(e) => e.preventDefault()}
+          style={{ cursor: 'default' }}
+        />
+      )}
 
       <div
+      // 채팅방 이벤트 방지 함수 추가
+        onClick={handleModalClick} 
         className={`fixed top-1/2 left-1/2 w-[480px] h-[600px] bg-white shadow-lg rounded-lg z-[110]
                     transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out
                     ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}
