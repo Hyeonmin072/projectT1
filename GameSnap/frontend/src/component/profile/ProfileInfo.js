@@ -12,7 +12,7 @@ import EditNameModal from './EditNameModal';
 import EditPreferredGameModal from './EditPreferredGameModal';
 
 const ProfileInfo = ({ handlePasswordEdit }) => {
-  const { userData } = useAuth();
+  const { userData , setUserData} = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
@@ -26,7 +26,7 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
   useEffect(() => {
     // 선호 게임 정보가 변경될 때마다 gameDisplay 업데이트
     setGameDisplay(
-      userData?.preferredGame
+      userData?.likeGamesId
         ?.map(gameId => getGameNameById(gameId))
         .join(", ") || "선택된 게임 없음"
     );
@@ -57,14 +57,21 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
   };
 
   const handleGameSubmit = (selectedGames) => {
+    console.log('selectedGames',selectedGames);
     updateGamesMutation.mutate(selectedGames, {
-      onSuccess: () => {
+      onSuccess: (response) => {
+        console.log("선호게임 response data:",response);
         setGameDisplay(
           selectedGames
             .map(gameId => getGameNameById(gameId))
             .join(", ")
         );
         setIsGameModalOpen(false);
+        setUserData({
+          ...userData,
+          likeGamesId : response.likeGamesId,
+          preferredGame : response.likeGamesName
+        });
       },
       onError: () => {
         alert('선호 게임 수정에 실패했습니다.');
@@ -142,7 +149,7 @@ const ProfileInfo = ({ handlePasswordEdit }) => {
         isOpen={isGameModalOpen}
         onClose={() => setIsGameModalOpen(false)}
         onSubmit={handleGameSubmit}
-        initialGames={userData?.preferredGame || []}
+        initialGames={userData?.likeGamesId || []}
       />
     </div>
   );

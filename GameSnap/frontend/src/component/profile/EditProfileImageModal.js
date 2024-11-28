@@ -1,4 +1,4 @@
-// components/profile/EditProfileImageModal.jsx
+
 import React, { useState, useRef } from 'react';
 import { X, Upload, Camera, Trash } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -43,6 +43,8 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
       });
       console.log("onSuccess했을때:",userData);
       console.log("onSuccess했을때 data:",data);
+      alert("프로필 수정이 완료되었습니다 !");
+      onClose();
     },
     onError: (error) => {
         console.error('이미지 업로드 실패:', error);
@@ -66,9 +68,14 @@ const EditProfileImageModal = ({ isOpen, onClose, currentImage }) => {
       return response.data;
     },
     onSuccess: () => {
+      updateUserData({
+        ...userData,
+        image: null,
+      });
       queryClient.invalidateQueries({ queryKey: ['userProfile'] });
       setPreview(null);
       setImageFile(null);
+      onClose();
     },
     onError: (error) => {
       console.error('이미지 삭제 실패:', error);

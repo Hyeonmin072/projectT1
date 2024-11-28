@@ -9,6 +9,13 @@ const EditPreferredGameModal = ({ isOpen, onClose, onSubmit, initialGames = [] }
   const [currentPage, setCurrentPage] = useState(0);
   const [direction, setDirection] = useState(0);
 
+  useEffect(() => {
+    if (isOpen) {
+      // 모달 열릴 때 초기값으로 설정
+      setSelectedGames(initialGames);
+    }
+  }, [isOpen, initialGames]);
+  
   if (!isOpen) return null;
 
   const ITEMS_PER_PAGE = 6;

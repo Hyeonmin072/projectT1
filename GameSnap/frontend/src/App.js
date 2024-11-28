@@ -40,7 +40,6 @@ function AnimatedRoutes() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/videos" element={<UserVideosPage />} />
       </Routes>
-      <Footer />
     </AnimatePresence>
   );
 }
@@ -55,6 +54,7 @@ function App() {
             <div className="pt-[73px]">
               <AnimatedRoutes />
             </div>
+            <Footer />
           </div>
         </Router>
       </AuthProvider>
