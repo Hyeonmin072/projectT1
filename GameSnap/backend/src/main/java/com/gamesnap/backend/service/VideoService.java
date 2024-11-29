@@ -47,7 +47,7 @@ public class VideoService {
     @Autowired
     private MemberRepository memberRepository;
 
-    private int getVideoCount = 10;
+
 
 
     public List<Video> getRandomVideos() {
@@ -65,7 +65,7 @@ public class VideoService {
         Random random = new Random();
 
         // 중복되지 않도록 비디오를 랜덤하게 선택
-        while (randomVideos.size() < getVideoCount) {
+        while (randomVideos.size() < 10) {
             int randomIndex = random.nextInt(responseVideos.size());
             Video video = responseVideos.get(randomIndex);
 
@@ -86,7 +86,7 @@ public class VideoService {
             Optional<Game> findGame = gameRepository.findById(gamesId.get(i));
             if(findGame.isPresent()){
                 Game game = findGame.get();
-                List<Video> videos = videoRepository.findByGame(game);
+                List<Video> videos = videoRepository.findAllByGame(game);
                 responseVideos.addAll(videos);
             }
         }
@@ -103,7 +103,7 @@ public class VideoService {
         Random random = new Random();
 
         // 중복되지 않도록 비디오를 랜덤하게 선택
-        while (randomVideos.size() < getVideoCount) {
+        while (randomVideos.size() < responseVideos.size()) {
             int randomIndex = random.nextInt(responseVideos.size());
             Video video = responseVideos.get(randomIndex);
 

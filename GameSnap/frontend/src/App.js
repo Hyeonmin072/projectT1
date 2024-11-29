@@ -54,7 +54,7 @@ function App() {
             <div className="pt-[73px]">
               <AnimatedRoutes />
             </div>
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </Router>
       </AuthProvider>

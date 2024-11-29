@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface VideoRepository extends JpaRepository<Video,Integer> {
 
-    List<Video> findByGame(Game game);
+    List<Video> findAllByGame(Game game);
     Optional<Video> findByTitle(String name);
     List<Video> findAllByMember(Member member);
 }

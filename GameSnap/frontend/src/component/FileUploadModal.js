@@ -43,6 +43,7 @@ const FileUploadModal = ({ isOpen, onClose }) => {
     try{
       const response = await VideoAxios.uploadFile(formData);
       console.log(response);
+      alert("업로드 성공 !");
     }catch (error){
       console.log(error);
     }
