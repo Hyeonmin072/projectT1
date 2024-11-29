@@ -27,10 +27,24 @@ export const register = async (userData) => {
   }
 };
 
-// 이메일 중복 확인 함수
-export const checkEmailDuplicate = async (email) => {
+export const verifyCodeCheck = async (email,verifyCode) => {
+  console.log("전송하는 코드:",verifyCode);
+  try{
+    const response = await axios.post(`${API_URL}/verifyEmail`,{
+      email : email,
+      verifyCode : verifyCode
+    });
+    return response.data;
+  }catch (error){
+    throw error;
+  }
+}
+
+// 이메일 인증 코드 저언송
+export const sendEmail = async (email) => {
+  console.log("전송하는 이메일:",email);
   try {
-    const response = await axios.post(`${API_URL}/check-email`, {
+    const response = await axios.post(`${API_URL}/sendEmail`, {
       email: email
     });
     return response.data;

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import checkNameDuplicate, { register } from '../axios/RegisterAxios';
+import checkNameDuplicate, { verifyCodeCheck,sendEmail,register } from '../axios/RegisterAxios';
 
 const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
   // 기본 상태 관리
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
+    verifyCode: '',
     password: '',
     passwordConfirm: '',
     name: '',
@@ -14,6 +15,8 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
   });
   const [showTooltip, setShowTooltip] = useState(false);
   const [isNameLocked, setIsNameLocked] = useState(false);
+  const [isEmailLocked, setIsEmailLocked] = useState(false);
+  const [isSendEmailLocked, setIsSendEmailLocked] = useState(false);
 
   // 전화번호 유효성 검사 상태 추가
   const [phoneValid, setPhoneValid] = useState({
@@ -72,6 +75,35 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     };
   };
 
+  const verifyCodeCheckMutation = useMutation({
+    mutationFn: async ({email,verifyCode}) => {
+      console.log('verifyCode',verifyCode);
+      return await verifyCodeCheck(email,verifyCode);
+    },
+    onSuccess: (response) => {
+      if(response.verified){
+        setIsEmailLocked(true);
+        alert(response.message);
+      }else{
+        alert("인증에 실패하였습니다");
+        setIsSendEmailLocked(false);
+      }
+      
+    }, 
+  });
+
+  const verifySendEmail = useMutation({
+    mutationFn: async (email) => {
+      return await sendEmail(email);
+    },
+    onSuccess: (response) => {
+      alert(response);
+      setIsSendEmailLocked(true);
+    },
+    onError: (error) => {
+      alert("옳바르지 않은 이메일입니다.");
+    }
+  });
 
   // 닉네임 중복 체크 mutation
   const nameCheckMutation = useMutation({
@@ -223,7 +255,12 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     if (name === 'name' && isNameLocked) {
       return;
     }
+    if(name === 'verifyCode' && !isSendEmailLocked){
+      return;
+    } 
   
+    console.log('name : ',name);
+    console.log('value:',value);
     // 전화번호 입력 시 자동 하이픈 추가
     if (name === 'tel') {
       // 숫자만 추출
@@ -253,6 +290,14 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     if (name === 'name') {
       setIsNameLocked(false);
       nameCheckMutation.reset();
+    }
+
+    if(name === 'verifyCode'){
+      setFormData(prev => ({
+        ...prev,
+        [name] : name === 'verifyCode' ? value.trim() : value
+      }));
+      console.log("formData.verifyCode",formData.verifyCode);
     }
   };
 
@@ -300,6 +345,24 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
     return true;
   };
 
+  const handleVerifyCheck = () => {
+    if(!formData.verifyCode){
+      alert("인증 코드를 입력해주세요");
+      return;
+    }
+    console.log("handleVerifyCheck : ",formData.verifyCode);
+    return verifyCodeCheckMutation.mutate({
+      email : formData.email,
+      verifyCode : formData.verifyCode});
+  }
+
+  const handleSendMail = () => {
+    if(!formData.email){
+      return;
+    }
+    verifySendEmail.mutate(formData.email);
+  }
+
   const handleNameCheck = () => {
     if (!formData.name) {
       showTooltipMessage('닉네임을 입력해주세요.', false);
@@ -343,18 +406,67 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
           
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* 이메일 입력 */}
-            <div>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="이메일"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={registerMutation.isPending}
-                required
-              />
+            <div className="flex gap-2">
+              <div className="relative flex items-center w-[70%]">
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="이메일"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={registerMutation.isPending}
+                  required
+                />
+              </div>
+              <button
+                    type="button"
+                    onClick={handleSendMail}
+                    disabled={isSendEmailLocked || verifySendEmail.isPending || registerMutation.isPending}
+                    className={`w-[30%] py-2 px-4 rounded-lg border 
+                      transition-colors duration-300 font-size-sm
+                      ${isEmailLocked 
+                        ? 'bg-green-100 text-green-800 border-green-500' 
+                        : isEmailLocked || verifySendEmail.isPending
+                          ? 'bg-gray-100 text-gray-500 cursor-not-allowed opacity-70 border-gray-300'
+                          : 'bg-white hover:bg-gray-300 text-black border-gray-500'}`}
+                  >
+                    {verifySendEmail.isPending ? '전송 중...'  : isSendEmailLocked ? '전송 완료' : '코드 전송'}
+              </button>
             </div>
+
+
+            <div className="flex gap-2">
+              <div className="relative flex items-center w-[70%]">
+                <input
+                  type="text"
+                  name="verifyCode"
+                  value={formData.verifyCode}
+                  onChange={handleChange}
+                  placeholder="인증코드"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={registerMutation.isPending}
+                  required
+                />
+              </div>
+              <button
+                    type="button"
+                    onClick={handleVerifyCheck}
+                    disabled={isEmailLocked || verifyCodeCheckMutation.isPending || registerMutation.isPending}
+                    className={`w-[30%] py-2 px-4 rounded-lg border 
+                      transition-colors duration-300 font-size-sm
+                      ${isEmailLocked 
+                        ? 'bg-green-100 text-green-800 border-green-500' 
+                        : isEmailLocked || verifyCodeCheckMutation.isPending
+                          ? 'bg-gray-100 text-gray-500 cursor-not-allowed opacity-70 border-gray-300'
+                          : 'bg-white hover:bg-gray-300 text-black border-gray-500'}`}
+                  >
+                    {verifyCodeCheckMutation.isPending ? '인증 확인 중...'  : isEmailLocked ? '인증 완료' : '코드 확인'}
+              </button>
+            </div>
+
+            
+            
 
             {/* 비밀번호 입력 */}
             <div className="relative">
@@ -494,6 +606,7 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
             <button
               type="submit"
               disabled={
+                !isEmailLocked ||
                 !isNameLocked || 
                 !passwordMatch.isMatching || 
                 !passwordValid.isValid || 
@@ -503,21 +616,23 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
               //버튼
               className={`w-full py-2 px-4 rounded-lg
                 transition-colors duration-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-                ${(isNameLocked && passwordMatch.isMatching && passwordValid.isValid && phoneValid.isValid)
+                ${(isEmailLocked && isNameLocked && passwordMatch.isMatching && passwordValid.isValid && phoneValid.isValid)
                   ? 'bg-green-600 hover:bg-green-900 text-white cursor-pointer' 
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             >
               {registerMutation.isPending 
                 ? '가입 처리 중...' 
-                : (!isNameLocked 
-                    ? '닉네임 중복 확인이 필요해요'
-                    : !passwordValid.isValid
-                      ? '비밀번호 조건을 만족해야 해요'
-                      : !passwordMatch.isMatching
-                        ? '비밀번호가 일치하지 않아요'
-                        : !phoneValid.isValid
-                          ? '올바른 전화번호를 입력해주세요'
-                          : '가입하기')}
+                : ( !isEmailLocked
+                  ? '이메일 인증이 필요해요'
+                    : !isNameLocked 
+                      ? '닉네임 중복 확인이 필요해요'
+                      : !passwordValid.isValid
+                        ? '비밀번호 조건을 만족해야 해요'
+                        : !passwordMatch.isMatching
+                          ? '비밀번호가 일치하지 않아요'
+                          : !phoneValid.isValid
+                            ? '올바른 전화번호를 입력해주세요'
+                            : '가입하기')}
             </button>
 
             {/* 로그인 링크 */}

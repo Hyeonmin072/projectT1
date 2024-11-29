@@ -66,6 +66,21 @@ public class MemberController {
     }
 
 
+    @PostMapping("/sendEmail")
+    public ResponseEntity<String> sendEmail(@RequestBody MemberEmailRequestDto requestDto){
+        memberService.sendCodeToEmail(requestDto.getEmail());
+        return ResponseEntity.ok("전송된 코드를 이메일에서 확인해주세요");
+    }
+
+    @PostMapping("/verifyEmail")
+    public ResponseEntity<MemberVerifyEmailResponseDto> verifyEmail(@RequestBody MemberVerifyEmailRequestDto requestDto){
+        boolean isVerified = memberService.verifyCode(requestDto.getEmail(),requestDto.getVerifyCode());
+        MemberVerifyEmailResponseDto responseDto = new MemberVerifyEmailResponseDto();
+        responseDto.setVerified(isVerified);
+        responseDto.setMessage(isVerified ? "이메일 인증에 성공하셨습니다" : "이메일 인증에 실패하셨습니다");
+        if(isVerified){return ResponseEntity.status(200).body(responseDto);}
+        else {return ResponseEntity.status(200).body(responseDto);}
+    }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody MemberRequestDto memberRequestDto){
