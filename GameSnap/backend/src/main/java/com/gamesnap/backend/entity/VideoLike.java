@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"video_id", "member_id"}))
 public class VideoLike {
 
     @Id

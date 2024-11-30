@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import checkNameDuplicate, { verifyCodeCheck,sendEmail,register } from '../axios/RegisterAxios';
 
 const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
-  // 기본 상태 관리
+  
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -87,6 +87,10 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
       }else{
         alert("인증에 실패하였습니다");
         setIsSendEmailLocked(false);
+        setFormData(prevState => ({
+          ...prevState,
+          verifyCode: "" 
+        }));
       }
       
     }, 
@@ -171,9 +175,11 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
       onClose();
     },
     onError: (error) => {
+      alert(error.response.data);
+
       const errorMessage = error.response?.data?.message || '회원가입에 실패했어요.';
       showTooltipMessage(errorMessage, false);
-      console.error('회원 가입 실패:', error);
+      
     }
   });
 
@@ -392,7 +398,7 @@ const RegisterForm = ({ onClose, onRegisterSuccess, onLoginClick }) => {
         transform transition-all duration-300
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
       `}>
-        {/* 기존 UI 코드와 동일하지만 상태는 mutation으로 관리 */}
+        {/* 기존 UI 코드와 동일하지만 상태는 mutation으로 관리  */}
         <button
           onClick={handleClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 

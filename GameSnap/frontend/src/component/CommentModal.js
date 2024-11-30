@@ -8,7 +8,7 @@ const CommentModal = ({ isOpen, onClose, videoId }) => {
     const { userData, isLoggedIn } = useAuth();  // userData와 isLoggedIn 사용
     const queryClient = useQueryClient();
 
-    console.log('Current userData:', userData); // 디버깅용
+    // console.log('Current userData:', userData); // 디버깅용
 
     // 댓글 목록 조회 
     const { data: comments = [], isLoading } = useQuery({
