@@ -64,7 +64,8 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
     }
 
     console.log('Connecting to WebSocket...', roomId);
-    const socket = new WebSocket('wss://6535-112-217-82-146.ngrok-free.app/chat/inbox');
+    const socket = new SockJS('http://localhost:1111/chat/inbox');
+    // const socket = new WebSocket('wss://6535-112-217-82-146.ngrok-free.app/chat/inbox');
     const client = Stomp.over(socket);
     
     client.debug = () => {};
