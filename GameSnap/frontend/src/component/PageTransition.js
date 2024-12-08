@@ -19,7 +19,7 @@ const PageTransition = ({ children }) => {
 
   const variants = {
     enter: (direction) => ({
-      x: direction > 0 ? -30 : 30,
+      x: direction > 0 ? -30 : 300,
       opacity: 0
     }),
     center: {
