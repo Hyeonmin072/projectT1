@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { useAuth } from "../context/AuthContext";
 
-const BASE_URL = "http://localhost:1111";
+const BASE_URL = "http://3.37.183.85:1111";
 
 // API 클라이언트 인스턴스 생성
 

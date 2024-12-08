@@ -64,7 +64,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
     }
 
     console.log('Connecting to WebSocket...', roomId);
-    const socket = new SockJS('http://localhost:1111/chat/inbox');
+    const socket = new SockJS('http://3.37.183.85:1111/chat/inbox');
     // const socket = new WebSocket('wss://6535-112-217-82-146.ngrok-free.app/chat/inbox');
     const client = Stomp.over(socket);
     
@@ -120,7 +120,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
       console.log('User ID:', userData?.id);
       console.log('Friend ID:', friend?.id);
 
-      const checkResponse = await axios.get('http://localhost:1111/checkMessageRoom', {
+      const checkResponse = await axios.get('http://3.37.183.85:1111/checkMessageRoom', {
         params: {
           makerId: userData.id,
           guestId: friend.id
@@ -134,7 +134,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
         connectWebSocket(checkResponse.data);
       } else {
         console.log('새 채팅방 생성중...');
-        const response = await axios.post('http://localhost:1111/personal', {
+        const response = await axios.post('http://3.37.183.85:1111/personal', {
           makerId: userData.id,
           guestId: friend.id,
         });
@@ -151,7 +151,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
   const fetchMessages = async (roomId) => {
     console.log('이전 메시지 로드')
     try {
-      const response = await axios.get(`http://localhost:1111/messages/${roomId}`);
+      const response = await axios.get(`http://3.37.183.85:1111/messages/${roomId}`);
       if (response.status === 200 && response.data) {
         console.log('Fetched previous messages:', response.data);
         setMessages(response.data);

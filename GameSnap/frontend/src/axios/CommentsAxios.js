@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:1111/video'
+    baseURL: 'http://3.37.183.85:1111'
 });
 
 const handleError = (error) => {
