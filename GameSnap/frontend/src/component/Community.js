@@ -112,7 +112,7 @@ const Community = ({ isOpen, onClose }) => {
   // 친구 요청 보내기
   const handleSendRequest = async (user) => {
     try {
-        const response = await axios.post("http://3.37.183.85:1111/friend/request", null, {
+        const response = await axios.post("http://localhost:1111/friend/request", null, {
             params: {
                 myId: userData.id,
                 receiveMemberId: user.id
@@ -132,7 +132,7 @@ const Community = ({ isOpen, onClose }) => {
   useEffect(() => {
     const fetchRequests = async() => {
       try {
-        const response = await axios.get("http://3.37.183.85:1111/friend/request", {
+        const response = await axios.get("http://localhost:1111/friend/request", {
           params: {
             myId: userData.id
           }
@@ -149,7 +149,7 @@ const Community = ({ isOpen, onClose }) => {
   //친구 요청 거절
   const handleRejectRequest = async (user) => {
     try {
-      await axios.post("http://3.37.183.85:1111/friend/request/delete", null, {
+      await axios.post("http://localhost:1111/friend/request/delete", null, {
         params: {
           sendMemberId: user.id,
           myId: userData.id
@@ -166,7 +166,7 @@ const Community = ({ isOpen, onClose }) => {
   //채팅 목록 불러오기 
   const fetchChats = async() => {
     try {
-      const url = "http://3.37.183.85:1111/" + userData.id + "/messageRooms";
+      const url = "http://localhost:1111/" + userData.id + "/messageRooms";
       const response = await axios.get(url);
       setChats(response.data);
     } catch (error) {
