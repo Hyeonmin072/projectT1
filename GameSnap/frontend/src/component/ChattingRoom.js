@@ -202,6 +202,7 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
   // 컴포넌트 마운트/언마운트 처리
   useEffect(() => {
     if (friend && isOpen) {
+      setMessages([]);
       createOrJoinChatRoom();
     }
 
