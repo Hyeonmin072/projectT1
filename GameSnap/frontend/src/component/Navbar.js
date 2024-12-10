@@ -87,7 +87,7 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div 
             className="text-2xl font-bold text-white hover:text-green-600 flex-shrink-0
-            transition-colors duration-500 cursor-pointer"
+            transition-colors duration-700 cursor-pointer"
             onClick={() => navigate('/user')}
           >
             GameSnap

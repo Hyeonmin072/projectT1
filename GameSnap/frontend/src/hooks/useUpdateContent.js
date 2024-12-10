@@ -14,7 +14,7 @@ export const useUpdateContent = () => {
         const token = localStorage.getItem('token');
         console.log('Sending content update:', { content, userId: userData.id }); // 요청 데이터 로깅
 
-        const response = await axios.post('http://3.37.183.85:1111/profile/updateContent', 
+        const response = await axios.post('http://localhost:1111/profile/updateContent', 
           { 
             content: content,    // 명시적으로 content 필드 지정
             userId: userData.id,
