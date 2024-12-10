@@ -3,7 +3,11 @@ import axios from 'axios';
 
 
 const apiClient = axios.create({
+<<<<<<< HEAD
     baseURL: 'http://localhost:1111/video', // 백엔드 URL
+=======
+    baseURL: 'http://3.37.183.85:1111', // 백엔드 URL
+>>>>>>> parent of 4471937 (프론트 주소 누락 수정)
 });
 
 const handleError = (error) => {
