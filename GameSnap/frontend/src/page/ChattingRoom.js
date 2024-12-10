@@ -391,11 +391,12 @@ const ChattingRoom = ({ isOpen, onClose, friend }) => {
       stompClientRef.current.send('/pub/message', {}, JSON.stringify(message));
       setNewMessage('');
 
-      // // 메시지 즉시 표시 (옵티미스틱 업데이트)
+      // 메시지 즉시 표시 (옵티미스틱 업데이트)
       // updateMessages({
       //   ...message,
       //   id: `temp-${Date.now()}`,
       //   createdAt: new Date().toISOString()
+        
       // });
 
     } catch (error) {
