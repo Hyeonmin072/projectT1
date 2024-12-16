@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = "http://3.37.183.85:1111";
+const BASE_URL = "http://13.209.226.109:1111";
 
 const FriendAxios = {
   // 친구 목록 조회

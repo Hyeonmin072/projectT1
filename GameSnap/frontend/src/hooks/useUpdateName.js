@@ -14,7 +14,7 @@ export const useUpdateName = () => {
         const token = localStorage.getItem('token');
         console.log('Sending name update:', { name, userId: userData.id }); // 요청 데이터 로깅
         
-        const response = await axios.post('http://3.37.183.85:1111/profile/updateName', 
+        const response = await axios.post('http://13.209.226.109:1111/profile/updateName', 
           {   
             userName: name,    // 서버 API가 예상하는 필드명 사용
             userId: userData.id,

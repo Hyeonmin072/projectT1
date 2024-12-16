@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API 기본 URL 설정
-const API_URL = "http://3.37.183.85:1111";
+const API_URL = "http://13.209.226.109:1111";
 // 회원가입 요청 함수
 export const register = async (userData) => {
   try {

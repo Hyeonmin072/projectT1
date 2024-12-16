@@ -42,7 +42,7 @@ export const useUpdateGames = () => {
         console.log('서버 요청 데이터:', requestData);
         
         const response = await axios.post(
-          'http://3.37.183.85:1111/profile/updateLikeGames',
+          'http://13.209.226.109:1111/profile/updateLikeGames',
           requestData,
           {
             headers: {

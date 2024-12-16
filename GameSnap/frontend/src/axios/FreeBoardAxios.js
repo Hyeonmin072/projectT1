@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 // 기본 URL 설정
-const BASE_URL = "http://3.37.183.85:1111"; // 백엔드 서버 URL
+const BASE_URL = "http://13.209.226.109:1111"; // 백엔드 서버 URL
 
 
 const axiosInstance = axios.create({
