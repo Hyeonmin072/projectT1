@@ -1,2 +1,2 @@
 # projectT1
-CapStoneProjectTeamOne
+Rice Monkey
